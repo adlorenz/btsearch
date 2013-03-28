@@ -1,6 +1,0 @@
-<div id="status-panel-body" class="panel-transparency">
-	<strong>Źródło:</strong> <span id="status-data-source" class="status-panel-element">?</span>, 
-	<strong>Zoom:</strong> <span id="status-zoom" class="status-panel-element">?</span>, 
-	<strong>Lokalizacje:</strong> <span id="status-locations-count" class="status-panel-element">?</span>, 
-	<strong>GPS:</strong> <span id="status-gps" class="status-panel-element">?</span>
-</div>
