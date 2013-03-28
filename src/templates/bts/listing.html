@@ -11,7 +11,7 @@
 
 {% block main-content %}
 
-	
+
 
 	{% if basestations %}
 
@@ -33,34 +33,34 @@
             	<td>{{ basestation.address_name }}</td>
             	<td>
             	{% for stdbnd in basestation.get_supported_standards_and_bands %}
-            		{{ stdbnd.standard }}{{ stdbnd.band }} 
+            		{{ stdbnd.standard }}{{ stdbnd.band }}
             	{% endfor %}
             	</td>
             </tr>
         {% endfor %}
 		</tbody>
 	</table>
-	
+
 		{% if is_paginated %}
         <div class="pagination pagination-right">
             <ul>
                 {% if page_obj.has_previous %}
-                <li><a href="{% url bts-listing %}?page={{ page_obj.previous_page_number }}">poprzednia</a></li>
+                <li><a href="{% url 'bts-listing' %}?page={{ page_obj.previous_page_number }}">poprzednia</a></li>
                 {% endif %}
                 <li class="active">
                     <a href="">Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }} (łącznie {{ page_obj.paginator.count }} rekordów)</a>
                 </li>
                 {% if page_obj.has_next %}
-                <li><a href="{% url bts-listing %}?page={{ page_obj.next_page_number }}">następna</a></li>
+                <li><a href="{% url 'bts-listing' %}?page={{ page_obj.next_page_number }}">następna</a></li>
                 {% endif %}
             </ul>
         </div>
     	{% endif %}
-    	
+
     {% else %}
-    
+
     	<p>Brak rekordów spełniających kryteria wyszukiwania</p>
-    
+
     {% endif %}
-		
-{% endblock %} 
+
+{% endblock %}

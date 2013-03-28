@@ -21,8 +21,8 @@
 				{% for support in item.supported %}
 					{{ support.standard }}{{ support.band }}
 					{% if forloop.last %}
-						<a class="location-info" href="{% url uke-location-extended-info-view location.id,item.network.code %}">Szczegóły...</a>
-					{% endif %} 
+						<a class="location-info" href="{% url 'uke-location-extended-info-view' location.id,item.network.code %}">Szczegóły...</a>
+					{% endif %}
 				{% endfor %}
 				</small>
 				</p>
@@ -31,9 +31,9 @@
 		</div>
 	{% if forloop.last %}
 	</div>
-	{% endif %} 
+	{% endif %}
 {% endfor %}
-	
+
 	<div class="location-info-footer">
 		GPS: {{ location.latitude }},{{ location.longitude }}
 	</div>
