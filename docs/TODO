@@ -1,0 +1,20 @@
+Edytor Location
+- automatyczne obliczanie GPS hash przy zapisywaniu rekordu, blokowanie zapisu jeśli znaleziono konflikt z inną lokalizacją
+- dodać link do panelu edycji rekordu BaseStation na liście powiązanych stacji na dole
+- usunąć checkbox "delete?" oraz zmniejszyć rozmiar pola "UKE Station ID" na liście powiązanych stacji
+- aktualizacja lokalizacji na mapie wyzwalana przez zdarzenie onblur (?)
+
+Edytor BaseStation
+- pole Location wyświetlać jako pierwsze w formularzu
+- pole Location powinno wyświetlać mapkę z markerami lokalizacjami do wyboru 
+  - kliknięcie markera na mapce spowoduje wyświetlenie adresu w polu tekstowym i wybór danej lokalizacji dla stacji bazowej
+- poprawić wyświetlanie pól boolean, np. zamienić "Is gsm" na "GSM?"
+- wartości boolean is_gsm, is_umts itp. powinny uzupełniać się automatycznie na bazie przypisanych komórek (lub ręcznie, hmm?) 
+- usunąć checkbox "delete?" z listy powiązanych Cells na dole
+- dodać link do panelu edycji rekordu Cell na liście powiązanych Cells na dole
+
+Cells
+- usprawnić ładowanie listy rekordów - obecnie zajmuje dużo czasu i zasobów serwera
+- automatyczne obliczanie LongCID na podstawie RNC + CID (javascript)
+- automatyczne obliczanie RNC + CID na podstawie LongCID (javascript)
+- pole "Confirmed?" domyślnie zaznaczone

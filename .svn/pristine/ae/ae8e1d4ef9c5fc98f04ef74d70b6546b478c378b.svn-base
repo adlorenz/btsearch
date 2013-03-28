@@ -1,0 +1,285 @@
+import datetime
+import os, glob
+
+from fabric.api import local, run, sudo, env, settings
+from fabric.colors import green, red, white, _wrap_with
+from fabric.context_managers import cd, lcd
+from fabric.operations import put, prompt
+
+from deploy.fabconfig import *
+
+# Utilities
+
+green_bg = _wrap_with('42')
+red_bg = _wrap_with('41')
+
+def _get_commit_id():
+    "Returns the commit ID for the branch about to be deployed"
+    return local('git rev-parse HEAD', capture=True)[:20]
+
+# Deployment tasks
+
+def deploy(branch='master', repo='origin'):
+    """
+    Deploys the codebase to the VM.
+    
+    We only deploy from tags, which means one either has to be selected or created.
+    """
+    
+    # Ensure we have latest code
+#    update_codebase(branch, repo)
+#    
+#    # Versioning - we either deploy from a tag or we create a new one
+#    print green("Fetching latest tags for reference")
+#    local('git fetch --tags')
+#    local('git tag | sort -V | tail -5')
+#    
+#    env.version = prompt("Enter tag to (create and) deploy from [default is to increment the minor version]:")
+#    if not env.version:
+#        # Create next tag in sequence
+#        output = local('git tag -l %s | sort -V | tail' % env.version, capture=True).strip()
+#        numbers = output.split('.')
+#        next_revision = int(numbers.pop()) + 1
+#        env.version = '%d.%d.%d' % (int(numbers[0]), int(numbers[1]), next_revision) 
+#    
+#    # Create tag if it's new
+#    output = local('git tag -l %s' % env.version, capture=True)
+#    output = output.strip()
+#    is_new_release = len(output) == 0
+#    if is_new_release:
+#        print green("Tagging version %s" % env.version)
+#        local('git tag %s' % env.version)
+#        local('git push --tags')
+#    else:
+#        print green("Deploying from tag %s" % env.version)
+#        
+#    commit_id = _get_commit_id()
+#    print green("Building from revision %s" % commit_id)
+
+    archive_file = '/tmp/build-%s.tar.gz' % str(commit_id)
+    prepare_build(archive_file, env.version)
+    
+    # Look for user to use
+    if 'TANGENT_USER' in os.environ:
+        env.user = os.environ['TANGENT_USER']
+    else:
+        env.user = prompt('Username for remote host? [default is current user] ')
+    if not env.user:
+        env.user = os.environ['USER']
+    
+    # Upload and deploy    
+    upload(archive_file)
+    unpack(archive_file, commit_id, env.version)
+    
+    # Dependencies
+    update_virtualenv()
+    
+    # Database, static, i18n
+    migrate_schema()
+    collect_static_files()
+    
+    # Alter permissions to allow FEDs to alter files
+    if env.build == 'dev':
+        with cd(env.builds_dir):
+            sudo('chown -R root:fed %(build)s/templates %(build_dir)s/public' % env)
+            sudo('chmod -R g+w %(build)s/templates %(build_dir)s/public' % env)
+    
+    collect_messages()
+
+    # Server configuration
+    deploy_apache_config()
+    deploy_nginx_config()
+    deploy_cronjobs()
+    deploy_solr_schema()
+
+    # Reload code
+    reload_python_code()
+    nginx_reload()
+    apache_reload()
+    restart_celery_worker()
+    restart_solr()
+    
+    # Clean up
+    delete_old_builds()
+
+def update_codebase(branch='master', repo='origin'):
+    "Updates the codebase from the Git repo"
+    print(green('Updating codebase from remote "%s", branch "%s"' % (repo, branch)))
+    local('git checkout %s' % (branch))
+    local('git pull %s %s' % (repo, branch))
+    print(green('Pushing any local changes to remote "%s", branch "%s"' % (repo, branch)))
+    local('git push %s %s' % (repo, branch))
+
+def prepare_build(archive_file, reference='master'):
+    "Creates a gzipped tarball with the code to be deployed"
+    local('git archive --format tar %s %s | gzip > %s' % (reference, env.web_dir, archive_file))
+
+def upload(local_path, remote_path=None):
+    "Uploads a file"
+    if not remote_path:
+        remote_path = local_path
+    print green("Uploading %s to %s" % (local_path, remote_path))
+    put(local_path, remote_path)
+
+def unpack(archive_path, commit_id, git_ref):
+    "Unpacks the tarball into the correct place"
+    print green("Creating build folder") 
+    now = datetime.datetime.now()
+    env.build_dir = '%s-%s' % (env.build, now.strftime('%Y-%m-%d-%H-%M'))
+    with cd(env.builds_dir):
+        sudo('tar xzf %s' % archive_path)
+        
+        # Remove some unnecessary files
+        sudo('rm %(web_dir)s/settings_test.py' % env)
+
+        # Create new build folder
+        sudo('if [ -d "%(build_dir)s" ]; then rm -rf "%(build_dir)s"; fi' % env)
+        sudo('mv %(web_dir)s %(build_dir)s' % env)
+        
+        # Symlink in media folder
+        sudo('ln -s ../../../media/%(build)s %(build_dir)s/public/media' % env)
+        
+        # Append release info to settings.py
+        sudo("sed -i 's/UNVERSIONED/%(version)s/' %(build_dir)s/settings.py" % env)
+        
+        # Symlink in locale folder
+        sudo('ln -s ../../locale/%(build)s %(build_dir)s/locale' % env)
+        
+        # Symlink in locale folder within cdk (needed for js translations)
+        sudo('ln -s ../../locale/%(build)s %(build_dir)s/cdk/locale' % env)
+        
+        # Symlink in search_indexes folder - note that we need 
+        sudo('ln -s ../../search_indexes/%(build)s %(build_dir)s/search' % env)
+        
+        # Alter permissions to allow FEDs to alter files
+        if env.build == 'dev':
+            sudo('chown -R root:fed %(build_dir)s/templates %(build_dir)s/public' % env)
+        sudo('chmod -R g+w %(build_dir)s/templates %(build_dir)s/public' % env)
+
+        # Create new symlink
+        sudo('if [ -h %(build)s ]; then unlink %(build)s; fi' % env)
+        sudo('ln -s %(build_dir)s %(build)s' % env)
+
+        # Add file indicating Git commit
+        sudo('echo -e "git_ref: %s\ncommit: %s\nuser: %s" > %s/build-info' % (git_ref, commit_id, env.user, env.build))
+
+        # Remove archive
+        sudo('rm %s' % archive_path)
+    
+def update_virtualenv():
+    with cd(env.code_dir):
+        sudo('source %s/bin/activate && pip install -r deploy/requirements.txt > /dev/null' % env.virtualenv)
+
+def migrate_schema():
+    with cd(env.code_dir):
+        sudo('source %s/bin/activate && ./manage.py migrate' % env.virtualenv)
+
+def collect_static_files():
+    with cd(env.code_dir):
+        sudo('source %s/bin/activate && ./manage.py collectstatic --noinput > /dev/null' % env.virtualenv)
+
+def collect_messages():
+    with cd(env.code_dir):
+        sudo('source %s/bin/activate && ./manage.py makemessages -a' % env.virtualenv)
+        sudo('source %s/bin/activate && ./manage.py  makemessages -d djangojs -a' % env.virtualenv)
+
+def rebuild_index():
+    with cd(env.code_dir):
+        sudo('source %s/bin/activate && ./manage.py rebuild_index --noinput' % env.virtualenv)
+
+def deploy_apache_config():
+    "Deploys the apache config"
+    print green('Moving apache config into place')
+    with cd(env.builds_dir):
+        sudo('mv %(build)s/%(apache_conf)s /etc/apache2/sites-enabled/' % env)
+
+def deploy_nginx_config():
+    "Deploys the nginx config"
+    print green('Moving nginx config into place')
+    with cd(env.builds_dir):
+        sudo('mv %(build)s/%(nginx_conf)s /etc/nginx/sites-enabled/' % env)
+
+def deploy_cronjobs():
+    "Deploys the cron jobs"
+    print green('Deploying cronjobs')
+    with cd(env.builds_dir):
+        # Delete current cron jobs
+        sudo("[ -f /etc/cron.d/%(project_code)s-%(build)s-* ] && rm /etc/cron.d/%(project_code)s-%(build)s-*" % env)
+        
+        # Replace variables in cron files
+        sudo("rename 's#BUILD#%(build)s#' %(build)s/deploy/cron.d/*" % env)
+        sudo("sed -i 's#VIRTUALENV_ROOT#%(virtualenv)s#' %(build)s/deploy/cron.d/*" % env)
+        sudo("sed -i 's#BUILD_ROOT#%(code_dir)s#' %(build)s/deploy/cron.d/*" % env)
+        sudo("mv %(build)s/deploy/cron.d/* /etc/cron.d" % env)
+
+def deploy_solr_schema():
+    "Deploys SOLR schema"
+    print green('Deploying SOLR schema')
+    with cd(env.builds_dir):
+        sudo("mv -f %(build)s/deploy/solr/schema.xml /etc/solr/conf/" % env)
+
+def reload_python_code():
+    "Reloads python code"
+    print green('Touching WSGI file to reload python code')
+    with cd(env.builds_dir):
+        sudo('touch %(build)s/%(wsgi)s' % env)
+
+def restart_celery_worker():
+    print green('Restarting celery worker')
+    sudo('/etc/init.d/celeryd-%(build)s restart' % env)
+
+def restart_solr():
+    print green('Restarting Tomcat/SOLR')
+    sudo('/etc/init.d/tomcat6 restart')
+
+def delete_old_builds():
+    print green('Deleting old builds')
+    with cd(env.builds_dir):
+        sudo('find . -maxdepth 1 -type d -name "%(build)s*" | sort -r | sed "1,3d" | xargs rm -rf' % env)
+
+def apache_reload():
+    "Reloads apache config"
+    sudo('/etc/init.d/apache2 reload')
+
+def apache_restart():
+    "Restarts apache"
+    sudo('/etc/init.d/apache2 restart')
+
+def nginx_reload():
+    "Reloads nginx config"
+    sudo('/etc/init.d/nginx force-reload')
+
+def nginx_restart():
+    "Restarts nginx"
+    sudo('/etc/init.d/nginx restart')
+
+def apache_configtest():
+    "Checks apache config syntax"
+    sudo('/usr/sbin/apache2ctl configtest')
+
+def nginx_configtest():
+    "Checks nginx config syntax"
+    sudo('/usr/sbin/nginx -t')
+
+def provision():
+    # Get details of provision
+    client = prompt("Client name?")
+    project_code = prompt("Project code?")
+    ctx = {'client': client,
+           'project_code': project_code}
+    
+    # Create base folder 
+    base_folder = '/var/www/%(client)s/%(project_code)s/' % ctx
+    sudo('[ ! -d %(folder)s ] && mkdir -p %(folder)s' % {'folder': base_folder})
+
+    with cd(base_folder):
+        # Create core folders
+        folders = ['builds', 'media', 'virtualenvs', 'data', 'logs']
+        environments = ['dev']
+        for folder in folders:
+            for environment in environments:
+                sudo('[ ! -d %(folder)s/%(env)s ] && mkdir -p %(folder)s/%(env)s')
+
+        # Create virtualenv
+        for environment in environments:
+            sudo('virtualenv --no-site-packages virtualenvs/%s' % environment)

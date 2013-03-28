@@ -1,0 +1,4 @@
+Django==1.5
+Fabric==1.6.0
+MySQL-python==1.2.4
+django-tastypie==0.9.14

@@ -1,0 +1,18 @@
+from fabric.api import env
+
+# Environments
+env.client = 'btsaerch'
+env.project_code = 'btsearch'
+env.builds_dir = '/var/www/btsearch/builds'
+#env.web_dir = 'www'
+
+def dev():
+    env.build = 'dev'
+    env.hosts = ['91.228.197.252']
+    env.virtualenv = '/var/www/btsearch/environments/dev'
+    env.code_dir = '/var/www/btsearch/builds/dev'
+    env.data_dir = '/var/www/btsearch/data/dev'
+    env.apache_conf = 'deploy/apache/dj.btsearch.eu.conf'
+    #env.nginx_conf = 'deploy/nginx/cdk-dev.tangentlabs.co.uk'
+    env.wsgi = 'deploy/wsgi/dev.wsgi'
+    

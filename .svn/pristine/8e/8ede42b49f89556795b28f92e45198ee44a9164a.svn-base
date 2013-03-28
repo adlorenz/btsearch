@@ -1,0 +1,21 @@
+<VirtualHost *:80>
+    ServerAdmin adl@adl.pl
+    ServerName dj.btsearch.eu
+    DocumentRoot /var/www/btsearch
+
+    Alias /media/ /var/www/btsearch/builds/dev/public/media/
+    Alias /static/ /var/www/btsearch/builds/dev/public/static/
+
+    WSGIDaemonProcess btsearch-www maximum-requests=5000 processes=2 threads=10 
+    WSGIProcessGroup btsearch-www
+    WSGIApplicationGroup %{GLOBAL}
+    WSGIScriptAlias / /var/www/btsearch/builds/dev/deploy/wsgi/dev.wsgi
+
+    <Directory /var/www/btsearch>
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+    CustomLog /var/log/httpd/dj.btsearch.eu.log combined
+    ErrorLog /var/log/httpd/error.dj.btsearch.eu.log
+</Virtualhost>

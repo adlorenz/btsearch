@@ -1,0 +1,37 @@
+<div id="location-info-container-extended">
+{% for permission in permissions %}
+	{% if forloop.first %}
+		<div class="location-address no-border">
+			<img src="{{ STATIC_URL }}/map_icons/{{ network.map_icon_code }}.png" class="location-network-icon" />
+				<strong>{{ network.name }}</strong> ({{ network.code }})<br/>
+			<small>
+				{{ permission.town }}{% if permission.address %}, {{ permission.address }}{% endif %}
+			</small>
+		</div>
+
+		<div>
+			<table class="table table-bordered table-condensed location-info">
+				<tr>
+					<th>Standard</th>
+					<th>Pasmo</th>
+					<th>Nr stacji</th>
+					<th>Nr pozwolenia</th>
+					<th>Data ważności</th>
+				</tr>
+	{% endif %}
+				<tr>
+					<td>{{permission.standard}}</td>
+					<td>{{permission.band}}</td>
+					<td>{{permission.station_id}}</td>
+					<td>{{permission.case_number}}</td>
+					<td>{{permission.expiry_date}}</td>
+				</tr>
+	{% if forloop.last %}
+			</table>
+		</div>
+		<div class="location-info-footer rt">
+			Data aktualizacji danych: {{ permission.date_updated|date:"d.m.Y" }}
+		</div>
+	{% endif %}
+{% endfor %}
+</div>

@@ -1,0 +1,53 @@
+<div id="location-info-container-extended">
+
+	<div class="location-address no-border">
+		<img src="{{ STATIC_URL }}/map_icons/{{ base_station.network.map_icon_code }}.png" class="location-network-icon" />
+			<strong>{{ base_station.network.name }}</strong> ({{ base_station.network.code }})<br/>
+		<small>
+			{{ base_station.location.town }},
+			{% if base_station.location_details %}
+				{{ base_station.location_details }}
+			{% else %}
+				{{ base_station.location.adddress }}
+			{% endif %}
+		</small>
+	</div>
+	
+	<div>
+		<table class="table table-bordered table-condensed location-info">
+			<thead>
+			<tr>
+				<th>Standard</th>
+				<th>Pasmo</th>
+				<th>LAC</th>
+				<th>CID 8b</th>
+				<th>RNC</th>
+				<th>CID 16b</th>
+				<th>Nośna</th>
+			</tr>
+			</thead>
+	{% for cell in base_station.get_cells %}
+			<tbody>
+			<tr>
+				<td>{{cell.standard}}</td>
+				<td>{{cell.band}}</td>
+				<td>{{cell.lac}}</td>
+				<td>{{cell.cid}}</td>
+				{% if cell.standard == 'UMTS' %}
+				<td>{% if base_station.rnc == 0 %} ? {% else %} {{base_station.rnc}} {% endif %}</td>
+				<td>{{cell.cid_long}}</td>
+				<td>{% if cell.ua_freq == 0 %} ? {% else %} {{cell.ua_freq}} {% endif %}</td>
+				{% endif %}
+				{% if cell.standard != 'UMTS' %}
+				<td colspan="3">--</td>
+				{% endif %}
+			</tr>
+			</tbody>
+	{% endfor %}
+		</table>
+	</div>
+
+	<div class="location-info-footer rt">
+		Data aktualizacji rekordu: {{ base_station.date_updated|date:"d.m.Y" }}
+	</div>
+</div>

@@ -1,0 +1,13 @@
+"""
+Settings specific for development environment 
+"""
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': 'bts',
+        'PASSWORD': 'bas3Search',
+        'HOST': 'localhost',
+        'NAME': 'Btsearch2',
+    }
+}
