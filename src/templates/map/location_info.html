@@ -3,13 +3,13 @@
 		<strong>{{ location.town }}</strong>, {{ location.region.name }} <br />
 		<small>{{ location.address }}</small>
 	</div>
-	
+
 	<div class="location-items">
 	{% for base_station in items %}
 		<div class="location-item">
-			<img src="{{ STATIC_URL }}/map_icons/{{ base_station.network.map_icon_code }}.png" class="location-network-icon" /> 
+			<img src="{{ STATIC_URL }}/map_icons/{{ base_station.network.map_icon_code }}.png" class="location-network-icon" />
 			<div class="location-item-details">
-				{{ base_station.network.name }} 
+				{{ base_station.network.name }}
 				{% if base_station.location_details != location.address %}
 					<br/><small>{{ base_station.location_details }}</small>
 				{% endif %}
@@ -18,7 +18,7 @@
 						{% for support in base_station.get_supported_standards_and_bands %}
 							{{ support.standard }}{{ support.band }}
 							{% if forloop.last %}
-								<a class="location-info" href="{% url base-station-extended-info-view base_station.id %}">Szczegóły...</a>
+								<a class="location-info" href="{% url 'base-station-extended-info-view' base_station.id %}">Szczegóły...</a>
 							{% endif %}
 						{% empty %}
 							Brak szczegółowych danych...
@@ -30,7 +30,7 @@
 		</div>
 	{% endfor %}
 	</div>
-	
+
 	<div class="location-info-footer">
 		GPS: {{ location.latitude }},{{ location.longitude }}
 	</div>
