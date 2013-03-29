@@ -117,6 +117,7 @@ INSTALLED_APPS = (
     'tastypie',
     'btsearch.bts',
     'btsearch.uke',
+    'btsearch.map',
     'btsearch'
 )
 
