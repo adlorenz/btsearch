@@ -14,7 +14,7 @@
 	<div class="location-items">
 	{% endif %}
 		<div class="location-item">
-			<img src="{{ STATIC_URL }}map_icons/{{ item|get_icon }}" class="location-network-icon" />
+			<img src="{{ STATIC_URL }}map_icons/{{ item.permissions.0|get_icon }}" class="location-network-icon" />
 			<div class="location-item-details">
 				{{ item.network.name }}
 				<p>

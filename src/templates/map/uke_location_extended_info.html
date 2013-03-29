@@ -1,8 +1,9 @@
+{% load map_icons %}
 <div id="location-info-container-extended">
 {% for permission in permissions %}
 	{% if forloop.first %}
 		<div class="location-address no-border">
-			<img src="{{ STATIC_URL }}/map_icons/{{ network.map_icon_code }}.png" class="location-network-icon" />
+			<img src="{{ STATIC_URL }}/map_icons/{{ permission|get_icon }}" class="location-network-icon" />
 				<strong>{{ network.name }}</strong> ({{ network.code }})<br/>
 			<small>
 				{{ permission.town }}{% if permission.address %}, {{ permission.address }}{% endif %}
