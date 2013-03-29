@@ -157,7 +157,11 @@ var core = {
 	// @TODO: request.searchLocation -> callback: ui.displaySearchResult (?)
 	searchLocation: function(query) {
 		$('#control-panel-search-results').html('');
-		this.geocoder.geocode({'address': query, 'region': 'pl'}, function(results, status) {
+		params = {
+			'address': query,
+			'region': 'pl'
+		};
+		this.geocoder.geocode(params, function(results, status) {
 	    	if (status == google.maps.GeocoderStatus.OK) {
 	    		core.map.setCenter(results[0].geometry.location);
 	    		if (results.length > 1) {
