@@ -1,7 +1,8 @@
+{% load map_icons %}
 <div id="location-info-container-extended">
 
 	<div class="location-address no-border">
-		<img src="{{ STATIC_URL }}/map_icons/{{ base_station.network.map_icon_code }}.png" class="location-network-icon" />
+		<img src="{{ STATIC_URL }}/map_icons/{{ base_station|get_icon }}" class="location-network-icon" />
 			<strong>{{ base_station.network.name }}</strong> ({{ base_station.network.code }})<br/>
 		<small>
 			{{ base_station.location.town }},
@@ -12,7 +13,7 @@
 			{% endif %}
 		</small>
 	</div>
-	
+
 	<div>
 		<table class="table table-bordered table-condensed location-info">
 			<thead>
