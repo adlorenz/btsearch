@@ -11,50 +11,43 @@
 
 {% block main-content %}
 
-
-
 	{% if basestations %}
 
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>Sieć</th>
-				<th>Województwo</th>
-				<th>Miejscowość</th>
-				<th>Adres</th>
-			</tr>
-		</thead>
-		<tbody>
-		{% for basestation in basestations %}
-			<tr>
-            	<td>{{ basestation.network }}</td>
-            	<td>{{ basestation.region_name }}</td>
-            	<td>{{ basestation.town_name }}</td>
-            	<td>{{ basestation.address_name }}</td>
-            	<td>
-            	{% for stdbnd in basestation.get_supported_standards_and_bands %}
-            		{{ stdbnd.standard }}{{ stdbnd.band }}
-            	{% endfor %}
-            	</td>
-            </tr>
-        {% endfor %}
-		</tbody>
-	</table>
+        {% if is_paginated %}
+            {% include 'bts/partials/paginator.html' with page_obj=page_obj query=q %}
+        {% endif %}
+
+    	<table class="table table-striped">
+    		<thead>
+    			<tr>
+    				<th>Sieć</th>
+    				<th>Województwo</th>
+    				<th>Miejscowość</th>
+    				<th>Adres</th>
+                    <th>Pasma</th>
+                    <th>Ost. aktualizacja</th>
+    			</tr>
+    		</thead>
+    		<tbody>
+    		{% for basestation in basestations %}
+    			<tr>
+                	<td>{{ basestation.network }}</td>
+                	<td>{{ basestation.region_name }}</td>
+                	<td>{{ basestation.town_name }}</td>
+                	<td>{{ basestation.address_name }}</td>
+                	<td>
+                	{% for stdbnd in basestation.get_supported_standards_and_bands %}
+                		{{ stdbnd.standard }}{{ stdbnd.band }}
+                	{% endfor %}
+                	</td>
+                    <td>{{ basestation.date_updated|timesince }}</td>
+                </tr>
+            {% endfor %}
+    		</tbody>
+    	</table>
 
 		{% if is_paginated %}
-        <div class="pagination pagination-right">
-            <ul>
-                {% if page_obj.has_previous %}
-                <li><a href="{% url 'bts-listing' %}?page={{ page_obj.previous_page_number }}">poprzednia</a></li>
-                {% endif %}
-                <li class="active">
-                    <a href="">Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }} (łącznie {{ page_obj.paginator.count }} rekordów)</a>
-                </li>
-                {% if page_obj.has_next %}
-                <li><a href="{% url 'bts-listing' %}?page={{ page_obj.next_page_number }}">następna</a></li>
-                {% endif %}
-            </ul>
-        </div>
+            {% include 'bts/partials/paginator.html' with page_obj=page_obj %}
     	{% endif %}
 
     {% else %}
