@@ -1,0 +1,13 @@
+<div class="pagination pagination-right">
+    <ul>
+        {% if page_obj.has_previous %}
+        <li><a href="{% if query %}{% url 'bts-query' query %}{% else %}{% url 'bts-listing' %}{% endif %}?page={{ page_obj.previous_page_number }}">poprzednia</a></li>
+        {% endif %}
+        <li class="active">
+            <a href="">Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }} (łącznie {{ page_obj.paginator.count }} rekordów)</a>
+        </li>
+        {% if page_obj.has_next %}
+        <li><a href="{% if query %}{% url 'bts-query' query %}{% else %}{% url 'bts-listing' %}{% endif %}?page={{ page_obj.next_page_number }}">następna</a></li>
+        {% endif %}
+    </ul>
+</div>
