@@ -2,7 +2,10 @@
 {% block page-title %}Przeglądarka bazy BTSearch{% endblock %}
 
 {% block sidebar-content %}
+
 <form action="" method="get">
+{{ filter_form }}
+{% comment %}
         <p>
             <strong>Sieć</strong><br />
             <select name="network" id="network-filter">
@@ -32,11 +35,13 @@
         </div>
         <div class="cr"></div>
 
+{% endcomment %}
         <input type="submit" value="Filtruj" />
 </form>
+
 {% endblock %}
 
-    {% block current-search-query %}{{ q }}{% endblock %}
+{% block current-search-query %}{{ get_params.query }}{% endblock %}
 
 {% block main-content %}
 

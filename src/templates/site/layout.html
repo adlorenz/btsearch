@@ -32,8 +32,7 @@
 		<div class="lt">
 			<img src="{{ STATIC_URL }}img/btsearch-logo-main.png" border="0" width="157" height="55" alt="Logo" />
 			<form id="search-form" action="{% block search-form-action %}{% endblock %}" method="get">
-				{% csrf_token %}
-				<input type="text" id="search-box" value="{% block current-search-query %}{% endblock %}" name="search" />
+				<input type="text" id="search-box" value="{% block current-search-query %}{% endblock %}" name="query" />
 				<input type="submit" id="search-submit" value="Szukaj" />
 			</form>
 		</div>
