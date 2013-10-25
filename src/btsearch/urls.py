@@ -27,7 +27,7 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     #url(r'^api/', include(api_v1.urls)),
     url(r'^api/', include(api_map.urls)),
-    url(r'^browse', include('btsearch.bts.urls')),
+    url(r'^browse/', include('btsearch.bts.urls')),
     url(r'^get_control_panel/$', ControlPanelView.as_view(), name='control-panel-view'),
     url(r'^get_status_panel/$', StatusPanelView.as_view(), name='status-panel-view'),
     url(r'^get_base_station_info/(?P<pk>\d+)/$', BaseStationExtendedInfoView.as_view(), name='base-station-extended-info-view'),
