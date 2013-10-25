@@ -24,9 +24,11 @@ class BtsListingView(generic.ListView):
 
         if filters.get('query'):
             query = filters.get('query')
-            qs = qs.filter(Q(location__town__icontains=query) |
-                           Q(location__address__icontains=query) |
-                           Q(station_id=query))
+            qs = qs.filter(
+                Q(location__town__icontains=query) |
+                Q(location__address__icontains=query) |
+                Q(station_id=query)
+            )
 
         if filters.get('network'):
             qs = qs.filter(network__code=filters.get('network'))
@@ -34,12 +36,10 @@ class BtsListingView(generic.ListView):
         if filters.get('region'):
             qs = qs.filter(location__region=filters.get('region'))
 
-        # if 'standard' in filters and 'band' in filters:
-        #     qs = qs.filter(cell__standard__in=list(filters['standard']),
-        #                    cell__band__in=list(filters['band']))
-        # elif 'standard' in filters:
-        #     qs = qs.filter(cell__standard__in=list(filters['standard']))
-        # elif 'band' in filters:
-        #     qs = qs.filter(cell__band__in=list(filters['band']))
+        if filters.getlist('standard'):
+            qs = qs.filter(cell__standard__in=filters.getlist('standard'))
+
+        if filters.getlist('band'):
+            qs = qs.filter(cell__band__in=filters.getlist('band'))
 
         return qs
