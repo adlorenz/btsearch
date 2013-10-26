@@ -2,24 +2,58 @@ from django.db import models
 
 
 class Location(models.Model):
+    id = models.AutoField(
+        primary_key=True,
+        db_column="LocationId",
+    )
+    region = models.ForeignKey(
+        'Region',
+        db_column="RegionId",
+        related_name='locations',
+    )
+    town = models.CharField(
+        max_length=128,
+        db_column="Town",
+    )
+    address = models.CharField(
+        max_length=512,
+        db_column="Address",
+    )
+    latitude = models.CharField(
+        max_length=16,
+        blank=True,
+        db_column="Latitude",
+    )
+    longitude = models.CharField(
+        max_length=16,
+        blank=True,
+        db_column="Longitude",
+    )
+    latlng_hash = models.CharField(
+        max_length=32,
+        db_column="LatLngHash",
+        verbose_name="GPS hash",
+    )
+    notes = models.CharField(
+        max_length=255,
+        db_column="LocationNotes",
+    )
+    date_added = models.DateTimeField(
+        auto_now_add=True,
+        db_column="DateAdded",
+    )
+    date_updated = models.DateTimeField(
+        auto_now=True,
+        auto_now_add=True,
+        db_column="DateUpdated",
+    )
 
     class Meta:
         db_table = 'Bts__Locations'
         ordering = ['town']
 
-    id = models.AutoField(primary_key=True, db_column="LocationId")
-    region = models.ForeignKey('Region', db_column="RegionId")
-    town = models.CharField(max_length=128, db_column="Town")
-    address = models.CharField(max_length=512, db_column="Address")
-    latitude = models.CharField(blank=True, max_length=16, db_column="Latitude")
-    longitude = models.CharField(blank=True, max_length=16, db_column="Longitude")
-    latlng_hash = models.CharField(max_length=32, db_column="LatLngHash", verbose_name="GPS hash")
-    notes = models.CharField(max_length=255, db_column="LocationNotes")
-    date_added = models.DateTimeField(auto_now_add=True, db_column="DateAdded")
-    date_updated = models.DateTimeField(auto_now=True, auto_now_add=True, db_column="DateUpdated")
-
     def __unicode__(self):
-        return "%s, %s, %s" % (self.region.name, self.town, self.address)
+        return "{0}, {1}, {2}".format(self.region.name, self.town, self.address)
 
     def has_latlng_hash(self):
         return self.latlng_hash != ''
@@ -29,20 +63,25 @@ class Location(models.Model):
 
     def get_base_stations(self, **kwargs):
         if 'standard' in kwargs and 'band' in kwargs:
-            return BaseStation.objects.distinct().filter(location=self, cell__standard__in=kwargs['standard'], cell__band__in=kwargs['band'])
+            return BaseStation.objects.distinct().filter(
+                location=self,
+                cell__standard__in=kwargs.get('standard'),
+                cell__band__in=kwargs.get('band')
+            )
         elif 'standard' in kwargs:
-            return BaseStation.objects.distinct().filter(location=self, cell__standard__in=kwargs['standard'])
+            return BaseStation.objects.distinct().filter(
+                location=self,
+                cell__standard__in=kwargs.get('standard')
+            )
         elif 'band' in kwargs:
-            return BaseStation.objects.distinct().filter(location=self, cell__band__in=kwargs['band'])
-        else:
-            return BaseStation.objects.filter(location=self)
+            return BaseStation.objects.distinct().filter(
+                location=self,
+                cell__band__in=kwargs.get('band')
+            )
+        return BaseStation.objects.filter(location=self)
 
 
 class BaseStation(models.Model):
-
-    class Meta:
-        db_table = 'Bts__BaseStations'
-
     ON_AIR, OFFLINE, UNDER_CONSTRUCTION, PLANNED, DISMANTLED = ('OnAir', 'Offline', 'UnderConstruction', 'Planned', 'Dismantled')
     PUBLISHED, APPROVED, QUEUED, REJECTED = ('Published', 'Approved', 'Queued', 'Rejected')
 
@@ -61,25 +100,86 @@ class BaseStation(models.Model):
         (REJECTED, REJECTED)
     )
 
-    id = models.AutoField(primary_key=True, db_column="BaseStationId")
-    network = models.ForeignKey('Network', db_column="NetworkCode")
-    location = models.ForeignKey('Location', db_column="LocationId")
-    location_details = models.CharField(max_length=255, db_column="LocationDetails")
-    station_id = models.CharField(max_length=16, blank=True, db_column="StationId", verbose_name="UKE StationId")
-    rnc = models.PositiveSmallIntegerField(db_column="Rnc", verbose_name="RNC")
-    is_common_bcch = models.BooleanField(db_column="IsCommonBcch")
-    is_gsm = models.BooleanField(db_column="IsGsm")
-    is_umts = models.BooleanField(db_column="IsUmts")
-    is_cdma = models.BooleanField(db_column="IsCdma")
-    is_lte = models.BooleanField(db_column="IsLte")
-    notes = models.CharField(max_length=255, blank=True, db_column="BaseStationNotes")
-    station_status = models.CharField(max_length=32, db_column="StationStatus", choices=STATION_STATUS_CHOICES)
-    edit_status = models.CharField(max_length=32, db_column="EditStatus", choices=EDIT_STATUS_CHOICES)
-    date_added = models.DateTimeField(auto_now_add=True, db_column="DateAdded")
-    date_updated = models.DateTimeField(auto_now=True, auto_now_add=True, db_column="DateUpdated")
+    id = models.AutoField(
+        primary_key=True,
+        db_column="BaseStationId",
+    )
+    network = models.ForeignKey(
+        'Network',
+        db_column="NetworkCode",
+    )
+    location = models.ForeignKey(
+        'Location',
+        db_column="LocationId",
+    )
+    location_details = models.CharField(
+        max_length=255,
+        db_column="LocationDetails",
+    )
+    station_id = models.CharField(
+        max_length=16,
+        blank=True,
+        db_column="StationId",
+        verbose_name="UKE StationId",
+    )
+    rnc = models.PositiveSmallIntegerField(
+        db_column="Rnc",
+        verbose_name="RNC",
+    )
+
+    # Are these 5 fields below *really* necessary??
+    is_common_bcch = models.BooleanField(
+        db_column="IsCommonBcch",
+    )
+    is_gsm = models.BooleanField(
+        db_column="IsGsm",
+    )
+    is_umts = models.BooleanField(
+        db_column="IsUmts",
+    )
+    is_cdma = models.BooleanField(
+        db_column="IsCdma",
+    )
+    is_lte = models.BooleanField(
+        db_column="IsLte",
+    )
+    # ^^ Really necessary? ^^
+
+    notes = models.CharField(
+        max_length=255,
+        blank=True,
+        db_column="BaseStationNotes",
+    )
+    station_status = models.CharField(
+        max_length=32,
+        db_column="StationStatus",
+        choices=STATION_STATUS_CHOICES,
+    )
+    edit_status = models.CharField(
+        max_length=32,
+        db_column="EditStatus",
+        choices=EDIT_STATUS_CHOICES,
+    )
+    date_added = models.DateTimeField(
+        auto_now_add=True,
+        db_column="DateAdded",
+    )
+    date_updated = models.DateTimeField(
+        auto_now=True,
+        auto_now_add=True,
+        db_column="DateUpdated",
+    )
+
+    class Meta:
+        db_table = 'Bts__BaseStations'
 
     def __unicode__(self):
-        return "%s / %s / %s, %s" % (self.network.name, self.location.region.name, self.location.town, self.location.address)
+        return "{0} / {1} / {2}, {3}".format(
+            self.network.name,
+            self.location.region.name,
+            self.location.town,
+            self.location.address
+        )
 
     def region_name(self):
         return self.location.region.name
@@ -100,7 +200,7 @@ class BaseStation(models.Model):
     address_name.admin_order_field = 'location__address'
 
     def location_coords(self):
-        return "%s,%s" % (self.location.latitude, self.location.longitude)
+        return "{coords.latitude},{coords.longitude}".format(coords=self.location)
 
     def get_cells(self):
         return Cell.objects.filter(base_station=self)
@@ -118,22 +218,20 @@ class BaseStation(models.Model):
         for support in self.get_supported_standards_and_bands():
             cells.append({'standard': support['standard'],
                           'band': support['band'],
-                          'cells': self.get_cells().filter(standard=support['standard'], band=support['band'])})
+                          'cells': self.get_cells().filter(standard=support.get('standard'), band=support.get('band'))
+                          })
         return cells
 
     def get_cells_by_standard(self):
         cells = []
         for support in self.get_supported_standards():
             cells.append({'standard': support['standard'],
-                          'cells': self.get_cells().filter(standard=support['standard'])})
+                          'cells': self.get_cells().filter(standard=support.get('standard'))
+                          })
         return cells
 
 
 class Cell(models.Model):
-
-    class Meta:
-        db_table = 'Bts__Cells'
-
     STANDARDS = (
         ('GSM', 'GSM'),
         ('UMTS', 'UMTS'),
@@ -151,23 +249,74 @@ class Cell(models.Model):
         ('2600', '2600')
     )
 
-    id = models.AutoField(primary_key=True, db_column="CellId")
-    base_station = models.ForeignKey('BaseStation', db_column="BaseStationId")
-    standard = models.CharField(max_length=8, db_column="Standard", choices=STANDARDS)
-    band = models.CharField(max_length=8, db_column="Band", choices=BANDS)
-    ua_freq = models.PositiveSmallIntegerField(db_column="UaFreq", verbose_name="UaFreq")
-    lac = models.PositiveSmallIntegerField(db_column="Lac", verbose_name="LAC")
-    cid = models.PositiveSmallIntegerField(db_column="Cid", verbose_name="CID")
-    cid_long = models.PositiveIntegerField(db_column="CidLong", verbose_name="LongCID")
-    azimuth = models.PositiveSmallIntegerField(db_column="Azimuth",  blank=True)
-    is_confirmed = models.BooleanField(db_column="IsConfirmed", verbose_name="Confirmed?")
-    notes = models.CharField(max_length=255, blank=True, db_column="CellNotes")
-    date_added = models.DateTimeField(auto_now_add=True, db_column="DateAdded")
-    date_updated = models.DateTimeField(auto_now=True, auto_now_add=True, db_column="DateUpdated")
-    date_ping = models.DateTimeField(blank=True, db_column="DatePing")
+    id = models.AutoField(
+        primary_key=True,
+        db_column="CellId",
+    )
+    base_station = models.ForeignKey(
+        'BaseStation',
+        db_column="BaseStationId",
+        # related_name='cells'
+    )
+    standard = models.CharField(
+        max_length=8,
+        db_column="Standard",
+        choices=STANDARDS,
+    )
+    band = models.CharField(
+        max_length=8,
+        db_column="Band",
+        choices=BANDS,
+    )
+    ua_freq = models.PositiveSmallIntegerField(
+        db_column="UaFreq",
+        verbose_name="UaFreq",
+    )
+    lac = models.PositiveSmallIntegerField(
+        db_column="Lac",
+        verbose_name="LAC",
+    )
+    cid = models.PositiveSmallIntegerField(
+        db_column="Cid",
+        verbose_name="CID",
+    )
+    cid_long = models.PositiveIntegerField(
+        db_column="CidLong",
+        verbose_name="LongCID",
+    )
+    azimuth = models.PositiveSmallIntegerField(
+        db_column="Azimuth",
+        blank=True,
+        # null=True
+    )
+    is_confirmed = models.BooleanField(
+        db_column="IsConfirmed",
+        verbose_name="Confirmed?",
+    )
+    notes = models.CharField(
+        max_length=255,
+        blank=True,
+        db_column="CellNotes",
+    )
+    date_added = models.DateTimeField(
+        auto_now_add=True,
+        db_column="DateAdded",
+    )
+    date_updated = models.DateTimeField(
+        auto_now=True,
+        auto_now_add=True,
+        db_column="DateUpdated",
+    )
+    date_ping = models.DateTimeField(
+        blank=True,
+        db_column="DatePing",
+    )
+
+    class Meta:
+        db_table = 'Bts__Cells'
 
     def __unicode__(self):
-        return "%s%s / %s / %s" % (self.standard, self.band, self.lac, self.cid)
+        return "{cell.standard}{cell.band} / {cell.lac} / {cell.cid}".format(cell=self)
 
     def network_name(self):
         return self.base_station.network
@@ -177,28 +326,48 @@ class Cell(models.Model):
 
 
 class Network(models.Model):
+    code = models.CharField(
+        primary_key=True,
+        max_length=6,
+        db_column="NetworkCode",
+    )
+    name = models.CharField(
+        max_length=128,
+        db_column="NetworkName",
+    )
+    operator = models.CharField(
+        max_length=128,
+        db_column="OperatorName",
+    )
+    country_code = models.CharField(
+        max_length=2,
+        db_column="CountryCodeIso",
+    )
 
     class Meta:
         db_table = 'Bts__Networks'
         ordering = ['code']
 
-    code = models.CharField(primary_key=True, max_length=6, db_column="NetworkCode")
-    name = models.CharField(max_length=128, db_column="NetworkName")
-    operator = models.CharField(max_length=128, db_column="OperatorName")
-    country_code = models.CharField(max_length=2, db_column="CountryCodeIso")
-
     def __unicode__(self):
-        return "%s (%s)" % (self.name, self.code)
+        return '{network.name} ({network.code})'.format(network=self)
 
 
 class Region(models.Model):
+    id = models.AutoField(
+        primary_key=True,
+        db_column="RegionId",
+    )
+    name = models.CharField(
+        max_length=64,
+        db_column="RegionName",
+    )
+    country_code = models.CharField(
+        max_length=2,
+        db_column="CountryCodeIso",
+    )
 
     class Meta:
         db_table = 'Bts__Regions'
-
-    id = models.AutoField(primary_key=True, db_column="RegionId")
-    name = models.CharField(max_length=64, db_column="RegionName")
-    country_code = models.CharField(max_length=2, db_column="CountryCodeIso")
 
     def __unicode__(self):
         return self.name

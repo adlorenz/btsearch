@@ -37,11 +37,15 @@ class BtsListingView(generic.ListView):
         if filters.get('region'):
             qs = qs.filter(location__region=filters.get('region'))
 
-        if filters.getlist('standard'):
-            qs = qs.filter(cell__standard__in=filters.getlist('standard'))
+        if filters.getlist('standard') and filters.getlist('band'):
+            qs = qs.filter(cell__standard__in=filters.getlist('standard'),
+                           cell__band__in=filters.getlist('band')).distinct()
 
-        if filters.getlist('band'):
-            qs = qs.filter(cell__band__in=filters.getlist('band'))
+        elif filters.getlist('standard'):
+            qs = qs.filter(cell__standard__in=filters.getlist('standard')).distinct()
+
+        elif filters.getlist('band'):
+            qs = qs.filter(cell__band__in=filters.getlist('band')).distinct()
 
         qs.order_by('-date_updated')
 
