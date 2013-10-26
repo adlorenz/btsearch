@@ -1,5 +1,5 @@
 /**
- * btsearch.core.js
+ * btsearch.map.js
  *
  * @author Dawid Lorenz, dawid@lorenz.co
  */

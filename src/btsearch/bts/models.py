@@ -107,7 +107,7 @@ class BaseStation(models.Model):
 
     def get_supported_standards_and_bands(self):
         cells = self.get_cells()
-        return cells.distinct().values('standard', 'band').exclude(standard='?').exclude(band='?')
+        return cells.distinct().values('standard', 'band').exclude(standard='?').exclude(band='?').order_by('standard')
 
     def get_supported_standards(self):
         cells = self.get_cells()
@@ -188,7 +188,7 @@ class Network(models.Model):
     country_code = models.CharField(max_length=2, db_column="CountryCodeIso")
 
     def __unicode__(self):
-        return "%s - %s" % (self.code, self.name)
+        return "%s (%s)" % (self.name, self.code)
 
 
 class Region(models.Model):

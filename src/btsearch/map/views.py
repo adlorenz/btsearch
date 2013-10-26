@@ -21,22 +21,7 @@ class ControlPanelView(TemplateView):
 class StatusPanelView(TemplateView):
     template_name = 'map/status_panel.html'
 
-class BaseStationExtendedInfoView(DetailView):
-    model = BaseStation
-    context_object_name = 'base_station'
-    template_name = 'map/base_station_extended_info.html'
 
-class UkeLocationExtendedInfoView(DetailView):
-    model = UkeLocation
-    context_object_name = 'uke_location'
-    template_name = 'map/uke_location_extended_info.html'
-
-    def get_context_data(self, **kwargs):
-        network = Network.objects.get(code=self.kwargs['network_code'])
-        context = super(UkeLocationExtendedInfoView, self).get_context_data(**kwargs)
-        context['permissions'] = UkePermission.objects.filter(uke_location=self.object, network=network)
-        context['network'] = network
-        return context
 
 class LocationView():
     template_name = 'map/location_info.html'
