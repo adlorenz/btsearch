@@ -53,7 +53,7 @@ class Location(models.Model):
         ordering = ['town']
 
     def __unicode__(self):
-        return "{0}, {1}, {2}".format(self.region.name, self.town, self.address)
+        return u"{0}, {1}, {2}".format(self.region.name, self.town, self.address)
 
     def has_latlng_hash(self):
         return self.latlng_hash != ''
@@ -107,10 +107,12 @@ class BaseStation(models.Model):
     network = models.ForeignKey(
         'Network',
         db_column="NetworkCode",
+        related_name='base_stations',
     )
     location = models.ForeignKey(
         'Location',
         db_column="LocationId",
+        related_name='base_stations',
     )
     location_details = models.CharField(
         max_length=255,
@@ -174,7 +176,7 @@ class BaseStation(models.Model):
         db_table = 'Bts__BaseStations'
 
     def __unicode__(self):
-        return "{0} / {1} / {2}, {3}".format(
+        return u"{0} / {1} / {2}, {3}".format(
             self.network.name,
             self.location.region.name,
             self.location.town,
@@ -316,7 +318,7 @@ class Cell(models.Model):
         db_table = 'Bts__Cells'
 
     def __unicode__(self):
-        return "{cell.standard}{cell.band} / {cell.lac} / {cell.cid}".format(cell=self)
+        return u"{cell.standard}{cell.band} / {cell.lac} / {cell.cid}".format(cell=self)
 
     def network_name(self):
         return self.base_station.network
@@ -349,7 +351,7 @@ class Network(models.Model):
         ordering = ['code']
 
     def __unicode__(self):
-        return '{network.name} ({network.code})'.format(network=self)
+        return u'{network.name} ({network.code})'.format(network=self)
 
 
 class Region(models.Model):
