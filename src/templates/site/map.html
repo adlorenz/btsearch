@@ -1,4 +1,6 @@
 {% extends 'site/layout.html' %}
+{% load staticfiles %}
+
 {% block main-content-container %}
 	<div id="map-container">
 		{% block main-content %}{% endblock %}
@@ -10,7 +12,7 @@
 
     <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=true&amp;libraries=places&amp;language=pl"></script>
 
-    <script type="text/javascript" src="{{ STATIC_URL }}js/btsearch.map.js"></script>
+    <script type="text/javascript" src="{% static "js/btsearch.map.js" %}"></script>
 
     <script type="text/javascript">
         $(document).ready(function(){

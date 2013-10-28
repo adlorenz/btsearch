@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,9 +6,9 @@
     <meta http-equiv="Content-Language" content="pl-PL" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <title>{% block page-title %}{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}libs/fancybox/jquery.fancybox.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}libs/bootstrap/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/btsearch.css" />
+    <link rel="stylesheet" type="text/css" href="{% static "libs/fancybox/jquery.fancybox.css" %}" media="screen" />
+    <link rel="stylesheet" type="text/css" href="{% static "libs/bootstrap/css/bootstrap.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/btsearch.css" %}" />
 </head>
 <body>
 
@@ -30,7 +31,7 @@
 
     <div id="header-container">
         <div class="lt">
-            <img src="{{ STATIC_URL }}img/btsearch-logo-main.png" border="0" width="157" height="55" alt="Logo" />
+            <img src="{% static "img/btsearch-logo-main.png" %}" border="0" width="157" height="55" alt="Logo" />
             <form id="search-form" action="{% block search-form-action %}{% endblock %}" method="get">
                 <input type="text" id="search-box" value="{% block current-search-query %}{% endblock %}" name="query" />
                 <input type="submit" id="search-submit" value="Szukaj" />
@@ -51,8 +52,8 @@
     {% endcomment %}
 
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}libs/fancybox/jquery.fancybox.pack.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}libs/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="{% static "libs/fancybox/jquery.fancybox.pack.js" %}"></script>
+    <script type="text/javascript" src="{% static "libs/bootstrap/js/bootstrap.js" %}"></script>
 
     {% comment %}
         Additional, context-specific JavaScript scripts
