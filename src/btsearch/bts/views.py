@@ -64,7 +64,7 @@ class UkeLocationDetailView(generic.DetailView):
     """
     model = uke_models.UkeLocation
     context_object_name = 'uke_location'
-    template_name = 'map/details_uke.html'
+    template_name = 'bts/details_uke.html'
 
     def get_context_data(self, **kwargs):
         try:
