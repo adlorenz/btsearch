@@ -44,21 +44,14 @@
     </div>
 
     {% block main-content-container %}{% endblock %}
-
     {% block extra-content %}{% endblock %}
 
-    {% comment %}
-        Core JavaScript libs
-    {% endcomment %}
-
+    {# Core JavaScript libs #}
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript" src="{% static "libs/fancybox/jquery.fancybox.pack.js" %}"></script>
     <script type="text/javascript" src="{% static "libs/bootstrap/js/bootstrap.js" %}"></script>
 
-    {% comment %}
-        Additional, context-specific JavaScript scripts
-    {% endcomment %}
-
+    {# Additional, context-specific JavaScript scripts #}
     {% block extrascripts %}{% endblock extrascripts %}
 
 </body>
