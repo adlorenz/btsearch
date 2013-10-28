@@ -55,7 +55,7 @@ class BtsListingView(generic.ListView):
 class BaseStationDetailView(generic.DetailView):
     model = models.BaseStation
     context_object_name = 'base_station'
-    template_name = 'bts/bts_details.html'
+    template_name = 'bts/details_bts.html'
 
 
 class UkeLocationDetailView(generic.DetailView):
@@ -64,7 +64,7 @@ class UkeLocationDetailView(generic.DetailView):
     """
     model = uke_models.UkeLocation
     context_object_name = 'uke_location'
-    template_name = 'map/uke_details.html'
+    template_name = 'map/details_uke.html'
 
     def get_context_data(self, **kwargs):
         try:
