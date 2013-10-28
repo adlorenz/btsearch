@@ -264,6 +264,7 @@ var requests = {
 		});
 	},
 
+	/* Instead of loading location info in panel, open it in fancybox
 	getBaseStationInfo: function(baseStationId) {
 		$.ajax({
 			url: "/get_base_station_info/" + baseStationId + "/",
@@ -283,10 +284,11 @@ var requests = {
 			}
 		});
 	},
+	*/
 
 	setControlPanelContent: function(panel) {
 		$.ajax({
-			url: "/get_control_panel/",
+			url: "/map/ui/control_panel/",
 			success: function(data) {
 				panel.innerHTML = data;
 
@@ -308,7 +310,7 @@ var requests = {
 
 	setStatusPanelContent: function(panel) {
 		$.ajax({
-			url: "/get_status_panel/",
+			url: "/map/ui/status_panel/",
 			success: function(data) {
 				panel.innerHTML = data;
 			}

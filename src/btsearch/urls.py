@@ -25,9 +25,7 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     # url(r'^api/', include(api_v1.urls)),
     url(r'^api/', include(api_map.urls)),
-    url(r'^bts/', include('btsearch.bts.urls')),
-    url(r'^get_control_panel/$', ControlPanelView.as_view(), name='control-panel-view'),
-    url(r'^get_status_panel/$', StatusPanelView.as_view(), name='status-panel-view'),
-
-    url(r'', IndexView.as_view(), name='map-view'),
+    url(r'^bts/', include('btsearch.bts.urls', namespace='bts')),
+    url(r'^map/', include('btsearch.map.urls', namespace='map')),
+    url(r'', IndexView.as_view(), name='index-view'),
 )
