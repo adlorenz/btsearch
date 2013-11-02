@@ -1,40 +1,46 @@
-from settings import STATIC_URL
+from django.conf import settings
+
 from tastypie import fields
 from tastypie.authentication import Authentication
-from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import InvalidFilterError
 from tastypie.resources import ModelResource
-from django.db.models import Q
-from btsearch.bts.models import Location
-from btsearch.uke.models import UkeLocation
-from btsearch.map.views import LocationView, UkeLocationView
-from btsearch.map.utils import MapIconFactory
+
+from ..bts import models as bts_models
+from ..uke import models as uke_models
+from . import views
+from . import utils
+
+
+"""
+This is a tastypie-driven API for the map UI. It's fairly straightforward,
+implements two resources which provide data for the map. It has been written
+during a short but intense affection to django-tastypie around 2012.
+It probably could be simplified/refactored/rewritten but does the job
+sufficiently for time being.
+"""
 
 
 class LocalhostAuthentication(Authentication):
     def is_authenticated(self, request, **kwargs):
-        return True
-
         # TODO: Only ajax requests originated from the same host should
-        # be allowed to access this API
-
-        #if request.META.get('REMOTE_ADDR') != '127.0.0.1':
-        #    return request.is_ajax()
+        # be allowed to access this API (by checking request object?)
+        return True
 
 
 class LocationResource(ModelResource):
 
     raw_filters = {}
-    filter_prefixes = {'network': 'basestation__',
-                       'standard': 'basestation__cell__',
-                       'band': 'basestation__cell__'}
-
+    filter_prefixes = {
+        'network': 'basestation__',
+        'standard': 'basestation__cell__',
+        'band': 'basestation__cell__'
+    }
     icon = fields.CharField()
     summary = fields.CharField()
 
     class Meta:
         authentication = LocalhostAuthentication()
-        queryset = Location.objects.distinct()
+        queryset = bts_models.Location.objects.distinct()
         resource_name = 'locations'
         fields = ['id', 'latitude', 'longitude', 'name']
         include_resource_uri = False
@@ -44,7 +50,7 @@ class LocationResource(ModelResource):
         """
         In single location request, append rendered html for infoWindow bubble
         """
-        data.data['info'] = LocationView(data.obj, self.raw_filters).render_location_info()
+        data.data['info'] = views.LocationView(data.obj, self.raw_filters).render_location_info()
         return data
 
     def build_filters(self, filters=None):
@@ -81,18 +87,20 @@ class LocationResource(ModelResource):
         return processed_filters
 
     def get_bounds_filter(self, bounds):
-        return {'latitude__gte': bounds[0],
-                'longitude__gte': bounds[1],
-                'latitude__lte': bounds[2],
-                'longitude__lte': bounds[3]}
+        return {
+            'latitude__gte': bounds[0],
+            'longitude__gte': bounds[1],
+            'latitude__lte': bounds[2],
+            'longitude__lte': bounds[3]
+        }
 
     def get_network_filter(self, network):
-        network_field = self.filter_prefixes['network'] + 'network'
+        network_field = '{0}network'.format(self.filter_prefixes['network'])
         return {network_field: network}
 
     def get_standard_band_filter(self, standards, bands):
-        standard_field = self.filter_prefixes['standard'] + 'standard__in'
-        band_field = self.filter_prefixes['band'] + 'band__in'
+        standard_field = '{0}standard__in'.format(self.filter_prefixes['standard'])
+        band_field = '{0}band__in'.format(self.filter_prefixes['band'])
 
         if len(standards) > 0 and len(bands) > 0:
             return {standard_field: standards, band_field: bands}
@@ -106,9 +114,9 @@ class LocationResource(ModelResource):
         """
         Create marker icon path for current location
         """
-        map_icon = MapIconFactory().get_icon_by_location(bundle.obj, self.raw_filters)
+        map_icon = utils.MapIconFactory().get_icon_by_location(bundle.obj, self.raw_filters)
         if map_icon is not None:
-            return STATIC_URL + 'map_icons/' + map_icon
+            return "{0}map_icons/{1}".format(settings.STATIC_URL, map_icon)
         return None
 
     def dehydrate_summary(self, bundle):
@@ -117,16 +125,17 @@ class LocationResource(ModelResource):
 
 class UkeLocationResource(LocationResource):
 
-    filter_prefixes = {'network': 'ukepermission__',
-                       'standard': 'ukepermission__',
-                       'band': 'ukepermission__'}
-
+    filter_prefixes = {
+        'network': 'ukepermission__',
+        'standard': 'ukepermission__',
+        'band': 'ukepermission__'
+    }
     icon = fields.CharField()
     summary = fields.CharField()
 
     class Meta:
         authentication = LocalhostAuthentication()
-        queryset = UkeLocation.objects.distinct()
+        queryset = uke_models.UkeLocation.objects.distinct()
         resource_name = 'ukelocations'
         fields = ['id', 'latitude', 'longitude']
         include_resource_uri = False
@@ -136,5 +145,5 @@ class UkeLocationResource(LocationResource):
         """
         In single location request, append rendered html for infoWindow bubble
         """
-        data.data['info'] = UkeLocationView(data.obj, self.raw_filters).render_location_info()
+        data.data['info'] = views.UkeLocationView(data.obj, self.raw_filters).render_location_info()
         return data
