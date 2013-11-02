@@ -3,6 +3,9 @@ from . import views
 
 urlpatterns = patterns(
     '',
+    url(r'^bts_locations/',
+        views.BtsLocationsView.as_view(),
+        name='bts-locations'),
     url(r'^ui/control_panel/$',
         views.ControlPanelView.as_view(),
         name='control-panel-view'),
