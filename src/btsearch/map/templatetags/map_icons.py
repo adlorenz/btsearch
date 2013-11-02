@@ -6,8 +6,9 @@ register = template.Library()
 
 @register.filter
 def get_icon(object):
-    icon_factory = MapIconFactory()
+    map_icon_factory = MapIconFactory()
     try:
-        return icon_factory.get_icon_by_network(object.network)
+        icon = map_icon_factory.get_icon_by_network(object.network)
+        return map_icon_factory.get_icon_path(icon)
     except:
         return ''

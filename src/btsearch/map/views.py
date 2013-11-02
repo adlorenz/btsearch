@@ -1,24 +1,37 @@
+# -*- coding: utf-8 -*-
+from django.conf import settings
 from django.http import Http404
 from django.views import generic
 
+from braces.views import JSONResponseMixin
+
 from ..bts import models as bts_models
 from ..uke import models as uke_models
+from . import utils
 
 
 from django.views.generic import DetailView, TemplateView
 from django.template import Context
 from django.template.loader import get_template
 from settings import STATIC_URL
-from btsearch.bts.models import BaseStation, Cell, Network
-from btsearch.uke.models import UkeLocation, UkePermission
 
 
-class BtsLocationsView(generic.ListView):
+class IndexView(generic.TemplateView):
+    template_name = 'map/index.html'
+
+
+class LocationsView(JSONResponseMixin, generic.ListView):
     model = bts_models.Location
     queryset = bts_models.Location.objects.distinct()
+    paginate_by = 500
+
+    def get(self, request, *args, **kwargs):
+        return self.render_json_response({
+            'objects': self._get_locations_list()
+        })
 
     def get_queryset(self):
-        qs = super(BtsLocationsView, self).get_queryset()
+        qs = super(LocationsView, self).get_queryset()
         qs_filters = self._get_queryset_filters()
         return qs.filter(**qs_filters)
 
@@ -29,7 +42,7 @@ class BtsLocationsView(generic.ListView):
         filters = self.request.GET.copy()
         if filters is None or 'bounds' not in filters:
             # Reject requests missing 'bounds' filter
-            raise Http404()
+            raise Http404()  # TODO: This smells. Refactor it.
 
         # self.raw_filters = dict(filters)
         processed_filters = {}
@@ -73,25 +86,92 @@ class BtsLocationsView(generic.ListView):
             return {band_field: bands}
         return None
 
+    def _get_locations_list(self):
+        raw_filters = dict(self.request.GET.copy())
+        locations_list = []
+        for location in self.get_queryset():
+            locations_list.append({
+                'id': location.id,
+                'latitude': location.latitude,
+                'longitude': location.longitude,
+                'icon': self._get_location_icon_path(location, raw_filters),
+            })
+        return locations_list
 
-class IndexView(TemplateView):
-    template_name = 'map/index.html'
+    def _get_location_icon_path(self, location, raw_filters):
+        map_icon_factory = utils.MapIconFactory()
+        map_icon = map_icon_factory.get_icon_by_location(location, raw_filters)
+        return map_icon_factory.get_icon_path(map_icon)
 
 
-class ControlPanelView(TemplateView):
+class LocationDetailView(JSONResponseMixin, generic.DetailView):
+    model = bts_models.Location
+    template_name = 'map/location_info.html'
+    context_object_name = 'location'
+
+    def get_context_data(self, **kwargs):
+        ctx = super(LocationDetailView, self).get_context_data(**kwargs)
+        ctx['items'] = self._get_location_objects(self.get_object())
+        return ctx
+
+    def render_to_response(self, context, **response_kwargs):
+        response = super(LocationDetailView, self).render_to_response(
+            context, **response_kwargs)
+
+        location = self.get_object()
+        map_icon = utils.MapIconFactory().get_icon_by_location(location)
+        data = {
+            'id': location.id,
+            'latitude': location.latitude,
+            'longitude': location.longitude,
+            'summary': location.__unicode__(),
+            'info': response.render().rendered_content,
+            'icon': utils.MapIconFactory().get_icon_path(map_icon),
+        }
+        return self.render_json_response(data)
+
+    def _get_location_objects(self, location):
+        """
+        Returns objects associated to the location,
+        ie. base stations or UKE permissions
+        """
+        filters = self._get_queryset_filters()
+        return location.get_base_stations(**filters)
+
+    def _get_queryset_filters(self):
+        raw_filters = dict(self.request.GET.copy())
+        queryset_filters = {}
+        for key in ['standard', 'band']:
+            if key in raw_filters:
+                queryset_filters.update({
+                    key: raw_filters[key][0].split(',')
+                })
+        return queryset_filters
+
+
+# #####################
+# MAP UI ELEMENTS VIEWS
+# #####################
+
+
+class ControlPanelView(generic.TemplateView):
     template_name = 'map/control_panel.html'
 
     def get_context_data(self, **kwargs):
         context = super(ControlPanelView, self).get_context_data(**kwargs)
-        context['networks'] = Network.objects.all()
-        context['standards'] = Cell.STANDARDS
-        context['bands'] = Cell.BANDS
+        context['networks'] = bts_models.Network.objects.all()
+        context['standards'] = bts_models.Cell.STANDARDS
+        context['bands'] = bts_models.Cell.BANDS
         return context
 
 
-class StatusPanelView(TemplateView):
+class StatusPanelView(generic.TemplateView):
     template_name = 'map/status_panel.html'
 
+
+# ################
+# DEPRECATED VIEWS
+# ################
 
 
 class LocationView():

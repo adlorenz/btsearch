@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from btsearch.bts.models import Location
 from btsearch.uke.models import UkeLocation
 
@@ -6,18 +8,23 @@ class MapIconFactory():
 
     ICON_EXTENSION = '.png'
 
+    def get_icon_path(self, icon):
+        if icon:
+            return "{0}map_icons/{1}".format(settings.STATIC_URL, icon)
+        return None
+
     def get_icon_by_network(self, network):
         icon_code = self._get_icon_code_from_network_code(network.code)
         return icon_code + self.ICON_EXTENSION
 
-    def get_icon_by_location(self, location, raw_filters):
+    def get_icon_by_location(self, location, raw_filters=None):
         """
         Determine icon to render for given location,
         ie. which network operators, hence colours to use.
         """
 
         # When network filter is present, let's make it quick and clean
-        if 'network' in raw_filters:
+        if raw_filters and 'network' in raw_filters:
             icon_code = self._get_icon_code_from_network_code(raw_filters['network'][0])
             return icon_code + self.ICON_EXTENSION
 
@@ -58,11 +65,14 @@ class MapIconFactory():
         else:
             return None
 
-    def get_processed_filters(self, raw_filters):
+    def get_processed_filters(self, raw_filters=None):
         """
         Process raw location filters
         """
         filters = {}
+        if not raw_filters:
+            return filters
+
         if 'standard' in raw_filters:
             filters['standard'] = raw_filters['standard'][0].split(',')
         if 'band' in raw_filters:

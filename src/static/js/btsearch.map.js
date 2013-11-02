@@ -239,7 +239,7 @@ var events = {
 var requests = {
 	getLocations: function(mapBounds, filters) {
 		$.ajax({
-			url: "/api/map/" + filters.dataSource + "/?bounds=" + mapBounds.toUrlValue() + filters.toUrlValue(),
+			url: "/map/" + filters.dataSource + "/?bounds=" + mapBounds.toUrlValue() + filters.toUrlValue(),
 			dataType: "json",
 			headers: {
 				Accept: "application/json"
@@ -252,7 +252,7 @@ var requests = {
 
 	getLocationInfo: function(marker, locationId, filters) {
 		$.ajax({
-			url: "/api/map/" + filters.dataSource + "/" + locationId + "/",
+			url: "/map/" + filters.dataSource + "/" + locationId + "/",
 			dataType: "json",
 			headers: {
 				Accept: "application/json"
