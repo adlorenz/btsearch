@@ -33,7 +33,8 @@ class LocationsView(JSONResponseMixin, generic.ListView):
         filters = self.request.GET.copy()
         if filters is None or 'bounds' not in filters:
             # Reject requests missing 'bounds' filter
-            raise Http404()  # TODO: This smells. Refactor it.
+            # TODO: This smells. Refactor it.
+            raise Http404()
 
         # self.raw_filters = dict(filters)
         processed_filters = {}
@@ -90,6 +91,7 @@ class LocationsView(JSONResponseMixin, generic.ListView):
         return locations_list
 
     def _get_location_icon_path(self, location, raw_filters):
+        # TODO: I don't like this approach. Refactor it.
         map_icon_factory = utils.MapIconFactory()
         map_icon = map_icon_factory.get_icon_by_location(location, raw_filters)
         return map_icon_factory.get_icon_path(map_icon)
