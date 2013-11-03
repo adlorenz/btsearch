@@ -23,7 +23,6 @@ class LocationsView(JSONResponseMixin, generic.ListView):
         })
 
     def get_queryset(self):
-        # qs = super(LocationsView, self).get_queryset()
         qs_filters = self._get_queryset_filters()
         return self.queryset.filter(**qs_filters)
 
@@ -144,11 +143,6 @@ class LocationDetailView(JSONResponseMixin, generic.DetailView):
 class UkeLocationsView(LocationsView):
     model = uke_models.UkeLocation
     queryset = uke_models.UkeLocation.objects.distinct()
-
-    def get_queryset(self):
-        # qs = super(LocationsView, self).get_queryset()
-        qs_filters = self._get_queryset_filters()
-        return self.queryset.filter(**qs_filters)
 
 
 class UkeLocationDetailView(LocationDetailView):
