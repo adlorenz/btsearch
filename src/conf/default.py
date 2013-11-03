@@ -114,11 +114,10 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'tastypie',
+    'south',
     'btsearch.bts',
     'btsearch.uke',
     'btsearch.map',
-    'btsearch'
 )
 
 # A sample logging configuration. The only tangible logging
