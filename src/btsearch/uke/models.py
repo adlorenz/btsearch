@@ -39,7 +39,7 @@ class UkePermission(models.Model):
         db_column='CaseNumber'
     )
     case_type = models.CharField(
-        max_length=1,
+        max_length=16,
         db_column='CaseType'
     )
     expiry_date = models.CharField(
@@ -148,7 +148,7 @@ class UkeRawRecord(models.Model):
         db_column='CaseNumber'
     )
     case_type = models.CharField(
-        max_length=1,
+        max_length=16,
         db_column='CaseType'
     )
     expiry_date = models.CharField(
