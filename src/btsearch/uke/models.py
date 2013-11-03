@@ -1,96 +1,25 @@
 from django.db import models
 
 
-class UkePermission(models.Model):
-    id = models.AutoField(
-        primary_key=True,
-        db_column="UkePermissionId"
-    )
-    uke_location = models.ForeignKey(
-        'UkeLocation',
-        db_column='UkeLocationId'
-    )
-    network = models.ForeignKey(
-        'bts.Network',
-        db_column="NetworkCode"
-    )
-    station_id = models.CharField(
-        max_length=16,
-        db_column='StationId'
-    )
-    standard = models.CharField(
-        max_length=16,
-        db_column="Standard"
-    )
-    band = models.CharField(
-        max_length=16,
-        db_column="Band"
-    )
-    town = models.CharField(
-        max_length=255,
-        db_column='Location'
-    )
-    address = models.CharField(
-        max_length=255,
-        db_column='LocationDetails'
-    )
-    case_number = models.CharField(
-        max_length=64,
-        db_column='CaseNumber'
-    )
-    case_type = models.CharField(
-        max_length=16,
-        db_column='CaseType'
-    )
-    expiry_date = models.CharField(
-        max_length=10,
-        db_column='ExpiryDate'
-    )
-    date_added = models.DateTimeField(
-        auto_now_add=True,
-        db_column="DateAdded"
-    )
-    date_updated = models.DateTimeField(
-        auto_now=True,
-        auto_now_add=True,
-        db_column="DateUpdated"
-    )
-
-    class Meta:
-        db_table = 'Uke__Permissions'
-
-    def __unicode__(self):
-        return '{0}, {1}'.format(self.network.code, self.case_number)
-
-
 class UkeLocation(models.Model):
-    id = models.AutoField(
-        primary_key=True,
-        db_column="UkeLocationId"
-    )
     latitude = models.CharField(
         max_length=16,
-        db_column="Latitude"
     )
     longitude = models.CharField(
         max_length=16,
-        db_column="Longitude"
     )
     latlng_hash = models.CharField(
         max_length=32,
         unique=True,
-        db_column="LatLngHash",
         verbose_name="GPS hash"
     )
     location = models.ForeignKey(
         'bts.Location',
         blank=True,
         null=True,
-        db_column='LocationId'
     )
     date_added = models.DateTimeField(
         auto_now_add=True,
-        db_column="DateAdded"
     )
 
     class Meta:
@@ -137,43 +66,80 @@ class UkeLocation(models.Model):
         return permissions.distinct().values('standard').exclude(standard='?')
 
 
+class UkePermission(models.Model):
+    uke_location = models.ForeignKey(
+        'UkeLocation',
+    )
+    network = models.ForeignKey(
+        'bts.Network',
+    )
+    station_id = models.CharField(
+        max_length=16,
+    )
+    standard = models.CharField(
+        max_length=16,
+    )
+    band = models.CharField(
+        max_length=16,
+    )
+    town = models.CharField(
+        max_length=255,
+    )
+    address = models.CharField(
+        max_length=255,
+    )
+    case_number = models.CharField(
+        max_length=64,
+    )
+    case_type = models.CharField(
+        max_length=16,
+    )
+    expiry_date = models.CharField(
+        max_length=10,
+    )
+    date_added = models.DateTimeField(
+        auto_now_add=True,
+    )
+    date_updated = models.DateTimeField(
+        auto_now=True,
+        auto_now_add=True,
+    )
+
+    class Meta:
+        db_table = 'Uke__Permissions'
+
+    def __unicode__(self):
+        return '{0}, {1}'.format(self.network.code, self.case_number)
+
+
 class UkeRawRecord(models.Model):
     operator_name = models.CharField(
         max_length=64,
-        db_column='Operator'
     )
     case_number = models.CharField(
         primary_key=True,
         max_length=64,
-        db_column='CaseNumber'
     )
     case_type = models.CharField(
         max_length=16,
-        db_column='CaseType'
     )
     expiry_date = models.CharField(
         max_length=10,
-        db_column='ExpiryDate'
     )
     longitude = models.CharField(
         max_length=16,
-        db_column='Longitude'
     )
     latitude = models.CharField(
         max_length=16,
-        db_column='Latitude'
     )
     town = models.CharField(
         max_length=255,
-        db_column='Location'
     )
     address = models.CharField(
         max_length=255,
-        db_column='LocationDetails'
     )
     station_id = models.CharField(
         max_length=8,
-        db_column='StationId'
     )
 
     class Meta:
