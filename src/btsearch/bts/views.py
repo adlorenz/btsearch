@@ -52,13 +52,13 @@ class BtsListingView(generic.ListView):
         return qs
 
 
-class BaseStationDetailView(generic.DetailView):
+class BtsDetailView(generic.DetailView):
     model = models.BaseStation
     context_object_name = 'base_station'
     template_name = 'bts/details_bts.html'
 
 
-class UkeLocationDetailView(generic.DetailView):
+class UkeDetailView(generic.DetailView):
     """
     Does UKE-specific view belong here?
     """
@@ -69,8 +69,8 @@ class UkeLocationDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         try:
             network = models.Network.objects.get(code=self.kwargs.get('network_code'))
-            ctx = super(UkeLocationDetailView, self).get_context_data(**kwargs)
-            ctx['permissions'] = models.UkePermission.objects.filter(
+            ctx = super(UkeDetailView, self).get_context_data(**kwargs)
+            ctx['permissions'] = uke_models.UkePermission.objects.filter(
                 uke_location=self.object,
                 network=network
             )

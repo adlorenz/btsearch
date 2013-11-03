@@ -4,11 +4,11 @@ from . import views
 urlpatterns = patterns(
     '',
     url(r'^bts_details/(?P<pk>\d+)/$',
-        views.BaseStationDetailView.as_view(),
+        views.BtsDetailView.as_view(),
         name='bts-extended-info-view'),
 
     url(r'^uke_details/(?P<pk>\d+),(?P<network_code>\d+)/$',
-        views.UkeLocationDetailView.as_view(),
+        views.UkeDetailView.as_view(),
         name='uke-extended-info-view'),
 
     url(r'',
