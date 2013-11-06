@@ -23,16 +23,19 @@ class Location(models.Model):
         max_length=16,
         blank=True,
         db_column="Latitude",
+        db_index=True,
     )
     longitude = models.CharField(
         max_length=16,
         blank=True,
         db_column="Longitude",
+        db_index=True,
     )
     latlng_hash = models.CharField(
         max_length=32,
         db_column="LatLngHash",
         verbose_name="GPS hash",
+        db_index=True,
     )
     notes = models.CharField(
         max_length=255,
