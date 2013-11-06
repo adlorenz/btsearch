@@ -4,14 +4,17 @@ from django.db import models
 class UkeLocation(models.Model):
     latitude = models.CharField(
         max_length=16,
+        db_index=True,
     )
     longitude = models.CharField(
         max_length=16,
+        db_index=True,
     )
     latlng_hash = models.CharField(
         max_length=32,
         unique=True,
-        verbose_name="GPS hash"
+        verbose_name="GPS hash",
+        db_index=True,
     )
     location = models.ForeignKey(
         'bts.Location',
@@ -75,12 +78,15 @@ class UkePermission(models.Model):
     )
     station_id = models.CharField(
         max_length=16,
+        db_index=True,
     )
     standard = models.CharField(
         max_length=16,
+        db_index=True,
     )
     band = models.CharField(
         max_length=16,
+        db_index=True,
     )
     town = models.CharField(
         max_length=255,
@@ -90,6 +96,7 @@ class UkePermission(models.Model):
     )
     case_number = models.CharField(
         max_length=64,
+        db_index=True,
     )
     case_type = models.CharField(
         max_length=16,

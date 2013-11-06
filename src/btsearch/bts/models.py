@@ -126,6 +126,7 @@ class BaseStation(models.Model):
         blank=True,
         db_column="StationId",
         verbose_name="UKE StationId",
+        db_index=True,
     )
     rnc = models.PositiveSmallIntegerField(
         db_column="Rnc",
@@ -267,11 +268,13 @@ class Cell(models.Model):
         max_length=8,
         db_column="Standard",
         choices=STANDARDS,
+        db_index=True,
     )
     band = models.CharField(
         max_length=8,
         db_column="Band",
         choices=BANDS,
+        db_index=True,
     )
     ua_freq = models.PositiveSmallIntegerField(
         db_column="UaFreq",
