@@ -72,9 +72,11 @@ class UkeLocation(models.Model):
 class UkePermission(models.Model):
     uke_location = models.ForeignKey(
         'UkeLocation',
+        related_name='permissions',
     )
     network = models.ForeignKey(
         'bts.Network',
+        related_name='permissions',
     )
     station_id = models.CharField(
         max_length=16,
@@ -121,7 +123,7 @@ class UkePermission(models.Model):
 
 class UkeRawRecord(models.Model):
     operator_name = models.CharField(
-        max_length=64,
+        max_length=200,
     )
     case_number = models.CharField(
         primary_key=True,
@@ -154,3 +156,19 @@ class UkeRawRecord(models.Model):
 
     def __unicode__(self):
         return self.case_number
+
+
+class UkeOperator(models.Model):
+    operator_name = models.CharField(
+        max_length=64,
+        unique=True,
+    )
+    network = models.ForeignKey(
+        'bts.Network'
+    )
+
+    class Meta:
+        db_table = 'Uke__OperatorMappings'
+
+    def __unicode__(self):
+        return u'{0} ({1})'.format(self.operator_name, self.network.name)
