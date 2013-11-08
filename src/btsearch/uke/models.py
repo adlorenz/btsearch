@@ -1,47 +1,42 @@
 from django.db import models
 
 
-class UkeLocation(models.Model):
-    latitude = models.CharField(
-        max_length=16,
+class Location(models.Model):
+    latitude = models.DecimalField(
+        max_digits=8,
+        decimal_places=6,
         db_index=True,
     )
-    longitude = models.CharField(
-        max_length=16,
+    longitude = models.DecimalField(
+        max_digits=8,
+        decimal_places=6,
         db_index=True,
     )
-    latlng_hash = models.CharField(
+    latitude_uke = models.CharField(
+        max_length=16,
+    )
+    longitude_uke = models.CharField(
+        max_length=16,
+    )
+    location_hash = models.CharField(
         max_length=32,
         unique=True,
-        verbose_name="GPS hash",
         db_index=True,
+        verbose_name="GPS hash",
     )
-    location = models.ForeignKey(
-        'bts.Location',
-        blank=True,
-        null=True,
-    )
+    # We don't really need that relation right now...
+    #
+    # location = models.ForeignKey(
+    #     'bts.Location',
+    #     blank=True,
+    #     null=True,
+    # )
     date_added = models.DateTimeField(
         auto_now_add=True,
     )
 
-    class Meta:
-        db_table = 'Uke__Locations'
-
-    def __unicode__(self):
-       # try:
-       #     return self.location.town
-       # except:
-       #     permissions = self.get_permissions()
-       #     raw_record = permissions[0].record
-       #     return '[UKE] %s %s' % (raw_record.town, raw_record.address)
-
-        # Returns nothing for performance reasons
-        # TODO: Refactor it.
-        return ''
-
     def get_permissions(self, **kwargs):
-        qs = UkePermission.objects.distinct()
+        qs = Permission.objects.distinct()
         if 'standard' in kwargs and 'band' in kwargs:
             return qs.filter(
                 uke_location=self,
@@ -58,7 +53,7 @@ class UkeLocation(models.Model):
                 uke_location=self,
                 band__in=kwargs.get('band')
             )
-        return UkePermission.objects.filter(uke_location=self)
+        return Permission.objects.filter(uke_location=self)
 
     def get_supported_standards_and_bands_by_network(self, network):
         permissions = self.get_permissions().filter(network=network)
@@ -69,13 +64,13 @@ class UkeLocation(models.Model):
         return permissions.distinct().values('standard').exclude(standard='?')
 
 
-class UkePermission(models.Model):
-    uke_location = models.ForeignKey(
-        'UkeLocation',
+class Permission(models.Model):
+    location = models.ForeignKey(
+        'Location',
         related_name='permissions',
     )
-    network = models.ForeignKey(
-        'bts.Network',
+    operator = models.ForeignKey(
+        'Operator',
         related_name='permissions',
     )
     station_id = models.CharField(
@@ -99,6 +94,7 @@ class UkePermission(models.Model):
     case_number = models.CharField(
         max_length=64,
         db_index=True,
+        unique=True,
     )
     case_type = models.CharField(
         max_length=16,
@@ -114,14 +110,25 @@ class UkePermission(models.Model):
         auto_now_add=True,
     )
 
-    class Meta:
-        db_table = 'Uke__Permissions'
-
     def __unicode__(self):
         return '{0}, {1}'.format(self.network.code, self.case_number)
 
 
-class UkeRawRecord(models.Model):
+class Operator(models.Model):
+    operator_name = models.CharField(
+        max_length=64,
+        unique=True,
+    )
+    network = models.ForeignKey(
+        'bts.Network',
+        related_name='uke_operators',
+    )
+
+    def __unicode__(self):
+        return u'{0} ({1})'.format(self.operator_name, self.network.name)
+
+
+class RawRecord(models.Model):
     operator_name = models.CharField(
         max_length=200,
     )
@@ -151,24 +158,5 @@ class UkeRawRecord(models.Model):
         max_length=8,
     )
 
-    class Meta:
-        db_table = 'Uke__RawRecords'
-
     def __unicode__(self):
         return self.case_number
-
-
-class UkeOperator(models.Model):
-    operator_name = models.CharField(
-        max_length=64,
-        unique=True,
-    )
-    network = models.ForeignKey(
-        'bts.Network'
-    )
-
-    class Meta:
-        db_table = 'Uke__OperatorMappings'
-
-    def __unicode__(self):
-        return u'{0} ({1})'.format(self.operator_name, self.network.name)

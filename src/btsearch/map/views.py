@@ -143,12 +143,12 @@ class LocationDetailView(JSONResponseMixin, generic.DetailView):
 
 
 class UkeLocationsView(LocationsView):
-    model = uke_models.UkeLocation
-    queryset = uke_models.UkeLocation.objects.distinct()
+    model = uke_models.Location
+    queryset = uke_models.Location.objects.distinct()
 
 
 class UkeLocationDetailView(LocationDetailView):
-    model = uke_models.UkeLocation
+    model = uke_models.Location
     template_name = 'map/uke_location_info.html'
 
     def _get_location_objects(self, location):
@@ -160,7 +160,7 @@ class UkeLocationDetailView(LocationDetailView):
         networks = []
         filters = self._get_queryset_filters()
         for permission in location.get_permissions(**filters):
-            network = permission.network
+            network = permission.operator.network
             if network not in networks:
                 networks.append(network)
 

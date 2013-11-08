@@ -62,7 +62,7 @@ class UkeDetailView(generic.DetailView):
     """
     Does UKE-specific view belong here?
     """
-    model = uke_models.UkeLocation
+    model = uke_models.Location
     context_object_name = 'uke_location'
     template_name = 'bts/details_uke.html'
 
@@ -70,7 +70,7 @@ class UkeDetailView(generic.DetailView):
         try:
             network = models.Network.objects.get(code=self.kwargs.get('network_code'))
             ctx = super(UkeDetailView, self).get_context_data(**kwargs)
-            ctx['permissions'] = uke_models.UkePermission.objects.filter(
+            ctx['permissions'] = uke_models.Permission.objects.filter(
                 uke_location=self.object,
                 network=network
             )

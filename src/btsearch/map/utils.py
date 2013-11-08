@@ -1,7 +1,7 @@
 from django.conf import settings
 
 from btsearch.bts.models import Location
-from btsearch.uke.models import UkeLocation
+from btsearch.uke.models import Location as UkeLocation
 
 
 class MapIconFactory():
