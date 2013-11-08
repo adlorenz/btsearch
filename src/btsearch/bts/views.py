@@ -71,8 +71,8 @@ class UkeDetailView(generic.DetailView):
             network = models.Network.objects.get(code=self.kwargs.get('network_code'))
             ctx = super(UkeDetailView, self).get_context_data(**kwargs)
             ctx['permissions'] = uke_models.Permission.objects.filter(
-                uke_location=self.object,
-                network=network
+                location=self.object,
+                operator__network=network
             )
             ctx['network'] = network
         except:

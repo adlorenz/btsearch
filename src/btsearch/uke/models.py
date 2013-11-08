@@ -35,32 +35,35 @@ class Location(models.Model):
         auto_now_add=True,
     )
 
+    def __unicode__(self):
+        return ''
+
     def get_permissions(self, **kwargs):
         qs = Permission.objects.distinct()
         if 'standard' in kwargs and 'band' in kwargs:
             return qs.filter(
-                uke_location=self,
+                location=self,
                 standard__in=kwargs.get('standard'),
                 band__in=kwargs.get('band')
             )
         elif 'standard' in kwargs:
             return qs.filter(
-                uke_location=self,
+                location=self,
                 standard__in=kwargs.get('standard')
             )
         elif 'band' in kwargs:
             return qs.filter(
-                uke_location=self,
+                location=self,
                 band__in=kwargs.get('band')
             )
-        return Permission.objects.filter(uke_location=self)
+        return Permission.objects.filter(location=self)
 
     def get_supported_standards_and_bands_by_network(self, network):
-        permissions = self.get_permissions().filter(network=network)
+        permissions = self.get_permissions().filter(operator__network=network)
         return permissions.distinct().values('standard', 'band').exclude(standard='?', band='?')
 
     def get_supported_standards_by_network(self, network):
-        permissions = self.get_permissions().filter(network=network)
+        permissions = self.get_permissions().filter(operator__network=network)
         return permissions.distinct().values('standard').exclude(standard='?')
 
 
@@ -112,6 +115,10 @@ class Permission(models.Model):
 
     def __unicode__(self):
         return '{0}, {1}'.format(self.network.code, self.case_number)
+
+    @property
+    def network(self):
+        return self.operator.network
 
 
 class Operator(models.Model):

@@ -48,9 +48,8 @@ class LocationsView(JSONResponseMixin, generic.ListView):
         })
 
         if 'network' in filters:
-            processed_filters.update({
-                'basestation__network': filters['network']
-            })
+            network_filter = self._get_network_filter(filters['network'])
+            processed_filters.update(network_filter)
 
         standards = []
         if 'standard' in filters:
@@ -60,11 +59,17 @@ class LocationsView(JSONResponseMixin, generic.ListView):
         if 'band' in filters:
             bands = filters['band'].split(',')
 
-        standard_band_filter = self._get_standard_band_queryset_filter(standards, bands)
+        standard_band_filter = self._get_standard_band_queryset_filter(
+            standards, bands)
         if standard_band_filter:
             processed_filters.update(standard_band_filter)
 
         return processed_filters
+
+    def _get_network_filter(self, network):
+        return {
+            'basestation__network': network
+        }
 
     def _get_standard_band_queryset_filter(self, standards, bands):
         standard_field = 'base_stations__cell__standard__in'
@@ -117,7 +122,7 @@ class LocationDetailView(JSONResponseMixin, generic.DetailView):
             'id': location.id,
             'latitude': location.latitude,
             'longitude': location.longitude,
-            'summary': location.__unicode__(),
+            'summary': unicode(location),
             'info': response.render().rendered_content,
             'icon': utils.MapIconFactory().get_icon_path(map_icon),
         }
@@ -145,6 +150,23 @@ class LocationDetailView(JSONResponseMixin, generic.DetailView):
 class UkeLocationsView(LocationsView):
     model = uke_models.Location
     queryset = uke_models.Location.objects.distinct()
+
+    def _get_network_filter(self, network):
+        return {
+            'permissions__operator__network': network
+        }
+
+    def _get_standard_band_queryset_filter(self, standards, bands):
+        standard_field = 'permissions__standard__in'
+        band_field = 'permissions__band__in'
+
+        if standards and bands:
+            return {standard_field: standards, band_field: bands}
+        elif standards:
+            return {standard_field: standards}
+        elif bands:
+            return {band_field: bands}
+        return None
 
 
 class UkeLocationDetailView(LocationDetailView):
