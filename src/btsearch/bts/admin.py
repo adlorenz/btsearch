@@ -1,5 +1,5 @@
 from django.contrib import admin
-from btsearch.bts.models import BaseStation, Network, Cell, Location, Region, LegacyBaseStation
+from btsearch.bts.models import BaseStation, Network, Cell, Location, Region #, LegacyBaseStation
 from btsearch.bts.admin_forms import LocationAdminForm, BaseStationAdminForm
 
 class BaseStationInline(admin.TabularInline):
@@ -26,23 +26,23 @@ class CellAdmin(admin.ModelAdmin):
     readonly_fields = ['base_station', 'date_added', 'date_updated', 'date_ping']
     save_on_top = True
     search_fields = ['=lac', '=cid', '=cid_long', 'base_station__location__town']
-    
+
 class LocationAdmin(admin.ModelAdmin):
     #fields = ['region', 'town', 'address', 'notes', 'latitude', 'longitude', 'gps_hash']
     form = LocationAdminForm
     inlines = [BaseStationInline]
-    list_display = ['id', 'region', 'town', 'address', 'has_latlng_hash']
+    list_display = ['id', 'region', 'town', 'address', 'has_location_hash']
     list_filter = ['region']
     save_on_top = True
     search_fields = ['=id', 'town', 'address']
-    readonly_fields = ['latlng_hash', 'date_added', 'date_updated']
-    
+    readonly_fields = ['location_hash', 'date_added', 'date_updated']
+
 #class UkeLocationAdmin(admin.ModelAdmin):
 #    model = UkeLocation
 #    list_display = ['station_id', 'network', 'location', 'location_details', 'band', 'case_number']
 #    list_filter = ['network', 'band']
 #    readonly_fields = ['station_id', 'network', 'location', 'location_details', 'band', 'band_all', 'latitude', 'longitude', 'latlng_hash', 'case_number']
-    
+
 class LegacyBaseStationAdmin(admin.ModelAdmin):
     list_display = ['id', 'network', 'region', 'town', 'location', 'standard', 'band', 'lac', 'btsid', 'station_id']
     list_filter = ['network', 'region', 'standard']
@@ -54,4 +54,4 @@ admin.site.register(Cell, CellAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Region)
 #admin.site.register(UkeLocation, UkeLocationAdmin)
-admin.site.register(LegacyBaseStation, LegacyBaseStationAdmin)
+# admin.site.register(LegacyBaseStation, LegacyBaseStationAdmin)
