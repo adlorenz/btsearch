@@ -252,7 +252,7 @@ var requests = {
 
 	getLocationInfo: function(marker, locationId, filters) {
 		$.ajax({
-			url: "/map/" + filters.dataSource + "/" + locationId + "/",
+			url: "/map/" + filters.dataSource + "/" + locationId + "/?" + filters.toUrlValue(),
 			dataType: "json",
 			headers: {
 				Accept: "application/json"
