@@ -25,7 +25,6 @@ class Location(models.Model):
     location_hash = models.CharField(
         max_length=32,
         db_index=True,
-        verbose_name="GPS hash",
     )
     notes = models.CharField(
         max_length=500,

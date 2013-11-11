@@ -22,7 +22,6 @@ class Location(models.Model):
         max_length=32,
         unique=True,
         db_index=True,
-        verbose_name="GPS hash",
     )
     # We don't really need that relation right now...
     #
