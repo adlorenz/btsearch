@@ -2,27 +2,34 @@ from django.db.models import Q
 from django.views import generic
 
 from ..uke import models as uke_models
+from .. import mixins
 from . import models
 from . import forms
 
 
-class BtsListingView(generic.ListView):
+class BtsListingView(mixins.QuerysetFilterMixin, generic.ListView):
     template_name = 'bts/listing.html'
     model = models.BaseStation
+    queryset = models.BaseStation.objects.distinct()
     context_object_name = 'base_stations'
     paginate_by = 20
+
+    network_filter_field = 'network__code'
+    standard_filter_field = 'cells__standard__in'
+    band_filter_field = 'cells__band__in'
+    region_filter_field = 'location__region'
 
     def get_context_data(self, **kwargs):
         ctx = super(BtsListingView, self).get_context_data(**kwargs)
         ctx['filter_form'] = forms.ListingFilterForm(self.request.GET)
         ctx['get_params'] = self.request.GET.copy()
-        ctx['rows_found'] = self.get_queryset().count()
+        # ctx['rows_found'] = self.get_queryset().count()
         return ctx
 
     def get_queryset(self):
-        filters = self.request.GET.copy()
         qs = super(BtsListingView, self).get_queryset()
 
+        filters = self.request.GET.copy()
         if filters.get('query'):
             query = filters.get('query')
             qs = qs.filter(
@@ -31,24 +38,9 @@ class BtsListingView(generic.ListView):
                 Q(station_id=query)
             )
 
-        if filters.get('network'):
-            qs = qs.filter(network__code=filters.get('network'))
-
-        if filters.get('region'):
-            qs = qs.filter(location__region=filters.get('region'))
-
-        if filters.getlist('standard') and filters.getlist('band'):
-            qs = qs.filter(cell__standard__in=filters.getlist('standard'),
-                           cell__band__in=filters.getlist('band')).distinct()
-
-        elif filters.getlist('standard'):
-            qs = qs.filter(cell__standard__in=filters.getlist('standard')).distinct()
-
-        elif filters.getlist('band'):
-            qs = qs.filter(cell__band__in=filters.getlist('band')).distinct()
-
-        qs.order_by('-date_updated')
-
+        qs_filters = self.get_queryset_filters()
+        qs = qs.filter(**qs_filters)
+        qs = qs.order_by('-date_updated')
         return qs
 
 

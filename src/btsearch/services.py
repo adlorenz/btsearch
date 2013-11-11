@@ -11,6 +11,8 @@ class QuerysetFilterService(object):
             self.standard_filter_field = kwargs['standard_filter_field']
         if 'band_filter_field' in kwargs:
             self.band_filter_field = kwargs['band_filter_field']
+        if 'region_filter_field' in kwargs:
+            self.region_filter_field = kwargs['region_filter_field']
 
     def get_processed_filters(self, raw_filters):
         processed_filters = {}
@@ -21,6 +23,10 @@ class QuerysetFilterService(object):
         if 'network' in raw_filters:
             network_filter = self._get_network_filter(raw_filters['network'])
             processed_filters.update(network_filter)
+
+        if 'region' in raw_filters:
+            region_filter = self._get_region_filter(raw_filters['region'])
+            processed_filters.update(region_filter)
 
         standards = []
         if 'standard' in raw_filters:
@@ -49,6 +55,11 @@ class QuerysetFilterService(object):
     def _get_network_filter(self, network):
         return {
             self.network_filter_field: network
+        }
+
+    def _get_region_filter(self, region):
+        return {
+            self.region_filter_field: region
         }
 
     def _get_standard_band_queryset_filter(self, standards, bands):

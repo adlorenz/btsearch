@@ -17,7 +17,7 @@
     {% if base_stations %}
 
         <h4>
-            Rezultatów: {{ rows_found }}
+            Rezultatów: {{ page_obj.paginator.count }}
         </h4>
 
         <table class="table table-striped">

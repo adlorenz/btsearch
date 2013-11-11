@@ -5,27 +5,15 @@ from braces.views import JSONResponseMixin
 
 from ..bts import models as bts_models
 from ..uke import models as uke_models
-from . import services
+from .. import mixins
 from . import utils
-
-
-class LocationsFilterMixin(object):
-
-    def get_queryset_filters(self):
-        filter_service = services.QuerysetFilterService(
-            network_filter_field=self.network_filter_field,
-            standard_filter_field=self.standard_filter_field,
-            band_filter_field=self.band_filter_field,
-        )
-        raw_filters = self.request.GET.copy()
-        return filter_service.get_processed_filters(raw_filters)
 
 
 class IndexView(generic.TemplateView):
     template_name = 'map/index.html'
 
 
-class LocationsView(LocationsFilterMixin, JSONResponseMixin, generic.ListView):
+class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListView):
     model = bts_models.Location
     queryset = bts_models.Location.objects.distinct()
     paginate_by = 500
@@ -66,7 +54,7 @@ class LocationsView(LocationsFilterMixin, JSONResponseMixin, generic.ListView):
         return map_icon_factory.get_icon_path(map_icon)
 
 
-class LocationDetailView(LocationsFilterMixin, JSONResponseMixin, generic.DetailView):
+class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.DetailView):
     model = bts_models.Location
     template_name = 'map/location_info.html'
     context_object_name = 'location'
