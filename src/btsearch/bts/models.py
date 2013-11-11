@@ -56,6 +56,7 @@ class Location(models.Model):
     has_location_hash.short_description = 'GPS?'
 
     def get_base_stations(self, **kwargs):
+        # TODO: This method is probably redundant.
         if 'standard' in kwargs and 'band' in kwargs:
             return BaseStation.objects.distinct().filter(
                 location=self,

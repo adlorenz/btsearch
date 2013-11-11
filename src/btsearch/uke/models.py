@@ -39,6 +39,7 @@ class Location(models.Model):
         return ''
 
     def get_permissions(self, **kwargs):
+        # TODO: This method is probably redundant.
         qs = Permission.objects.distinct()
         if 'standard' in kwargs and 'band' in kwargs:
             return qs.filter(
