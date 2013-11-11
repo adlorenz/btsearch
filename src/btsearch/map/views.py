@@ -68,12 +68,12 @@ class LocationsView(JSONResponseMixin, generic.ListView):
 
     def _get_network_filter(self, network):
         return {
-            'basestation__network': network
+            'base_stations__network': network
         }
 
     def _get_standard_band_queryset_filter(self, standards, bands):
-        standard_field = 'base_stations__cell__standard__in'
-        band_field = 'base_stations__cell__band__in'
+        standard_field = 'base_stations__cells__standard__in'
+        band_field = 'base_stations__cells__band__in'
 
         if standards and bands:
             return {standard_field: standards, band_field: bands}

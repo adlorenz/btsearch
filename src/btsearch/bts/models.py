@@ -59,18 +59,18 @@ class Location(models.Model):
         if 'standard' in kwargs and 'band' in kwargs:
             return BaseStation.objects.distinct().filter(
                 location=self,
-                cell__standard__in=kwargs.get('standard'),
-                cell__band__in=kwargs.get('band')
+                cells__standard__in=kwargs.get('standard'),
+                cells__band__in=kwargs.get('band')
             )
         elif 'standard' in kwargs:
             return BaseStation.objects.distinct().filter(
                 location=self,
-                cell__standard__in=kwargs.get('standard')
+                cells__standard__in=kwargs.get('standard')
             )
         elif 'band' in kwargs:
             return BaseStation.objects.distinct().filter(
                 location=self,
-                cell__band__in=kwargs.get('band')
+                cells__band__in=kwargs.get('band')
             )
         return BaseStation.objects.filter(location=self)
 
