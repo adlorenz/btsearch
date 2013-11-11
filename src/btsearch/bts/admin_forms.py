@@ -1,28 +1,33 @@
-from django.forms import ModelForm, CharField
-from btsearch.bts.models import BaseStation, Location
-from btsearch.bts.widgets import LocationPickerWidget, LocationSelectorWidget
+from django import forms
 
-class LocationAdminForm(ModelForm):
+from . import models
+from . import widgets
+
+
+class LocationAdminForm(forms.ModelForm):
+
     class Meta:
-        model = Location
+        model = models.Location
         widgets = {
-            'town': LocationPickerWidget()
+            'town': widgets.LocationPickerWidget()
         }
-        
-class BaseStationAdminForm(ModelForm):
+
+
+class BaseStationAdminForm(forms.ModelForm):
+
     class Meta:
-        model = BaseStation
+        model = models.BaseStation
         widgets = {
-            'location': LocationSelectorWidget()
+            'location': widgets.LocationSelectorWidget()
         }
-        
-    location_info = CharField(max_length=255, required=False)
-    location_coords = CharField(max_length=255, required=False)
-    location_selected = CharField(max_length=255, required=False)
-    
+
+    location_info = forms.CharField(max_length=255, required=False)
+    location_coords = forms.CharField(max_length=255, required=False)
+    location_selected = forms.CharField(max_length=255, required=False)
+
     def __init__(self, *args, **kwargs):
         super(BaseStationAdminForm, self).__init__(*args, **kwargs)
-        if kwargs.has_key('instance'):
+        if 'instance' in kwargs:
             instance = kwargs['instance']
             self.initial['location_info'] = instance.location
             self.fields['location_info'].widget.attrs['readonly'] = True

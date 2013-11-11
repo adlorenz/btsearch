@@ -1,12 +1,15 @@
+/**
+ * Author: Tomasz Wasiak
+ */
 (function($){
 $(document).ready(function(){
 	if($("#id_latitude,#id_longitude").length == 2) {
-	
+
 		var latInput = $("#id_latitude");
 		var lonInput = $("#id_longitude");
         lonInput.parents(".form-row").after('<div class="form-row"><input id="updateMap" type="button" value="Update position on map" /><input type="text" id="selected_location" /><div id="lpMap"></div></div>');
 		$("#updateMap").attr("disabled","disabled");
-		
+
         var lat = 52.1673;
         var lng = 20.8109;
 		var showMarker = false;
@@ -40,21 +43,21 @@ $(document).ready(function(){
 		google.maps.event.addListener(marker, 'dragend', function(event) {
 			getCordsFromMap(event.latLng);
 		});
-		
+
 		function getCordsFromMap(eventLocation){
 			marker.setPosition(eventLocation);
 			marker.setVisible(true);
 			latInput.val(Math.round(eventLocation.lat()*1000000)/1000000);
 			lonInput.val(Math.round(eventLocation.lng()*1000000)/1000000);
-			
+
 			geocoder = new google.maps.Geocoder();
 			geocoder.geocode({'location': eventLocation }, function(results, status){
 				$('#selected_location').val(results[0].formatted_address);
 			});
-				
-			$("#updateMap").attr("disabled","disabled");		
+
+			$("#updateMap").attr("disabled","disabled");
 		}
-		
+
 		$("#updateMap").click(function(){
 			marker.setVisible(true);
 			center = new google.maps.LatLng(latInput.val(),lonInput.val());
@@ -65,7 +68,7 @@ $(document).ready(function(){
 		$("#id_latitude,#id_longitude").change(function(){
 			$("#updateMap").attr("disabled",false);
 		});
-		
+
     }
 });
 })(django.jQuery);

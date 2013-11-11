@@ -1,3 +1,6 @@
+/**
+ * Author: Tomasz Wasiak
+ */
 (function($){
 var markers = [];
 var map;
@@ -28,11 +31,11 @@ function attachClickEvent(i,id,content){
 }
 
 $(document).ready(function(){
-	
+
     var locInput = $("#id_location");
     locInput.parents(".form-row").after('<div class="form-row"><div id="lsMap"></div></div>');
     $("#id_location_selected").before('<input id="updateLocation" type="button" value="Update location" />');
-    
+
         var latLng = [52.1673,20.8109];
 		var showMarkers = false;
 		var mapZoom = 5;
@@ -58,7 +61,7 @@ $(document).ready(function(){
         mapTypeId: google.maps.MapTypeId.ROADMAP
     }
     map = new google.maps.Map(document.getElementById("lsMap"), myOptions);
-    
+
     google.maps.event.addListener(map, 'idle', function() {
         if(map.getZoom()>11) {
             getLocations();
@@ -66,13 +69,13 @@ $(document).ready(function(){
             clearMap();
         }
     });
-    
+
     function getLocations() {
         $.ajax({
-            url: "/api/map/locations/?bounds=" + map.getBounds().toUrlValue(),
+            url: "/map/locations/?bounds=" + map.getBounds().toUrlValue(),
             dataType: "json",
             headers: {
-				Accept: "application/json" 
+				Accept: "application/json"
 			},
             success:function(data){
                 clearMap();
@@ -97,7 +100,7 @@ $(document).ready(function(){
             }
         });
     }
-    
+
     $("#updateLocation").click(function(){
         $("#id_location").val(selectedLocation);
         $("#id_location_info").val($("#id_location_selected").val());
