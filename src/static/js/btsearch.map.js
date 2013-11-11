@@ -296,6 +296,8 @@ var requests = {
 				// before attaching events to them
 				// Try jQuery's .on event? See:
 				// https://github.com/zoyalab/zoyalab.com/blob/master/js/main.js#L20
+				//
+				// TODO: Using setInterval certainly smells shit. Fix it.
 				inv = setInterval(function(){
 					if (ui.ready()) {
 						core.bindMapEvents();
