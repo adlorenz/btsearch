@@ -27,22 +27,24 @@
                     <th>Województwo</th>
                     <th>Miejscowość</th>
                     <th>Adres</th>
-                    <th>Standard / Pasmo</th>
+                    <th>Technologie</th>
+                    <th>ID stacji</th>
                     <th>Ost. aktualizacja</th>
                 </tr>
             </thead>
             <tbody>
             {% for base_station in base_stations %}
                 <tr>
-                    <td>{{ base_station.network }}</td>
+                    <td><strong>{{ base_station.network }}</strong></td>
                     <td>{{ base_station.region_name }}</td>
                     <td>{{ base_station.town_name }}</td>
                     <td>{{ base_station.address_name }}</td>
                     <td>
-                        <a class="location-info fancybox fancybox.ajax" href="{% url 'bts:bts-extended-info-view' base_station.id %}" title="Wyświetl szczegóły stacji bazowej">{% for stdbnd in base_station.get_supported_standards_and_bands %}
+                        <a class="location-info fancybox fancybox.ajax" href="{% url 'bts:bts-extended-info-view' base_station.id %}" title="Szczegóły stacji bazowej">{% for stdbnd in base_station.get_supported_standards_and_bands %}
                         {{ stdbnd.standard }}{{ stdbnd.band }}
                     {% endfor %}</a>
                     </td>
+                    <td>{{ base_station.station_id }}</td>
                     <td>{{ base_station.date_updated|timesince }}</td>
                 </tr>
             {% endfor %}
