@@ -32,7 +32,7 @@ class MapIconFactory():
         filters = self.get_processed_filters(raw_filters)
 
         # Get items (base stations / permission) per location
-        location_items = self.get_location_items(location, filters)
+        location_items = self.get_location_objects(location, filters)
         if location_items is None:
             return None
 
@@ -54,7 +54,7 @@ class MapIconFactory():
 
         return '_'.join(code_list) + self.ICON_EXTENSION
 
-    def get_location_items(self, location, filters):
+    def get_location_objects(self, location, filters):
         """
         Filter and return location objects (models)
         """
