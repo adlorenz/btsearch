@@ -11,8 +11,8 @@ from . import utils
 
 class LocationsFilterMixin(object):
 
-    def _get_queryset_filters(self):
-        filter_service = services.FilterService(
+    def get_queryset_filters(self):
+        filter_service = services.QuerysetFilterService(
             network_filter_field=self.network_filter_field,
             standard_filter_field=self.standard_filter_field,
             band_filter_field=self.band_filter_field,
@@ -44,7 +44,7 @@ class LocationsView(LocationsFilterMixin, JSONResponseMixin, generic.ListView):
         })
 
     def get_queryset(self):
-        qs_filters = self._get_queryset_filters()
+        qs_filters = self.get_queryset_filters()
         return self.queryset.filter(**qs_filters)
 
     def _get_locations_list(self):
@@ -102,7 +102,7 @@ class LocationDetailView(LocationsFilterMixin, JSONResponseMixin, generic.Detail
         ie. base stations or UKE permissions
         """
         location = self.get_object()
-        qs_filters = self._get_queryset_filters()
+        qs_filters = self.get_queryset_filters()
         return location.base_stations.distinct().filter(**qs_filters)
 
 
@@ -128,10 +128,11 @@ class UkeLocationDetailView(LocationDetailView):
         Returns objects associated to the location,
         ie. base stations or UKE permissions
         """
+        # TODO: It's slightly messy. Do something about it.
         permissions_by_network = {}
         networks = []
         location = self.get_object()
-        qs_filters = self._get_queryset_filters()
+        qs_filters = self.get_queryset_filters()
         permissions = location.permissions.distinct().filter(**qs_filters)
         for permission in permissions:
             network = permission.operator.network

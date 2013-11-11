@@ -1,5 +1,8 @@
 
-class FilterService(object):
+class QuerysetFilterService(object):
+    """
+    A service to process filters applied when browsing map/data.
+    """
 
     def __init__(self, **kwargs):
         if 'network_filter_field' in kwargs:
@@ -59,3 +62,16 @@ class FilterService(object):
         elif bands:
             return {self.band_filter_field: bands}
         return None
+
+
+class MapIconService(object):
+    """
+    A service to provide an icon (marker) representing location on the map.
+
+    Work In Progress...
+    """
+    def get_icon_by_network_code(self, network_code):
+        pass
+
+    def get_icon_by_location(self, location, filters):
+        pass
