@@ -5,6 +5,7 @@ from braces.views import JSONResponseMixin
 
 from ..bts import models as bts_models
 from ..uke import models as uke_models
+from . import services
 from . import utils
 
 
@@ -15,59 +16,13 @@ class LocationsFilterMixin(object):
     band_filter_field = 'base_stations__cells__band__in'
 
     def _get_queryset_filters(self):
+        filter_service = services.FilterService(
+            network_filter_field=self.network_filter_field,
+            standard_filter_field=self.standard_filter_field,
+            band_filter_field=self.band_filter_field,
+        )
         raw_filters = self.request.GET.copy()
-        processed_filters = {}
-        if 'bounds' in raw_filters:
-            bounds_filter = self._get_bounds_filter(raw_filters['bounds'])
-            processed_filters.update(bounds_filter)
-
-        if 'network' in raw_filters:
-            network_filter = self._get_network_filter(raw_filters['network'])
-            processed_filters.update(network_filter)
-
-        standards = []
-        if 'standard' in raw_filters:
-            standards = raw_filters['standard'].split(',')
-
-        bands = []
-        if 'band' in raw_filters:
-            bands = raw_filters['band'].split(',')
-
-        if standards or bands:
-            standard_band_filter = self._get_standard_band_queryset_filter(
-                standards, bands)
-            processed_filters.update(standard_band_filter)
-
-        return processed_filters
-
-    def _get_bounds_filter(self, bounds):
-        bounds = bounds.split(',')
-        return {
-            'latitude__gte': bounds[0],
-            'longitude__gte': bounds[1],
-            'latitude__lte': bounds[2],
-            'longitude__lte': bounds[3]
-        }
-
-    def _get_network_filter(self, network):
-        return {
-            self.network_filter_field: network
-        }
-
-    def _get_standard_band_queryset_filter(self, standards, bands):
-        # standard_field = 'base_stations__cells__standard__in'
-        # band_field = 'base_stations__cells__band__in'
-
-        if standards and bands:
-            return {
-                self.standard_filter_field: standards,
-                self.band_filter_field: bands
-            }
-        elif standards:
-            return {self.standard_filter_field: standards}
-        elif bands:
-            return {self.band_filter_field: bands}
-        return None
+        return filter_service.get_processed_filters(raw_filters)
 
 
 class IndexView(generic.TemplateView):
