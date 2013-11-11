@@ -280,7 +280,7 @@ class Cell(models.Model):
     )
 
     def __unicode__(self):
-        return u"{cell.standard}{cell.band} / {cell.lac} / {cell.cid}".format(cell=self)
+        return u"ID: {cell.id} / {cell.standard}{cell.band} / {cell.lac} / {cell.cid}".format(cell=self)
 
     def save(self, *args, **kwargs):
         # TODO:
