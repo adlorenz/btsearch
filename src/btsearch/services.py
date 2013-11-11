@@ -1,5 +1,7 @@
+import hashlib
 
-class QuerysetFilterService(object):
+
+class QuerysetFilterService():
     """
     A service to process filters applied when browsing map/data.
     """
@@ -75,7 +77,7 @@ class QuerysetFilterService(object):
         return None
 
 
-class MapIconService(object):
+class MapIconService():
     """
     A service to provide an icon (marker) representing location on the map.
 
@@ -86,3 +88,19 @@ class MapIconService(object):
 
     def get_icon_by_location(self, location, filters):
         pass
+
+
+class LocationHasherService():
+    """
+    Calculate location md5 hash from geo coordinates.
+    """
+    def __init__(self, latitude, longitude):
+        self.latitude = str(latitude)
+        self.longitude = str(longitude)
+
+    def get(self):
+        string = "{0}{1}".format(
+            self.latitude,
+            self.longitude
+        )
+        return hashlib.md5(string).hexdigest()

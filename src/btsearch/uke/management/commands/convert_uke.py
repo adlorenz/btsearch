@@ -4,7 +4,7 @@ getcontext().prec = 8  # Used to calculate decimal geographical coordinates
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand, CommandError
 
-from btsearch import utils
+from btsearch import services
 from btsearch.uke import models
 
 
@@ -25,7 +25,7 @@ class Command(BaseCommand):
 
         for rawrecord in rawrecords:
             lat, lng = self.get_decimal_coordinates(rawrecord.latitude, rawrecord.longitude)
-            location_hash = utils.get_location_hash(lat, lng)
+            location_hash = services.LocationHasherService(lat, lng).get_hash()
             try:
                 location = models.Location.objects.get(location_hash=location_hash)
             except ObjectDoesNotExist:
