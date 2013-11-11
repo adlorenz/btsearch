@@ -1,10 +1,6 @@
 
 class FilterService(object):
 
-    network_filter_field = 'base_stations__network'
-    standard_filter_field = 'base_stations__cells__standard__in'
-    band_filter_field = 'base_stations__cells__band__in'
-
     def __init__(self, **kwargs):
         if 'network_filter_field' in kwargs:
             self.network_filter_field = kwargs['network_filter_field']

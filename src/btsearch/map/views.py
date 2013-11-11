@@ -11,10 +11,6 @@ from . import utils
 
 class LocationsFilterMixin(object):
 
-    network_filter_field = 'base_stations__network'
-    standard_filter_field = 'base_stations__cells__standard__in'
-    band_filter_field = 'base_stations__cells__band__in'
-
     def _get_queryset_filters(self):
         filter_service = services.FilterService(
             network_filter_field=self.network_filter_field,
@@ -33,6 +29,10 @@ class LocationsView(LocationsFilterMixin, JSONResponseMixin, generic.ListView):
     model = bts_models.Location
     queryset = bts_models.Location.objects.distinct()
     paginate_by = 500
+
+    network_filter_field = 'base_stations__network'
+    standard_filter_field = 'base_stations__cells__standard__in'
+    band_filter_field = 'base_stations__cells__band__in'
 
     def get(self, request, *args, **kwargs):
         # 'bounds' is a required GET parameter for LocationsView
