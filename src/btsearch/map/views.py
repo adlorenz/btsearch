@@ -119,16 +119,21 @@ class UkeLocationDetailView(LocationDetailView):
     model = uke_models.Location
     template_name = 'map/uke_location_info.html'
 
+    network_filter_field = 'operator__network'
+    standard_filter_field = 'standard__in'
+    band_filter_field = 'band__in'
+
     def _get_location_objects(self):
         """
         Returns objects associated to the location,
         ie. base stations or UKE permissions
         """
-        location = self.get_object()
         permissions_by_network = {}
         networks = []
-        filters = self._get_queryset_filters()
-        for permission in location.get_permissions(**filters):
+        location = self.get_object()
+        qs_filters = self._get_queryset_filters()
+        permissions = location.permissions.distinct().filter(**qs_filters)
+        for permission in permissions:
             network = permission.operator.network
             if network not in networks:
                 networks.append(network)
