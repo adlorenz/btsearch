@@ -5,7 +5,9 @@ from btsearch.uke.models import Location as UkeLocation
 
 
 class MapIconFactory():
-
+    """
+    TODO: The whole class needs to be refactored and moved to services.py module
+    """
     ICON_EXTENSION = '.png'
 
     def get_icon_path(self, icon):
