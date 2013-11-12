@@ -1,3 +1,2 @@
-local.py
-dev.py
+src/conf/*
 *sublime*
