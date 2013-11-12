@@ -36,5 +36,4 @@ def stage():
 
 def prod():
     _configure('prod')
-    # Production hosts needs filling in
     env.hosts = ['btsearch.pl']
