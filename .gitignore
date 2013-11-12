@@ -1,3 +1,5 @@
-src/conf/*
-default.py
+src/conf/local.py
+src/conf/test.py
+src/conf/stage.py
+src/conf/prod.py
 *sublime*
