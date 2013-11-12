@@ -89,8 +89,8 @@ def set_reference_to_deploy_from(branch):
 
 
 def set_ssh_user():
-    if 'TANGENT_USER' in os.environ:
-        env.user = os.environ['TANGENT_USER']
+    if 'DEPLOYMENT_USER' in os.environ:
+        env.user = os.environ['DEPLOYMENT_USER']
     else:
         env.user = prompt(red('Username for remote host? [default is current user] '))
     if not env.user:
