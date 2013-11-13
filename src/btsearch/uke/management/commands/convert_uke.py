@@ -25,7 +25,7 @@ class Command(BaseCommand):
 
         for rawrecord in rawrecords:
             lat, lng = self.get_decimal_coordinates(rawrecord.latitude, rawrecord.longitude)
-            location_hash = services.LocationHasherService(lat, lng).get_hash()
+            location_hash = services.LocationHasherService(lat, lng).get()
             try:
                 location = models.Location.objects.get(location_hash=location_hash)
             except ObjectDoesNotExist:
