@@ -34,8 +34,8 @@ class Location(models.Model):
         auto_now_add=True,
     )
 
-    def __unicode__(self):
-        return ''
+    # def __unicode__(self):
+    #     return ''
 
     def get_permissions(self, **kwargs):
         # TODO: This method is probably redundant.
