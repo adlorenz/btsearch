@@ -40,7 +40,7 @@
                     <td>{{ base_station.town_name }}</td>
                     <td>{{ base_station.address_name }}</td>
                     <td>
-                        <a class="location-info fancybox fancybox.ajax" href="{% url 'bts:bts-extended-info-view' base_station.id %}" title="Szczegóły stacji bazowej">{% for stdbnd in base_station.get_supported_standards_and_bands %}
+                        <a class="location-info" href="{% url 'bts:bts-extended-info-view' base_station.id %}" title="Szczegóły stacji bazowej">{% for stdbnd in base_station.get_supported_standards_and_bands %}
                         {{ stdbnd.standard }}{{ stdbnd.band }}
                     {% endfor %}</a>
                     </td>
@@ -69,9 +69,11 @@
     <script type="text/javascript">
         $(function(){
             $('a.location-info').each(function(){
-                $(this).fancybox();
+                $(this).fancybox({
+                    'type': 'ajax',
+                    'title': null
+                });
             });
         });
     </script>
-
 {% endblock extrascripts %}

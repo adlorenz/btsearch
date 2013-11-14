@@ -19,7 +19,7 @@
 						{% for support in base_station.get_supported_standards_and_bands %}
 							{{ support.standard }}{{ support.band }}
 							{% if forloop.last %}
-								<a class="location-info fancybox fancybox.ajax" href="{% url 'bts:bts-extended-info-view' base_station.id %}">Szczegóły...</a>
+								<a class="location-info" href="{% url 'bts:bts-extended-info-view' base_station.id %}">Szczegóły...</a>
 							{% endif %}
 						{% empty %}
 							Brak szczegółowych danych...

@@ -260,7 +260,9 @@ var requests = {
 			},
 			success: function(data) {
 				core.displayLocationInfo(data, marker);
-				$('a.location-info').fancybox();
+				$('a.location-info').fancybox({
+					'type': 'ajax'
+				});
 			}
 		});
 	},
