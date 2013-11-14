@@ -6,6 +6,7 @@ from braces.views import JSONResponseMixin
 from ..bts import models as bts_models
 from ..uke import models as uke_models
 from .. import mixins
+from .. import services
 from . import utils
 
 
@@ -17,11 +18,7 @@ class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListV
     model = bts_models.Location
     queryset = bts_models.Location.objects.distinct()
     paginate_by = 500
-
-    network_filter_field = 'base_stations__network'
-    standard_filter_field = 'base_stations__cells__standard__in'
-    band_filter_field = 'base_stations__cells__band__in'
-    timedelta_filter_field = 'base_stations__date_updated__gte'
+    filter_class = services.BtsLocationsFilterService
 
     def get(self, request, *args, **kwargs):
         # 'bounds' is a required GET parameter for LocationsView
@@ -59,11 +56,7 @@ class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.
     model = bts_models.Location
     template_name = 'map/location_info.html'
     context_object_name = 'location'
-
-    network_filter_field = 'network'
-    standard_filter_field = 'cells__standard__in'
-    band_filter_field = 'cells__band__in'
-    timedelta_filter_field = 'date_updated__gte'
+    filter_class = services.BtsLocationFilterService
 
     def get_context_data(self, **kwargs):
         ctx = super(LocationDetailView, self).get_context_data(**kwargs)
@@ -99,21 +92,13 @@ class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.
 class UkeLocationsView(LocationsView):
     model = uke_models.Location
     queryset = uke_models.Location.objects.distinct()
-
-    network_filter_field = 'permissions__operator__network'
-    standard_filter_field = 'permissions__standard__in'
-    band_filter_field = 'permissions__band__in'
-    timedelta_filter_field = 'permissions__date_updated__gte'
+    filter_class = services.UkeLocationsFilterService
 
 
 class UkeLocationDetailView(LocationDetailView):
     model = uke_models.Location
     template_name = 'map/uke_location_info.html'
-
-    network_filter_field = 'operator__network'
-    standard_filter_field = 'standard__in'
-    band_filter_field = 'band__in'
-    timedelta_filter_field = 'date_updated__gte'
+    filter_class = services.UkeLocationFilterService
 
     def _get_location_objects(self):
         """

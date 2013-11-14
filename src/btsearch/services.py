@@ -1,24 +1,13 @@
 import arrow
 import hashlib
 
+from django.conf import settings
 
-class QuerysetFilterService():
+
+class QuerysetFilterService(object):
     """
     A service to process filters applied when browsing map/data.
     """
-
-    def __init__(self, **kwargs):
-        if 'network_filter_field' in kwargs:
-            self.network_filter_field = kwargs['network_filter_field']
-        if 'standard_filter_field' in kwargs:
-            self.standard_filter_field = kwargs['standard_filter_field']
-        if 'band_filter_field' in kwargs:
-            self.band_filter_field = kwargs['band_filter_field']
-        if 'region_filter_field' in kwargs:
-            self.region_filter_field = kwargs['region_filter_field']
-        if 'timedelta_filter_field' in kwargs:
-            self.timedelta_filter_field = kwargs['timedelta_filter_field']
-
     def get_processed_filters(self, raw_filters):
         processed_filters = {}
         if 'bounds' in raw_filters:
@@ -92,17 +81,90 @@ class QuerysetFilterService():
         return None
 
 
+class BtsLocationsFilterService(QuerysetFilterService):
+    network_filter_field = 'base_stations__network'
+    standard_filter_field = 'base_stations__cells__standard__in'
+    band_filter_field = 'base_stations__cells__band__in'
+    timedelta_filter_field = 'base_stations__date_updated__gte'
+
+
+class BtsLocationFilterService(QuerysetFilterService):
+    network_filter_field = 'network'
+    standard_filter_field = 'cells__standard__in'
+    band_filter_field = 'cells__band__in'
+    timedelta_filter_field = 'date_updated__gte'
+
+
+class UkeLocationsFilterService(QuerysetFilterService):
+    network_filter_field = 'permissions__operator__network'
+    standard_filter_field = 'permissions__standard__in'
+    band_filter_field = 'permissions__band__in'
+    timedelta_filter_field = 'permissions__date_added__gte'
+
+
+class UkeLocationFilterService(QuerysetFilterService):
+    network_filter_field = 'operator__network'
+    standard_filter_field = 'standard__in'
+    band_filter_field = 'band__in'
+    timedelta_filter_field = 'date_added__gte'
+
+
 class MapIconService():
     """
     A service to provide an icon (marker) representing location on the map.
 
     Work In Progress...
     """
-    def get_icon_by_network_code(self, network_code):
-        pass
+    full_path = True
 
-    def get_icon_by_location(self, location, filters):
-        pass
+    def get_icon_by_network_code(self, network_code):
+        icon_code = self._get_icon_code_from_network_code(network_code)
+        return self._get_icon_path(icon_code)
+
+    def get_icon_by_location(self, location, filter_service=None, raw_filters=None):
+        pass  # TBC
+        # When network filter is present, let's make it quick and clean
+        # if raw_filters and 'network' in raw_filters:
+        #     icon_code = self._get_icon_code_from_network_code(raw_filters['network'][0])
+        #     return icon_code + self.ICON_EXTENSION
+
+        # # Preprocess raw filters
+        # filters = self.get_processed_filters(raw_filters)
+
+        # # Get items (base stations / permission) per location
+        # location_items = self.get_location_objects(location, filters)
+        # if location_items is None:
+        #     return None
+
+        # # Generate code list (a part of icon file name)
+        # code_list = []
+        # for item in location_items:
+        #     icon_code = self._get_icon_code_from_network_code(item.network.code)
+        #     if code_list.count(icon_code) == 0:
+        #         code_list.append(icon_code)
+
+        # if len(code_list) == 0:
+        #     return None
+
+        # # Always put '00' at the end of the lists
+        # code_list.sort()
+        # if code_list.count('00') > 0:
+        #     code_list.remove('00')
+        #     code_list.append('00')
+
+        # return '_'.join(code_list) + self.ICON_EXTENSION
+
+    def _get_icon_path(self, icon_code):
+        if self.full_path:
+            return "{0}{1}".format(settings.MAP_ICON_PATH, icon_code)
+        return icon_code
+
+    def _get_icon_code_from_network_code(self, network_code):
+        # A shortcut method to get icons straight by network code,
+        # as icons are named after network codes (up to code 06,
+        # all above networks share same icon)
+        icon_code = network_code[-2:]
+        return icon_code if int(icon_code) <= 6 else '00'
 
 
 class LocationHasherService():
