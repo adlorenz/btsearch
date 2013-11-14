@@ -145,7 +145,7 @@ var core = {
 	 */
 	displayLocationInfo: function(locationData, marker) {
 		this.clearInfoWindow();
-		this.clearSelectedMarker();
+		// this.clearSelectedMarker(); -- don't make the marker disappear
 		this.infoWindow = new google.maps.InfoWindow({
 			content: locationData.info
 		});
@@ -213,6 +213,7 @@ var events = {
     		if (core.selectedMarker == marker) {
     			core.clearInfoWindow();
     			ui.resetPanel();
+    			core.selectedMarker = null;
     		} else {
     			requests.getLocationInfo(marker, location.id, filters.get());
     		}
