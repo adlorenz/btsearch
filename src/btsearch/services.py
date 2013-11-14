@@ -1,3 +1,4 @@
+import arrow
 import hashlib
 
 
@@ -15,6 +16,8 @@ class QuerysetFilterService():
             self.band_filter_field = kwargs['band_filter_field']
         if 'region_filter_field' in kwargs:
             self.region_filter_field = kwargs['region_filter_field']
+        if 'timedelta_filter_field' in kwargs:
+            self.timedelta_filter_field = kwargs['timedelta_filter_field']
 
     def get_processed_filters(self, raw_filters):
         processed_filters = {}
@@ -29,6 +32,11 @@ class QuerysetFilterService():
         if 'region' in raw_filters:
             region_filter = self._get_region_filter(raw_filters['region'])
             processed_filters.update(region_filter)
+
+        if 'timedelta' in raw_filters:
+            processed_filters.update(
+                self._get_timedelta_filter(raw_filters['timedelta'])
+            )
 
         standards = []
         if 'standard' in raw_filters:
@@ -62,6 +70,13 @@ class QuerysetFilterService():
     def _get_region_filter(self, region):
         return {
             self.region_filter_field: region
+        }
+
+    def _get_timedelta_filter(self, timedelta):
+        # timedelta is a number of days
+        delta = arrow.now().replace(days=-int(timedelta))
+        return {
+            self.timedelta_filter_field: delta.format('YYYY-MM-DD HH:mm:ss')
         }
 
     def _get_standard_band_queryset_filter(self, standards, bands):

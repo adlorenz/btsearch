@@ -7,6 +7,7 @@ class QuerysetFilterMixin(object):
     standard_filter_field = None
     band_filter_field = None
     region_filter_field = None
+    timedelta_filter_field = None
 
     def get_queryset_filters(self):
         filter_service = services.QuerysetFilterService(
@@ -14,6 +15,7 @@ class QuerysetFilterMixin(object):
             standard_filter_field=self.standard_filter_field,
             band_filter_field=self.band_filter_field,
             region_filter_field=self.region_filter_field,
+            timedelta_filter_field=self.timedelta_filter_field
         )
         raw_filters = self.request.GET.copy()
         return filter_service.get_processed_filters(raw_filters)

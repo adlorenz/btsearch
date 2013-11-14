@@ -20,7 +20,12 @@
 				<input type="radio" name="data-source" value="ukelocations" class="radio inline" /> UKE
 			</label>
 		</p>
-		
+		<p>
+			<label class="checkbox inline">
+				<input type="checkbox" id="timedelta-filter" name="timedelta-filter" class="timedelta-filter" value="30" /> Wyświetl ostatnio aktualizowane
+			</label>
+		</p>
+
 		<p>
 			<strong>Sieć</strong><br />
 			<select name="network" id="network-filter">
@@ -30,7 +35,7 @@
 				{% endfor %}
 			</select>
 		</p>
-		
+
 		<div class="lt" style="width: 40%;">
 			<strong>Standard</strong><br />
 			{% for standard in standards %}
@@ -39,19 +44,19 @@
 			</label>
 			{% endfor %}
 		</div>
-		
+
 		<div class="lt">
 			<strong>Pasmo</strong><br />
 			{% for band in bands %}
 			<label class="checkbox inline">
-				<input type="checkbox" id="band-filter-{{ band.0 }}" name="band-{{ band.0 }}" class="band-filter" value="{{ band.0 }}" /> {{ band.0 }} 
+				<input type="checkbox" id="band-filter-{{ band.0 }}" name="band-{{ band.0 }}" class="band-filter" value="{{ band.0 }}" /> {{ band.0 }}
 			</label>{% cycle '' '<br/>' %}
 			{% endfor %}
 		</div>
 		<div class="cr"></div>
 
 	</div>
-	
+
 	<div class="ad">
 		<img src="http://mapa.btsearch.pl/ban/jjc-1802.jpg" border="0" />
 	</div>

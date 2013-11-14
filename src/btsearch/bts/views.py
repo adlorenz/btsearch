@@ -18,6 +18,7 @@ class BtsListingView(mixins.QuerysetFilterMixin, generic.ListView):
     standard_filter_field = 'cells__standard__in'
     band_filter_field = 'cells__band__in'
     region_filter_field = 'location__region'
+    timedelta_filter_field = 'date_updated__gte'
 
     def get_context_data(self, **kwargs):
         ctx = super(BtsListingView, self).get_context_data(**kwargs)

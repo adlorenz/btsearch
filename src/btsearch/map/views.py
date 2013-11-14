@@ -21,6 +21,7 @@ class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListV
     network_filter_field = 'base_stations__network'
     standard_filter_field = 'base_stations__cells__standard__in'
     band_filter_field = 'base_stations__cells__band__in'
+    timedelta_filter_field = 'base_stations__date_updated__gte'
 
     def get(self, request, *args, **kwargs):
         # 'bounds' is a required GET parameter for LocationsView
@@ -62,6 +63,7 @@ class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.
     network_filter_field = 'network'
     standard_filter_field = 'cells__standard__in'
     band_filter_field = 'cells__band__in'
+    timedelta_filter_field = 'date_updated__gte'
 
     def get_context_data(self, **kwargs):
         ctx = super(LocationDetailView, self).get_context_data(**kwargs)
@@ -101,6 +103,7 @@ class UkeLocationsView(LocationsView):
     network_filter_field = 'permissions__operator__network'
     standard_filter_field = 'permissions__standard__in'
     band_filter_field = 'permissions__band__in'
+    timedelta_filter_field = 'permissions__date_updated__gte'
 
 
 class UkeLocationDetailView(LocationDetailView):
@@ -110,6 +113,7 @@ class UkeLocationDetailView(LocationDetailView):
     network_filter_field = 'operator__network'
     standard_filter_field = 'standard__in'
     band_filter_field = 'band__in'
+    timedelta_filter_field = 'date_updated__gte'
 
     def _get_location_objects(self):
         """
