@@ -13,15 +13,20 @@
 				<dt>BTSearch</dt>
 				<dd>
 					Lokalizacje stacji bazowych oraz ich szczegółowe dane (CID/LAC/itp.)
-				zgromadzone przez entuzjastów telefonii komórkowej w bazie BTSearch.
+				zgromadzone przez entuzjastów telefonii komórkowej w
+				<a href="{% url 'bts:listing' %}">bazie danych BTSearch</a>.
 				</dd>
 				<dt>UKE</dt>
 				<dd>
 					Lokalizacje oparte o ogólnodostępny wykaz pozwoleń radiowych wydanych
 				operatorom przez Urząd Komunikacji Elektronicznej.
 				</dd>
+				<dt>Ostatnio aktualizowane</dt>
+				<dd>
+					Wyświetl tylko lokalizacje, których stacje bazowe bądź pozwolenia
+					zostały dodane/uaktualnione w ciągu ostatnich <strong>30&nbsp;dni</strong>.
+				</dd>
 			</dl>
 		</div>
 	</div>
-
 {% endblock %}

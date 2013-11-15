@@ -420,9 +420,7 @@ var ui = {
             ui.toggleControlPanel();
         });
 
-        $('a#data-source-help-icon').fancybox({
-            'padding': 20,
-        });
+        $('a#data-source-help-icon').fancybox();
 
         // Search box autocomplete
         searchBox = document.getElementById('search-box');
