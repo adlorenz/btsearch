@@ -134,7 +134,7 @@ class MapIconService():
         icon_code = self._get_icon_code_from_network_code(network_code)
         return self._get_icon_path(icon_code)
 
-    def get_icon_by_location(self, location, filter_service=None, raw_filters=None):
+    def get_icon_by_location(self, location, filter_service=None, raw_filters=[]):
 
         # Network filter makes it easy
         if 'network' in raw_filters and raw_filters['network']:

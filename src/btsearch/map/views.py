@@ -69,14 +69,13 @@ class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.
             context, **response_kwargs)
 
         location = self.get_object()
-        map_icon = utils.MapIconFactory().get_icon_by_location(location)
         data = {
             'id': location.id,
             'latitude': location.latitude,
             'longitude': location.longitude,
             'summary': unicode(location),
             'info': response.render().rendered_content,
-            'icon': utils.MapIconFactory().get_icon_path(map_icon),
+            'icon': services.MapIconService().get_icon_by_location(location),
         }
         return self.render_json_response(data)
 
