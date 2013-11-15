@@ -88,7 +88,7 @@ class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.
         """
         location = self.get_object()
         qs_filters = self.get_queryset_filters()
-        return location.base_stations.distinct().filter(**qs_filters)
+        return location.get_associated_objects(**qs_filters)
 
 
 class UkeLocationsView(LocationsView):
