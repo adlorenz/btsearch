@@ -552,6 +552,7 @@ var mapStatus = {
         $('#data-source-filter').attr('disabled', true);
         $('.standard-filter').attr('disabled', true);
         $('.band-filter').attr('disabled', true);
+        $('.timedelta-filter').attr('disabled', true);
     },
 
     waitDone: function() {
@@ -560,6 +561,7 @@ var mapStatus = {
         $('#data-source-filter').removeAttr('disabled');
         $('.standard-filter').removeAttr('disabled');
         $('.band-filter').removeAttr('disabled');
+        $('.timedelta-filter').attr('disabled');
         $('#waiting-label-container').hide();
     }
 };
