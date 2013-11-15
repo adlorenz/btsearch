@@ -6,3 +6,4 @@ South==0.8.2
 django-extensions==1.2.5
 uwsgi==1.9.19
 arrow==0.4.2
+django-cookie-law==1.0.0
