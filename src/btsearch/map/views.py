@@ -7,7 +7,6 @@ from ..bts import models as bts_models
 from ..uke import models as uke_models
 from .. import mixins
 from .. import services
-from . import utils
 
 
 class IndexView(generic.TemplateView):
