@@ -23,53 +23,14 @@ class Location(models.Model):
         unique=True,
         db_index=True,
     )
-    # We don't really need that relation right now...
-    #
-    # location = models.ForeignKey(
-    #     'bts.Location',
-    #     blank=True,
-    #     null=True,
-    # )
     date_added = models.DateTimeField(
         auto_now_add=True,
     )
-
-    # def __unicode__(self):
-    #     return ''
 
     def get_associated_objects(self, **filters):
         # Returns permissions belonging to this location
         qs = Permission.objects.distinct().filter(location=self)
         return qs.filter(**filters)
-
-    def get_permissions(self, **kwargs):
-        # TODO: This method is probably redundant.
-        qs = Permission.objects.distinct()
-        if 'standard' in kwargs and 'band' in kwargs:
-            return qs.filter(
-                location=self,
-                standard__in=kwargs.get('standard'),
-                band__in=kwargs.get('band')
-            )
-        elif 'standard' in kwargs:
-            return qs.filter(
-                location=self,
-                standard__in=kwargs.get('standard')
-            )
-        elif 'band' in kwargs:
-            return qs.filter(
-                location=self,
-                band__in=kwargs.get('band')
-            )
-        return Permission.objects.filter(location=self)
-
-    def get_supported_standards_and_bands_by_network(self, network):
-        permissions = self.get_permissions().filter(operator__network=network)
-        return permissions.distinct().values('standard', 'band').exclude(standard='?', band='?')
-
-    def get_supported_standards_by_network(self, network):
-        permissions = self.get_permissions().filter(operator__network=network)
-        return permissions.distinct().values('standard').exclude(standard='?')
 
 
 class Permission(models.Model):

@@ -110,27 +110,22 @@ class UkeLocationDetailView(LocationDetailView):
         Returns objects associated to the location,
         ie. base stations or UKE permissions
         """
-        # TODO: It's slightly messy. Do something about it.
+        permissions = super(UkeLocationDetailView, self)._get_location_objects()
         permissions_by_network = {}
-        networks = []
-        location = self.get_object()
-        qs_filters = self.get_queryset_filters()
-        permissions = location.permissions.distinct().filter(**qs_filters)
+        # Group permissions by network
         for permission in permissions:
-            network = permission.operator.network
-            if network not in networks:
-                networks.append(network)
-
-            if network.code not in permissions_by_network:
-                permissions_by_network[network.code] = []
-            permissions_by_network[network.code].append(permission)
+            if permission.network not in permissions_by_network:
+                permissions_by_network[permission.network] = []
+            permissions_by_network[permission.network].append(permission)
 
         location_objects = []
-        for network in networks:
+        for network in permissions_by_network.keys():
+            supported = permissions.filter(operator__network=network). \
+                values('standard', 'band').exclude(standard='?', band='?')
             location_objects.append({
                 'network': network,
-                'supported': location.get_supported_standards_and_bands_by_network(network),
-                'permissions': permissions_by_network[network.code],
+                'supported': supported,
+                'permissions': permissions_by_network[network],
             })
         return location_objects
 
