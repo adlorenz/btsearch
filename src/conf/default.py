@@ -212,3 +212,5 @@ def create_logging_dict(root):
 LOGGING = create_logging_dict(location('logs'))
 
 INTERNAL_IPS = ('127.0.0.1', '33.33.33.1', '10.0.2.2')
+
+MAP_ICON_PATH = STATIC_URL + 'map_icons/'
