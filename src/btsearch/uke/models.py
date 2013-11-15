@@ -37,6 +37,11 @@ class Location(models.Model):
     # def __unicode__(self):
     #     return ''
 
+    def get_associated_objects(self, **filters):
+        # Returns permissions belonging to this location
+        qs = Permission.objects.distinct().filter(location=self)
+        return qs.filter(**filters)
+
     def get_permissions(self, **kwargs):
         # TODO: This method is probably redundant.
         qs = Permission.objects.distinct()
@@ -118,6 +123,7 @@ class Permission(models.Model):
 
     @property
     def network(self):
+        # This method/property is used in MapIconService
         return self.operator.network
 
 

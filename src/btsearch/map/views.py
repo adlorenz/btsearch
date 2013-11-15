@@ -33,23 +33,25 @@ class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListV
         qs_filters = self.get_queryset_filters()
         return self.queryset.filter(**qs_filters)
 
+    def _get_single_location_filter_class(self):
+        return services.BtsLocationFilterService
+
     def _get_locations_list(self):
-        raw_filters = dict(self.request.GET.copy())
+        icon_service = services.MapIconService()
         locations_list = []
-        for location in self.get_queryset():
+        locations = self.get_queryset()
+        for location in locations:
             locations_list.append({
                 'id': location.id,
                 'latitude': location.latitude,
                 'longitude': location.longitude,
-                'icon': self._get_location_icon_path(location, raw_filters),
+                'icon': icon_service.get_icon_by_location(
+                    location,
+                    self._get_single_location_filter_class()(),
+                    self.request.GET.copy()
+                ),
             })
         return locations_list
-
-    def _get_location_icon_path(self, location, raw_filters):
-        # TODO: I don't like this approach. Refactor it.
-        map_icon_factory = utils.MapIconFactory()
-        map_icon = map_icon_factory.get_icon_by_location(location, raw_filters)
-        return map_icon_factory.get_icon_path(map_icon)
 
 
 class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.DetailView):
@@ -93,6 +95,9 @@ class UkeLocationsView(LocationsView):
     model = uke_models.Location
     queryset = uke_models.Location.objects.distinct()
     filter_class = services.UkeLocationsFilterService
+
+    def _get_single_location_filter_class(self):
+        return services.UkeLocationFilterService
 
 
 class UkeLocationDetailView(LocationDetailView):

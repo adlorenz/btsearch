@@ -8,9 +8,11 @@ class QuerysetFilterService(object):
     """
     A service to process filters applied when browsing map/data.
     """
+    skip_bounds_filter = False
+
     def get_processed_filters(self, raw_filters):
         processed_filters = {}
-        if 'bounds' in raw_filters:
+        if 'bounds' in raw_filters and not self.skip_bounds_filter:
             processed_filters.update(
                 self._get_bounds_filter(raw_filters['bounds'])
             )
@@ -78,9 +80,13 @@ class QuerysetFilterService(object):
                 self.band_filter_field: bands
             }
         elif standards:
-            return {self.standard_filter_field: standards}
+            return {
+                self.standard_filter_field: standards
+            }
         elif bands:
-            return {self.band_filter_field: bands}
+            return {
+                self.band_filter_field: bands
+            }
         return None
 
 
@@ -97,6 +103,7 @@ class BtsLocationFilterService(QuerysetFilterService):
     band_filter_field = 'cells__band__in'
     region_filter_field = 'location__region'
     timedelta_filter_field = 'date_updated__gte'
+    skip_bounds_filter = True
 
 
 class UkeLocationsFilterService(QuerysetFilterService):
@@ -111,56 +118,57 @@ class UkeLocationFilterService(QuerysetFilterService):
     standard_filter_field = 'standard__in'
     band_filter_field = 'band__in'
     timedelta_filter_field = 'date_added__gte'
+    skip_bounds_filter = True
 
 
 class MapIconService():
     """
     A service to provide an icon (marker) representing location on the map.
-
-    Work In Progress...
     """
     full_path = True
+
+    def get_icon_by_network(self, network):
+        return self.get_icon_by_network_code(network.code)
 
     def get_icon_by_network_code(self, network_code):
         icon_code = self._get_icon_code_from_network_code(network_code)
         return self._get_icon_path(icon_code)
 
     def get_icon_by_location(self, location, filter_service=None, raw_filters=None):
-        pass  # TBC
-        # When network filter is present, let's make it quick and clean
-        # if raw_filters and 'network' in raw_filters:
-        #     icon_code = self._get_icon_code_from_network_code(raw_filters['network'][0])
-        #     return icon_code + self.ICON_EXTENSION
 
-        # # Preprocess raw filters
-        # filters = self.get_processed_filters(raw_filters)
+        # Network filter makes it easy
+        if 'network' in raw_filters and raw_filters['network']:
+            return self.get_icon_by_network_code(raw_filters['network'])
 
-        # # Get items (base stations / permission) per location
-        # location_items = self.get_location_objects(location, filters)
-        # if location_items is None:
-        #     return None
+        # Apply filters if specified
+        if filter_service:
+            qs_filters = filter_service.get_processed_filters(raw_filters)
+            location_objects = location.get_associated_objects(**qs_filters)
+        else:
+            location_objects = location.get_associated_objects()
 
-        # # Generate code list (a part of icon file name)
-        # code_list = []
-        # for item in location_items:
-        #     icon_code = self._get_icon_code_from_network_code(item.network.code)
-        #     if code_list.count(icon_code) == 0:
-        #         code_list.append(icon_code)
+        # Jump off the train if no wagons are around
+        if not location_objects:
+            return None
 
-        # if len(code_list) == 0:
-        #     return None
+        # Generate list of icon codes from network codes
+        icon_codes_list = []
+        for obj in location_objects:
+            icon_code = self._get_icon_code_from_network_code(obj.network.code)
+            if icon_code not in icon_codes_list:
+                icon_codes_list.append(icon_code)
 
-        # # Always put '00' at the end of the lists
-        # code_list.sort()
-        # if code_list.count('00') > 0:
-        #     code_list.remove('00')
-        #     code_list.append('00')
+        # Always put '00' code at the end of the list
+        icon_codes_list.sort()
+        if '00' in icon_codes_list:
+            icon_codes_list.remove('00')
+            icon_codes_list.append('00')
 
-        # return '_'.join(code_list) + self.ICON_EXTENSION
+        return self._get_icon_path('_'.join(icon_codes_list))
 
     def _get_icon_path(self, icon_code):
         if self.full_path:
-            return "{0}{1}".format(settings.MAP_ICON_PATH, icon_code)
+            return "{0}{1}.png".format(settings.MAP_ICON_PATH, icon_code)
         return icon_code
 
     def _get_icon_code_from_network_code(self, network_code):
