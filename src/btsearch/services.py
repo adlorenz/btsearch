@@ -11,34 +11,37 @@ class QuerysetFilterService(object):
     def get_processed_filters(self, raw_filters):
         processed_filters = {}
         if 'bounds' in raw_filters:
-            bounds_filter = self._get_bounds_filter(raw_filters['bounds'])
-            processed_filters.update(bounds_filter)
+            processed_filters.update(
+                self._get_bounds_filter(raw_filters['bounds'])
+            )
 
-        if 'network' in raw_filters:
-            network_filter = self._get_network_filter(raw_filters['network'])
-            processed_filters.update(network_filter)
+        if 'network' in raw_filters and raw_filters['network']:
+            processed_filters.update(
+                self._get_network_filter(raw_filters['network'])
+            )
 
-        if 'region' in raw_filters:
-            region_filter = self._get_region_filter(raw_filters['region'])
-            processed_filters.update(region_filter)
+        if 'region' in raw_filters and raw_filters['region']:
+            processed_filters.update(
+                self._get_region_filter(raw_filters['region'])
+            )
 
-        if 'timedelta' in raw_filters:
+        if 'timedelta' in raw_filters and raw_filters['timedelta']:
             processed_filters.update(
                 self._get_timedelta_filter(raw_filters['timedelta'])
             )
 
         standards = []
-        if 'standard' in raw_filters:
+        if 'standard' in raw_filters and raw_filters['standard']:
             standards = raw_filters['standard'].split(',')
 
         bands = []
-        if 'band' in raw_filters:
+        if 'band' in raw_filters and raw_filters['band']:
             bands = raw_filters['band'].split(',')
 
         if standards or bands:
-            standard_band_filter = self._get_standard_band_queryset_filter(
-                standards, bands)
-            processed_filters.update(standard_band_filter)
+            processed_filters.update(
+                self._get_standard_band_queryset_filter(standards, bands)
+            )
 
         return processed_filters
 
@@ -92,6 +95,7 @@ class BtsLocationFilterService(QuerysetFilterService):
     network_filter_field = 'network'
     standard_filter_field = 'cells__standard__in'
     band_filter_field = 'cells__band__in'
+    region_filter_field = 'location__region'
     timedelta_filter_field = 'date_updated__gte'
 
 

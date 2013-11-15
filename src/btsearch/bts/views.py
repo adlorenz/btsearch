@@ -3,6 +3,7 @@ from django.views import generic
 
 from ..uke import models as uke_models
 from .. import mixins
+from .. import services
 from . import models
 from . import forms
 
@@ -13,12 +14,13 @@ class BtsListingView(mixins.QuerysetFilterMixin, generic.ListView):
     queryset = models.BaseStation.objects.distinct()
     context_object_name = 'base_stations'
     paginate_by = 20
+    filter_class = services.BtsLocationFilterService
 
-    network_filter_field = 'network__code'
-    standard_filter_field = 'cells__standard__in'
-    band_filter_field = 'cells__band__in'
-    region_filter_field = 'location__region'
-    timedelta_filter_field = 'date_updated__gte'
+    # network_filter_field = 'network__code'
+    # standard_filter_field = 'cells__standard__in'
+    # band_filter_field = 'cells__band__in'
+    # region_filter_field = 'location__region'
+    # timedelta_filter_field = 'date_updated__gte'
 
     def get_context_data(self, **kwargs):
         ctx = super(BtsListingView, self).get_context_data(**kwargs)
