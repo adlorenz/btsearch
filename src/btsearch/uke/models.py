@@ -29,7 +29,7 @@ class Location(models.Model):
 
     def get_associated_objects(self, **filters):
         # Returns permissions belonging to this location
-        qs = Permission.objects.distinct().filter(location=self)
+        qs = Permission.objects.filter(location=self)
         return qs.filter(**filters)
 
 
