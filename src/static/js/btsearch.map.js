@@ -561,7 +561,7 @@ var mapStatus = {
         $('#data-source-filter').removeAttr('disabled');
         $('.standard-filter').removeAttr('disabled');
         $('.band-filter').removeAttr('disabled');
-        $('.timedelta-filter').attr('disabled');
+        $('.timedelta-filter').removeAttr('disabled');
         $('#waiting-label-container').hide();
     }
 };
