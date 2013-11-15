@@ -16,17 +16,10 @@ class BtsListingView(mixins.QuerysetFilterMixin, generic.ListView):
     paginate_by = 20
     filter_class = services.BtsLocationFilterService
 
-    # network_filter_field = 'network__code'
-    # standard_filter_field = 'cells__standard__in'
-    # band_filter_field = 'cells__band__in'
-    # region_filter_field = 'location__region'
-    # timedelta_filter_field = 'date_updated__gte'
-
     def get_context_data(self, **kwargs):
         ctx = super(BtsListingView, self).get_context_data(**kwargs)
         ctx['filter_form'] = forms.ListingFilterForm(self.request.GET)
         ctx['get_params'] = self.request.GET.copy()
-        # ctx['rows_found'] = self.get_queryset().count()
         return ctx
 
     def get_queryset(self):
