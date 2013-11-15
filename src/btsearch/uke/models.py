@@ -27,6 +27,9 @@ class Location(models.Model):
         auto_now_add=True,
     )
 
+    class Meta:
+        ordering = ['id']
+
     def get_associated_objects(self, **filters):
         # Returns permissions belonging to this location
         qs = Permission.objects.filter(location=self)
