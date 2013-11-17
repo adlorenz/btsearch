@@ -45,6 +45,11 @@ class Permission(models.Model):
         'Operator',
         related_name='permissions',
     )
+    network = models.ForeignKey(
+        'bts.Network',
+        related_name='permissions',
+        null=True,
+    )  # Field 'network' is added to Permission model to improve database performance
     station_id = models.CharField(
         max_length=16,
         db_index=True,
@@ -85,10 +90,10 @@ class Permission(models.Model):
     def __unicode__(self):
         return '{0}, {1}'.format(self.network.code, self.case_number)
 
-    @property
-    def network(self):
+    # @property
+    # def network(self):
         # This method/property is used in MapIconService
-        return self.operator.network
+        # return self.operator.network
 
 
 class Operator(models.Model):
