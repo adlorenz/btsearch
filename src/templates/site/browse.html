@@ -1,12 +1,12 @@
 {% extends 'site/layout.html' %}
 {% block main-content-container %}
 	<div id="main-content-container">
-		<div class="container-fluid">
-			<div class="row-fluid">
-				<div class="span2">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-2">
 					{% block sidebar-content %}{% endblock %}
 				</div>
-				<div class="span10">
+				<div class="col-lg-10">
 					{% block main-content %}{% endblock %}
 				</div>
 			</div>
