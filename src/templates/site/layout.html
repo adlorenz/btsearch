@@ -38,10 +38,12 @@
     <div id="header-container">
         <div class="lt">
             <img src="{% static "img/btsearch-logo-main.png" %}" border="0" width="157" height="55" alt="Logo" />
+            {% block search-form %}
             <form id="search-form" action="{% block search-form-action %}{% endblock %}" method="get">
                 <input type="text" id="search-box" value="{% block current-search-query %}{% endblock %}" name="query" />
                 <input type="submit" id="search-submit" value="Szukaj" />
             </form>
+            {% endblock search-form %}
         </div>
         <div class="rt">
             <div id="google-ad-box">Google ad box</div>

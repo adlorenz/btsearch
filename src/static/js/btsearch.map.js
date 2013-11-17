@@ -103,11 +103,13 @@ var core = {
     loadLocations: function() {
         mapStatus.wait();
         if (this.map.getZoom() >= 11) {
+            mapStatus.clearZoomWarning();
             requests.getLocations(this.map.getBounds(), filters.get());
         } else {
             this.clearAllOverlays();
             ui.resetPanel();
             mapStatus.waitDone();
+            mapStatus.displayZoomWarning();
         }
         mapStatus.updateAll();
     },
@@ -533,13 +535,9 @@ var mapStatus = {
         var locationsCount = core.markers.length;
         $('#status-locations-count').html(locationsCount);
         if (locationsCount >= 500) {
-            $('#status-locations-count').css('color', 'red');
-            $('#status-locations-count').css('font-weight', 'bold');
-            $('#status-locations-count').attr('title', 'Liczba wyświetlonych lokalizacji ograniczona');
+            this.displayLocationCountWarning();
         } else {
-            $('#status-locations-count').css('color', 'black');
-            $('#status-locations-count').css('font-weight', 'normal');
-            $('#status-locations-count').attr('title', '');
+            this.clearLocationCountWarning();
         }
     },
 
@@ -573,6 +571,30 @@ var mapStatus = {
         $('.band-filter').removeAttr('disabled');
         $('.timedelta-filter').removeAttr('disabled');
         $('#waiting-label-container').hide();
+    },
+
+    displayZoomWarning: function() {
+        $('#status-zoom').css('color', 'red');
+        $('#status-zoom').css('font-weight', 'bold');
+        $('#status-zoom').attr('title', 'Lokalizacje są wyświetlane od poziomu zbliżenia 11 wzwyż');
+    },
+
+    clearZoomWarning: function() {
+        $('#status-zoom').css('color', 'black');
+        $('#status-zoom').css('font-weight', 'normal');
+        $('#status-zoom').attr('title', '');
+    },
+
+    displayLocationCountWarning: function() {
+        $('#status-locations-count').css('color', 'red');
+        $('#status-locations-count').css('font-weight', 'bold');
+        $('#status-locations-count').attr('title', 'Liczba wyświetlonych lokalizacji ograniczona');
+    },
+
+    clearLocationCountWarning: function() {
+        $('#status-locations-count').css('color', 'black');
+        $('#status-locations-count').css('font-weight', 'normal');
+        $('#status-locations-count').attr('title', '');
     }
 };
 

@@ -1,0 +1,17 @@
+{% extends 'site/layout.html' %}
+
+{% block page-title %}{{ flatpage.title }}{% endblock %}
+{% block search-form %}{% endblock search-form %}
+
+{% block main-content-container %}
+    <div id="main-content-container">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h3>{{ flatpage.title }}</h3>
+                    {{ flatpage.content }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
