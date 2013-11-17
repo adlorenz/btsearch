@@ -152,9 +152,10 @@ class MapIconService():
             return None
 
         # Generate list of icon codes from network codes
+        location_objects = location_objects.values('network')  # Incredibly improves DB performance!
         icon_codes_list = []
         for obj in location_objects:
-            icon_code = self._get_icon_code_from_network_code(obj.network.code)
+            icon_code = self._get_icon_code_from_network_code(obj.get('network'))
             if icon_code not in icon_codes_list:
                 icon_codes_list.append(icon_code)
 
@@ -175,8 +176,10 @@ class MapIconService():
         # A shortcut method to get icons straight by network code,
         # as icons are named after network codes (up to code 06,
         # all above networks share same icon)
-        icon_code = network_code[-2:]
-        return icon_code if int(icon_code) <= 6 else '00'
+        if network_code:
+            icon_code = network_code[-2:]
+            return icon_code if int(icon_code) <= 6 else '00'
+        return '00'
 
 
 class LocationHasherService():
