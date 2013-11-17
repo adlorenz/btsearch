@@ -101,45 +101,6 @@
       </div><!-- /.navbar-collapse -->
     </nav>
 
-    {% comment %}
-
-    <div id="topbar-container">
-        <ul class="lt">
-            <li class="header"><a href="/">btsearch.pl</a></li>
-            <li><a href="/">Mapa</a></li>
-            <li><a href="{% url 'bts:listing' %}">Baza danych</a></li>
-            <li><a href="/about">O serwisie</a></li>
-            <li><a href="/tutorial">Poradnik</a></li>
-            <li><a href="/export">Eksport CLF</a></li>
-            <li><a href="/api">API</a></li>
-            <li><a href="/contact">Kontakt</a></li>
-        </ul>
-        <ul class="rt">
-            <li class="static"><strong>Śledź nas &raquo;</strong> <a href="http://twitter.com/btsearch">Twitter</a></li>
-        </ul>
-        <div class="cr"></div>
-    </div>
-    {% endcomment %}
-
-{% comment %}
-
-    <div id="header-container">
-        <div class="lt">
-            <img src="{% static "img/btsearch-logo-main.png" %}" border="0" width="157" height="55" alt="Logo" />
-            {% block search-form %}
-            <form id="search-form" action="{% block search-form-action %}{% endblock %}" method="get">
-                <input type="text" id="search-box" value="{% block current-search-query %}{% endblock %}" name="query" />
-                <input type="submit" id="search-submit" value="Szukaj" />
-            </form>
-            {% endblock search-form %}
-        </div>
-        <div class="rt">
-            <div id="google-ad-box">Google ad box</div>
-        </div>
-        <div class="cr"></div>
-    </div>
-{% endcomment %}
-
     {% block main-content-container %}{% endblock %}
     {% block extra-content %}{% endblock %}
     {% cookielaw_banner %}
