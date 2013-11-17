@@ -1,6 +1,5 @@
 {% load staticfiles %}
 {% load cookielaw_tags %}
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,7 +14,6 @@
 </head>
 <body>
 
-    {% cookielaw_banner %}
     <div id="topbar-container">
         <ul class="lt">
             <li class="header"><a href="/">btsearch.pl</a></li>
@@ -53,6 +51,7 @@
 
     {% block main-content-container %}{% endblock %}
     {% block extra-content %}{% endblock %}
+    {% cookielaw_banner %}
 
     {# Core JavaScript libs #}
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
