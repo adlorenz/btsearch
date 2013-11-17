@@ -16,7 +16,6 @@ class IndexView(generic.TemplateView):
 class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListView):
     model = bts_models.Location
     queryset = bts_models.Location.objects.distinct()
-    paginate_by = 500
     filter_class = services.BtsLocationsFilterService
 
     def get(self, request, *args, **kwargs):
@@ -30,13 +29,16 @@ class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListV
 
     def get_queryset(self):
         qs_filters = self.get_queryset_filters()
-        return self.queryset.filter(**qs_filters)
+        # Poor-man's hard limit of 500 results to improve performance
+        return self.queryset.filter(**qs_filters)[:500]
 
     def _get_single_location_filter_class(self):
         return services.BtsLocationFilterService
 
     def _get_locations_list(self):
         icon_service = services.MapIconService()
+        filter_class = self._get_single_location_filter_class()
+        raw_filters = self.request.GET.copy()
         locations_list = []
         locations = self.get_queryset()
         for location in locations:
@@ -46,8 +48,8 @@ class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListV
                 'longitude': location.longitude,
                 'icon': icon_service.get_icon_by_location(
                     location,
-                    self._get_single_location_filter_class()(),
-                    self.request.GET.copy()
+                    filter_class(),
+                    raw_filters
                 ),
             })
         return locations_list

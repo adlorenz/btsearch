@@ -530,7 +530,17 @@ var mapStatus = {
     },
 
     updateLocationsCount: function() {
-        $('#status-locations-count').html(core.markers.length);
+        var locationsCount = core.markers.length;
+        $('#status-locations-count').html(locationsCount);
+        if (locationsCount >= 500) {
+            $('#status-locations-count').css('color', 'red');
+            $('#status-locations-count').css('font-weight', 'bold');
+            $('#status-locations-count').attr('title', 'Liczba wyświetlonych lokalizacji ograniczona');
+        } else {
+            $('#status-locations-count').css('color', 'black');
+            $('#status-locations-count').css('font-weight', 'normal');
+            $('#status-locations-count').attr('title', '');
+        }
     },
 
     updateDataSource: function() {
