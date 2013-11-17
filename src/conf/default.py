@@ -101,6 +101,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'btsearch.middleware.ProfileMiddleware',
 )
 
 ROOT_URLCONF = 'btsearch.urls'
