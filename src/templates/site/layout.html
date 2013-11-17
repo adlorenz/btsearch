@@ -39,6 +39,35 @@
     max-width: none;
 }
 
+#control-panel-container {
+    position: relative;
+    padding: 8px;
+    z-index: 199;
+    min-width: 240px;
+    max-width: 300px;
+}
+
+#status-panel-container {
+    position: relative;
+    padding: 8px 8px 8px 0px;
+    z-index: 99;
+}
+
+#waiting-label-container {
+    margin: 4px;
+    padding: 4px 6px 4px 6px;
+    z-index: 99;
+    background: red;
+    display: none;
+}
+
+/* Found on http://stackoverflow.com/questions/806000/css-semi-transparent-background-but-not-text */
+/*.panel-transparency {
+    background: rgb(255, 233, 166) transparent;
+    background: rgba(255, 233, 166, 0.9);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
+}*/
 
 #CookielawBanner .container {
     position: fixed;
@@ -50,8 +79,6 @@
     font-size: 8pt;
     z-index: 10000;
 }
-
-
 
     </style>
 </head>
