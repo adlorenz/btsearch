@@ -10,5 +10,5 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^bts/', include('btsearch.bts.urls', namespace='bts')),
     url(r'^map/', include('btsearch.map.urls', namespace='map')),
-    url(r'^$', views.IndexView.as_view(), name='index-view'),
+    url(r'^$', views.IndexView.as_view(), name='home'),
 )
