@@ -24,7 +24,7 @@ TIME_ZONE = 'Europe/Warsaw'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'pl'
 
 SITE_ID = 1
 
@@ -101,6 +101,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'btsearch.middleware.ProfileMiddleware',
 )
 
 ROOT_URLCONF = 'btsearch.urls'
@@ -121,6 +122,8 @@ INSTALLED_APPS = [
     'south',  # Do not change the position of south in this list unless
               # specifically instructed to by installation instructions
     'django_extensions',
+    'cookielaw',
+
     'btsearch.bts',
     'btsearch.uke',
     'btsearch.map',
@@ -212,3 +215,5 @@ def create_logging_dict(root):
 LOGGING = create_logging_dict(location('logs'))
 
 INTERNAL_IPS = ('127.0.0.1', '33.33.33.1', '10.0.2.2')
+
+MAP_ICON_PATH = STATIC_URL + 'map_icons/'

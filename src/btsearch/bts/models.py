@@ -54,25 +54,10 @@ class Location(models.Model):
     has_location_hash.boolean = True
     has_location_hash.short_description = 'GPS?'
 
-    def get_base_stations(self, **kwargs):
-        # TODO: This method is probably redundant.
-        if 'standard' in kwargs and 'band' in kwargs:
-            return BaseStation.objects.distinct().filter(
-                location=self,
-                cells__standard__in=kwargs.get('standard'),
-                cells__band__in=kwargs.get('band')
-            )
-        elif 'standard' in kwargs:
-            return BaseStation.objects.distinct().filter(
-                location=self,
-                cells__standard__in=kwargs.get('standard')
-            )
-        elif 'band' in kwargs:
-            return BaseStation.objects.distinct().filter(
-                location=self,
-                cells__band__in=kwargs.get('band')
-            )
-        return BaseStation.objects.filter(location=self)
+    def get_associated_objects(self, **filters):
+        # Returns base stations belonging to this location
+        qs = BaseStation.objects.distinct().filter(location=self)
+        return qs.filter(**filters)
 
 
 class BaseStation(models.Model):

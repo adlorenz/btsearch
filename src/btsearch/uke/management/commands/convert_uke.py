@@ -50,6 +50,7 @@ class Command(BaseCommand):
                     permission_dict = {
                         'location': location,
                         'operator': operator,
+                        'networks': operator.network,
                         'station_id': rawrecord.station_id,
                         'standard': standard,
                         'band': band,
