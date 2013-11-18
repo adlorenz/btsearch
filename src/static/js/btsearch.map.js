@@ -29,9 +29,24 @@ var core = {
 
     init: function(mapCanvas) {
         this.map = new google.maps.Map(mapCanvas, this.mapParams);
+        this.locationAutodetect();
         this.geocoder = new google.maps.Geocoder();
         this.markers = new Array();
         ui.createMapControls(this.map);
+    },
+
+    locationAutodetect: function() {
+        // TODO: Do not auto-detect locations outside of Poland?
+        // Reference: https://developers.google.com/maps/articles/geolocation
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                core.map.setCenter(
+                    new google.maps.LatLng(position.coords.latitude,position.coords.longitude)
+                );
+            }, function() {
+                console.log('Error autodetecting location');
+            });
+        }
     },
 
     bindMapEvents: function() {
@@ -310,7 +325,7 @@ var requests = {
                         core.loadLocations();
                         clearInterval(inv);
                     }
-                }, 500);
+                }, 1500);
             }
         });
     },
