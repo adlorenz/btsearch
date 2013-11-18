@@ -120,7 +120,7 @@ class UkeLocationDetailView(LocationDetailView):
 
         location_objects = []
         for network in permissions_by_network.keys():
-            supported = permissions.filter(operator__network=network). \
+            supported = permissions.distinct().filter(operator__network=network). \
                 values('standard', 'band').exclude(standard='?', band='?')
             location_objects.append({
                 'network': network,
