@@ -2,28 +2,25 @@
 <div id="location-info-container">
 {% for item in items %}
     {% if forloop.first %}
-        <div class="location-address">
-            <strong>{{ item.permissions.0.town }}</strong><br/>
-            <small>{{ item.permissions.0.address }}</small>
-        </div>
+    <div class="location-address">
+        <strong>{{ item.permissions.0.town }}</strong><br/>
+        <small>{{ item.permissions.0.address }}</small>
+    </div>
     <div class="location-items">
     {% endif %}
         <div class="location-item">
-            <img src="{{ item.permissions.0|get_icon }}" class="location-network-icon" />
-            <div class="location-item-details">
-                {{ item.network.name }}
-                <p>
-                <small>
-                {% for support in item.supported %}
-                    {{ support.standard }}{{ support.band }}
-                    {% if forloop.last %}
-                        <a class="location-info fancybox fancybox.ajax" href="{% url 'bts:uke-extended-info-view' location.id item.network.code %}">Szczegóły...</a>
-                    {% endif %}
-                {% endfor %}
-                </small>
-                </p>
-            </div>
-            <div class="cr"></div>
+            <img src="{{ item.permissions.0|get_icon }}" class="location-network-icon pull-left" />
+
+            <a class="location-info" href="{% url 'bts:uke-extended-info-view' location.id item.network.code %}" title="Szczegółowe informacje o pozwoleniach"><strong>{{ item.network.name }}</strong></a>
+            {% if item.permissions.0.station_id %}
+                <small>ID: <abbr title="Identyfikator wewnętrzny operatora">{{ item.permissions.0.station_id }}</abbr></small>
+            {% endif %}<br/>
+
+            <small>
+            {% for support in item.supported %}
+                {{ support.standard }}{{ support.band }}
+            {% endfor %}
+            </small>
         </div>
     {% if forloop.last %}
     </div>
