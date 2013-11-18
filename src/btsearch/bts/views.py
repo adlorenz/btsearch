@@ -61,7 +61,7 @@ class UkeDetailView(generic.DetailView):
             ctx['permissions'] = uke_models.Permission.objects.filter(
                 location=self.object,
                 operator__network=network
-            )
+            ).order_by('standard', 'band')
             ctx['network'] = network
         except:
             pass

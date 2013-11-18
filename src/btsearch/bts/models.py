@@ -169,7 +169,8 @@ class BaseStation(models.Model):
         return u"{coords.latitude},{coords.longitude}".format(coords=self.location)
 
     def get_cells(self):
-        return Cell.objects.filter(base_station=self)
+        qs = Cell.objects.filter(base_station=self)
+        return qs.order_by('standard', 'band', 'ua_freq', 'cid')
 
     def get_supported_standards_and_bands(self):
         cells = self.get_cells()
