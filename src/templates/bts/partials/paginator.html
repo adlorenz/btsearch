@@ -1,13 +1,11 @@
-<div class="pagination pagination-right">
-    <ul>
-        {% if page_obj.has_previous %}
-            <li><a href="?page={{ page_obj.previous_page_number }}{% for key,value in get_params.items %}{% ifnotequal key 'page' %}&amp;{{ key }}={{ value }}{% endifnotequal %}{% endfor %}">poprzednia</a></li>
-        {% endif %}
-        <li class="active">
-            <a href="">Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }} (łącznie {{ page_obj.paginator.count }} rekordów)</a>
-        </li>
-        {% if page_obj.has_next %}
-            <li><a href="?page={{ page_obj.next_page_number }}{% for key,value in get_params.items %}{% ifnotequal key 'page' %}&amp;{{ key }}={{ value }}{% endifnotequal %}{% endfor %}">następna</a></li>
-        {% endif %}
-    </ul>
-</div>
+<ul class="pagination">
+    {% if page_obj.has_previous %}
+        <li><a href="?page={{ page_obj.previous_page_number }}{% for key,value in get_params.items %}{% ifnotequal key 'page' %}&amp;{{ key }}={{ value }}{% endifnotequal %}{% endfor %}">poprzednia</a></li>
+    {% endif %}
+    <li class="active">
+        <a href="">Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }} (łącznie {{ page_obj.paginator.count }} rekordów)</a>
+    </li>
+    {% if page_obj.has_next %}
+        <li><a href="?page={{ page_obj.next_page_number }}{% for key,value in get_params.items %}{% ifnotequal key 'page' %}&amp;{{ key }}={{ value }}{% endifnotequal %}{% endfor %}">następna</a></li>
+    {% endif %}
+</ul>
