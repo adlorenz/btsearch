@@ -62,12 +62,12 @@
 }
 
 /* Found on http://stackoverflow.com/questions/806000/css-semi-transparent-background-but-not-text */
-/*.panel-transparency {
-    background: rgb(255, 233, 166) transparent;
-    background: rgba(255, 233, 166, 0.9);
+.panel-transparency {
+    background: rgb(255, 255, 255) transparent;
+    background: rgba(255, 255, 255, 0.9);
     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
-}*/
+}
 
 #CookielawBanner .container {
     position: fixed;
@@ -88,7 +88,19 @@
 
     .container .form-group ul li { display: inline-block !important; }
     .container .form-group ul li+li { margin-left: 0.5em !important;}
+    #status-panel-gps { display: none; }
 
+
+}
+
+@media (max-width: 600px) {
+  #status-panel-container { display: none; }
+  #control-panel-container { padding: 0px; }
+}
+
+
+@media (max-height: 500px) {
+  #ad-panel { display: none; }
 }
 
 #control-panel-container .glyphicon {
