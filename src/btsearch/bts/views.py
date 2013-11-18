@@ -9,7 +9,7 @@ from . import forms
 
 
 class BtsListingView(mixins.QuerysetFilterMixin, generic.ListView):
-    template_name = 'bts/listing.html'
+    template_name = 'bts/index.html'
     model = models.BaseStation
     queryset = models.BaseStation.objects.distinct()
     context_object_name = 'base_stations'
