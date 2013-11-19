@@ -42,16 +42,18 @@ class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListV
         locations_list = []
         locations = self.get_queryset()
         for location in locations:
-            locations_list.append({
-                'id': location.id,
-                'latitude': location.latitude,
-                'longitude': location.longitude,
-                'icon': icon_service.get_icon_by_location(
-                    location,
-                    filter_class(),
-                    raw_filters
-                ),
-            })
+            location_icon = icon_service.get_icon_by_location(
+                location,
+                filter_class(),
+                raw_filters
+            )
+            if location_icon:
+                locations_list.append({
+                    'id': location.id,
+                    'latitude': location.latitude,
+                    'longitude': location.longitude,
+                    'icon': location_icon,
+                })
         return locations_list
 
 
