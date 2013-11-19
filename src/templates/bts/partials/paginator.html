@@ -1,4 +1,4 @@
-<ul class="pagination">
+<ul class="pagination pull-right">
     {% if page_obj.has_previous %}
         <li><a href="?page={{ page_obj.previous_page_number }}{% for key,value in get_params.items %}{% ifnotequal key 'page' %}&amp;{{ key }}={{ value }}{% endifnotequal %}{% endfor %}">poprzednia</a></li>
     {% endif %}

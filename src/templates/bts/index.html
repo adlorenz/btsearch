@@ -3,7 +3,7 @@
 
 {% block sidebar-content %}
 
-    <form action="" method="get">
+    <form action="" method="get" class="form">
         <div class="form-group">
             <label for="id_network">Sieć:</label>
             {{ filter_form.network }}
@@ -24,6 +24,9 @@
         <input class="btn btn-primary" type="submit" value="Filtruj" />
     </form>
 
+    <p>&nbsp;</p>
+    <p>Liczba rekordów: <strong>{{ page_obj.paginator.count }}</strong></p>
+
 {% endblock %}
 
 {% block current-search-query %}{{ get_params.query }}{% endblock %}
@@ -31,10 +34,6 @@
 {% block main-content %}
 
     {% if base_stations %}
-
-        <h4>
-            Rezultatów: {{ page_obj.paginator.count }}
-        </h4>
 
         <table class="table table-striped">
             <thead>
@@ -44,8 +43,8 @@
                     <th>Miejscowość</th>
                     <th>Adres</th>
                     <th>Technologie</th>
-                    <th>ID stacji</th>
-                    <th>Ost. aktualizacja</th>
+                    <th><abbr title="Wewnętrzny identyfikator operatora">ID stacji</abbr></th>
+                    <th>Ostatnia aktualizacja</th>
                 </tr>
             </thead>
             <tbody>
