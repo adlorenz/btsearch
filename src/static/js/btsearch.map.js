@@ -43,6 +43,7 @@ var core = {
                 core.map.setCenter(
                     new google.maps.LatLng(position.coords.latitude,position.coords.longitude)
                 );
+                core.map.setZoom(15);
             }, function() {
                 console.log('Error autodetecting location');
             });
