@@ -133,6 +133,7 @@ def deploy():
     set_ssh_user()
     init()
     deploy_codebase(env.build_file, env.version)
+    deploy_app_config()
 
     update_virtualenv()
     migrate()
@@ -142,7 +143,6 @@ def deploy():
     deploy_cronjobs()
 
     switch_symlink()
-    deploy_app_config()
     reload_python_code()
     reload_nginx()
     reload_supervisord()
