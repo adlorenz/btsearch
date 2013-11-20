@@ -474,8 +474,6 @@ var ui = {
                 }
             }
         });
-
-        // $('#control-panel-header').toggleClass('control-panel-header-closed');
     }
 
 };
