@@ -76,6 +76,8 @@
     <script type="text/javascript" src="{% static "libs/bootstrap3/js/bootstrap.js" %}"></script>
     <script type="text/javascript" src="{% static "cookielaw/js/cookielaw.js" %}"></script>
 
+    {% include "partials/google_analytics.html" %}
+
     {# Additional, context-specific JavaScript scripts #}
     {% block extrascripts %}{% endblock extrascripts %}
 
