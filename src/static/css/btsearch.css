@@ -79,8 +79,14 @@ img.location-network-icon {
   margin-top: 3px;
 }
 
+.location-address {
+  padding: 2px 0px;
+}
+
 .location-item {
   margin-bottom: 3px;
+  border-top: 1px solid #bdbdbd;
+  padding-top: 2px;
 }
 
 #CookielawBanner .container {
