@@ -142,6 +142,7 @@ def deploy():
     deploy_cronjobs()
 
     switch_symlink()
+    deploy_app_config()
     reload_python_code()
     reload_nginx()
     reload_supervisord()
@@ -281,6 +282,13 @@ def migrate():
     with cd(env.code_dir):
         sudo('source %s/bin/activate && ./manage.py syncdb --noinput > /dev/null' % env.virtualenv)
         sudo('source %s/bin/activate && ./manage.py migrate --ignore-ghost-migrations' % env.virtualenv)
+
+
+def deploy_app_config():
+    notify("Deploying application's environment-specific config")
+    local_path = '%(web_dir)s/%(app_conf)s' % env
+    remote_path = '%(project_dir)s%(app_conf)s' % env
+    upload(local_path, remote_path)
 
 
 def deploy_nginx_config():
