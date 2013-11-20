@@ -11,8 +11,8 @@ var core = {
 
     mapParams: {
         // Init zoom/center to be overriden via URL/cookie
-        zoom: 12,
-        center: new google.maps.LatLng(51.9400, 15.5888),
+        zoom: 9,
+        center: new google.maps.LatLng(52.069245, 19.480193),
         streetViewControl: false,
         scaleControl: true,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
