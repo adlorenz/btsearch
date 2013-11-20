@@ -1,0 +1,8 @@
+{% extends "site/content.html" %}
+
+{% block content-title %}404{% endblock content-title %}
+
+{% block main-content %}
+    <p>Strona o podanym adresie nie istnieje. Szukaj dalej.</p>
+    <p><small><a href="{% url 'home' %}">Powrót do strony głównej</a></small></p>
+{% endblock main-content %}

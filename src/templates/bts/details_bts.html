@@ -41,7 +41,7 @@
                 <td>{% if cell.ua_freq == 0 %} ? {% else %} {{cell.ua_freq}} {% endif %}</td>
                 {% endif %}
                 {% if cell.standard != 'UMTS' %}
-                <td colspan="3" style="text-align: center;">nie dotyczy</td>
+                <td colspan="3" style="text-align: center;">--</td>
                 {% endif %}
                 <td>{% if cell.notes %}{{ cell.notes }}{% else %}--{% endif %}</td>
             </tr>

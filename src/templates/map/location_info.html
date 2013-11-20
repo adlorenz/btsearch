@@ -9,8 +9,7 @@
     {% for base_station in items %}
         <div class="location-item">
             <img src="{{ base_station|get_icon }}" class="location-network-icon pull-left" />
-
-            <a class="location-info" href="{% url 'bts:bts-extended-info-view' base_station.id %}" title="Szczegółowe informacje o stacji"><strong>{{ base_station.network.name }}</strong></a>
+            <strong>{{ base_station.network.name }}</strong>
             {% if base_station.station_id %}
                 <small>ID: <abbr title="Identyfikator wewnętrzny operatora">{{ base_station.station_id }}</abbr></small>
             {% endif %}<br/>
@@ -27,6 +26,7 @@
                         {% for support in supported %}
                             {{ support.standard }}{{ support.band }}
                         {% endfor %}
+                        <a class="location-info" href="{% url 'bts:bts-extended-info-view' base_station.id %}" class="pull-right">Szczegóły...</a>
                     </small>
                 {% endif %}
             {% endwith %}

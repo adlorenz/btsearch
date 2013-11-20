@@ -27,4 +27,7 @@ urlpatterns = patterns(
         views.StatusPanelView.as_view(),
         name='status-panel-view'),
 
+    url(r'^ui/ad_panel/$',
+        views.AdPanelView.as_view(),
+        name='ad-panel-view'),
 )

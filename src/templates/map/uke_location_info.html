@@ -11,7 +11,7 @@
         <div class="location-item">
             <img src="{{ item.permissions.0|get_icon }}" class="location-network-icon pull-left" />
 
-            <a class="location-info" href="{% url 'bts:uke-extended-info-view' location.id item.network.code %}" title="Szczegółowe informacje o pozwoleniach"><strong>{{ item.network.name }}</strong></a>
+            <strong>{{ item.network.name }}</strong>
             {% if item.permissions.0.station_id %}
                 <small>ID: <abbr title="Identyfikator wewnętrzny operatora">{{ item.permissions.0.station_id }}</abbr></small>
             {% endif %}<br/>
@@ -20,6 +20,7 @@
             {% for support in item.supported %}
                 {{ support.standard }}{{ support.band }}
             {% endfor %}
+            <a class="location-info" href="{% url 'bts:uke-extended-info-view' location.id item.network.code %}" title="Szczegółowe informacje o pozwoleniach">Szczegóły...</a>
             </small>
         </div>
     {% if forloop.last %}

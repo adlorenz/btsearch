@@ -15,124 +15,8 @@
     <link rel="stylesheet" type="text/css" href="{% static "libs/fancybox/jquery.fancybox.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "libs/bootstrap3/css/bootstrap.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "cookielaw/css/cookielaw.css" %}" />
-    {# <link rel="stylesheet" type="text/css" href="{% static "css/btsearch.css" %}" /> #}
-    <style type="text/css">
-
-    #map-container {
-        position: fixed;
-        width: 100%;
-        height: auto;
-        top: 51px;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
-
-#main-content-container {
-    width: 100%;
-    padding: 10px 0px;
-}
-
-#map {
-    height: 100%;
-    width: 100%;
-}
-
-#map img {
-    max-width: none;
-}
-
-#control-panel-container {
-    position: relative;
-    padding: 8px;
-    z-index: 199;
-    min-width: 240px;
-    max-width: 300px;
-}
-
-#status-panel-container {
-    position: relative;
-    padding: 8px 8px 8px 0px;
-    z-index: 99;
-}
-
-#waiting-label-container {
-    margin: 4px;
-    padding: 4px 6px 4px 6px;
-    z-index: 99;
-    background: red;
-    display: none;
-}
-
-#control-panel-body {
-  overflow: auto;
-}
-
-/* Found on http://stackoverflow.com/questions/806000/css-semi-transparent-background-but-not-text */
-.panel-transparency {
-    background: rgb(255, 255, 255) transparent;
-    background: rgba(255, 255, 255, 0.9);
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
-}
-
-#CookielawBanner .container {
-    position: fixed;
-    bottom: 0px;
-    right: 0px;
-    width: 100%;
-    background-color: rgb(85, 85, 85);
-    color: rgb(255, 255, 255);
-    font-size: 8pt;
-    z-index: 10000;
-}
-
-.container { width: 100% !important; }
-
-.container .form-group ul { list-style: none; padding: 0;}
-
-@media (max-width: 960px) {
-
-    .container .form-group ul li { display: inline-block !important; }
-    .container .form-group ul li+li { margin-left: 0.5em !important;}
-    #status-panel-gps { display: none; }
-
-
-}
-
-@media (max-width: 650px) {
-  #status-panel-container { display: none; }
-  #control-panel-container { padding: 0px; }
-}
-
-
-@media (max-height: 500px) {
-  #ad-panel { display: none; }
-
-}
-
-@media (max-height: 400px) {
-  #control-panel-container { bottom: 0px; }
-  .panel-transparency { overflow: auto; height: 100%; }
-  #control-panel-body { overflow: hidden; }
-  /*#control-panel-body { display: none; }*/
-}
-
-#control-panel-container .glyphicon {
-    font-size: 11pt;
-}
-
-
-
-img.location-network-icon {
-  margin-right: 7px;
-  margin-top: 3px;
-}
-
-.location-item {
-  margin-bottom: 3px;
-}
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static "css/btsearch.css" %}" />
+    {% block extrahead %}{% endblock extrahead %}
 </head>
 <body>
 
@@ -162,18 +46,20 @@ img.location-network-icon {
         <ul class="nav navbar-nav">
           <li><a href="{% url 'home' %}">Mapa</a></li>
           <li><a href="{% url 'bts:listing' %}">Baza danych</a></li>
-          {% for page in flatpages %}
-            <li><a href="{{ page.url }}">{{ page.title }}</a></li>
-          {% endfor %}
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
+          <li><a href="/nowosci/" id="news-ticker-trigger"><span class="text-danger">Co nowego?</span></a></li>
+          <li><a href="/o-serwisie/">O serwisie</a></li>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Więcej <b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <li><a href="http://btsearch.pl/galeria/">Galeria BTS</a></li>
+              <li><a href="/interpretacja-danych-mapy/">Interpretacja danych na mapie</a></li>
+              <li><a href="/tutorial/">Tutorial dla łowców BTS</a></li>
+              <li><a href="/kontakt/">Kontakt</a></li>
               <li class="divider"></li>
-              <li><a href="http://twitter.com/btsearch">@btsearch</a></li>
+              <li><a href="http://btsearch.pl/galeria/">Galeria BTS</a></li>
+              <li><a href="http://twitter.com/btsearch">Twitter @btsearch</a></li>
             </ul>
           </li>
         </ul>
@@ -190,8 +76,18 @@ img.location-network-icon {
     <script type="text/javascript" src="{% static "libs/bootstrap3/js/bootstrap.js" %}"></script>
     <script type="text/javascript" src="{% static "cookielaw/js/cookielaw.js" %}"></script>
 
+    {% include "partials/google_analytics.html" %}
+
     {# Additional, context-specific JavaScript scripts #}
     {% block extrascripts %}{% endblock extrascripts %}
+
+    <script type="text/javascript">
+      $(function(){
+        $('#news-ticker-trigger').fancybox({
+          'type': 'ajax'
+        });
+      });
+    </script>
 
 </body>
 </html>

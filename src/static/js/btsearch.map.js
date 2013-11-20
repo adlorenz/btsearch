@@ -11,8 +11,8 @@ var core = {
 
     mapParams: {
         // Init zoom/center to be overriden via URL/cookie
-        zoom: 12,
-        center: new google.maps.LatLng(51.9400, 15.5888),
+        zoom: 9,
+        center: new google.maps.LatLng(52.069245, 19.480193),
         streetViewControl: false,
         scaleControl: true,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -338,6 +338,15 @@ var requests = {
                 panel.innerHTML = data;
             }
         });
+    },
+
+    setAdPanelContent: function(panel) {
+        $.ajax({
+            url: "/map/ui/ad_panel/",
+            success: function(data) {
+                panel.innerHTML = data;
+            }
+        });
     }
 };
 
@@ -367,6 +376,7 @@ var ui = {
         this.createControlPanel(map);
         this.createStatusPanel(map);
         this.createWaitingLabel(map);
+        this.createAdPanel(map);
     },
 
     createControlPanel: function(map) {
@@ -391,6 +401,14 @@ var ui = {
         label.className = 'label label-important';
         label.innerHTML = 'Trwa ładowanie...';
         map.controls[google.maps.ControlPosition.TOP_RIGHT].push(label);
+    },
+
+    createAdPanel: function(map) {
+        var panel = document.createElement('DIV');
+        panel.id = 'googlead-panel-container';
+        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(panel);
+
+        requests.setAdPanelContent(panel);
     },
 
     bindControlPanelEvents: function() {
@@ -462,8 +480,18 @@ var ui = {
     },
 
     toggleControlPanel: function() {
-        $('#control-panel-body').toggle('fast');
-        $('#control-panel-header').toggleClass('control-panel-header-closed');
+        $('#control-panel-body').toggle({
+            complete: function() {
+                // This little hack is needed to maintain scrollability of the
+                // control panel when the viewport's height is too low
+                var visible = $(this).is(':visible');
+                if (!visible && $('#control-panel-container').css('bottom') == '0px') {
+                    $('#control-panel-container').css('bottom', 'auto');
+                } else {
+                    $('#control-panel-container').css('bottom', '0px');
+                }
+            }
+        });
     }
 
 };
