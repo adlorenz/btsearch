@@ -46,18 +46,20 @@
         <ul class="nav navbar-nav">
           <li><a href="{% url 'home' %}">Mapa</a></li>
           <li><a href="{% url 'bts:listing' %}">Baza danych</a></li>
-          {% for page in flatpages %}
-            <li><a href="{{ page.url }}">{{ page.title }}</a></li>
-          {% endfor %}
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
+          <li><a href="/nowosci/" id="news-ticker-trigger"><span class="text-danger">Co nowego?</span></a></li>
+          <li><a href="/o-serwisie/">O serwisie</a></li>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Więcej <b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <li><a href="http://btsearch.pl/galeria/">Galeria BTS</a></li>
+              <li><a href="/interpretacja-danych-mapy/">Interpretacja danych na mapie</a></li>
+              <li><a href="/tutorial/">Tutorial dla łowców BTS</a></li>
+              <li><a href="/kontakt/">Kontakt</a></li>
               <li class="divider"></li>
-              <li><a href="http://twitter.com/btsearch">@btsearch</a></li>
+              <li><a href="http://btsearch.pl/galeria/">Galeria BTS</a></li>
+              <li><a href="http://twitter.com/btsearch">Twitter @btsearch</a></li>
             </ul>
           </li>
         </ul>
@@ -76,6 +78,14 @@
 
     {# Additional, context-specific JavaScript scripts #}
     {% block extrascripts %}{% endblock extrascripts %}
+
+    <script type="text/javascript">
+      $(function(){
+        $('#news-ticker-trigger').fancybox({
+          'type': 'ajax'
+        });
+      });
+    </script>
 
 </body>
 </html>
