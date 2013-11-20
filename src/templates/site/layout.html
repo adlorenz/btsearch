@@ -108,15 +108,21 @@
 
 @media (max-height: 500px) {
   #ad-panel { display: none; }
+
 }
 
-@media (max-height: 300px) {
-  #control-panel-body { display: none; }
+@media (max-height: 400px) {
+  #control-panel-container { bottom: 0px; }
+  .panel-transparency { overflow: auto; height: 100%; }
+  #control-panel-body { overflow: hidden; }
+  /*#control-panel-body { display: none; }*/
 }
 
 #control-panel-container .glyphicon {
     font-size: 11pt;
 }
+
+
 
 img.location-network-icon {
   margin-right: 7px;
