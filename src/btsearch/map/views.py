@@ -6,7 +6,7 @@ from braces.views import JSONResponseMixin
 from ..bts import models as bts_models
 from ..uke import models as uke_models
 from .. import mixins
-from . import utils
+from .. import services
 
 
 class IndexView(generic.TemplateView):
@@ -16,11 +16,7 @@ class IndexView(generic.TemplateView):
 class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListView):
     model = bts_models.Location
     queryset = bts_models.Location.objects.distinct()
-    paginate_by = 500
-
-    network_filter_field = 'base_stations__network'
-    standard_filter_field = 'base_stations__cells__standard__in'
-    band_filter_field = 'base_stations__cells__band__in'
+    filter_class = services.BtsLocationsFilterService
 
     def get(self, request, *args, **kwargs):
         # 'bounds' is a required GET parameter for LocationsView
@@ -33,35 +29,39 @@ class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListV
 
     def get_queryset(self):
         qs_filters = self.get_queryset_filters()
-        return self.queryset.filter(**qs_filters)
+        # Poor-man's hard limit of 500 results to improve performance
+        return self.queryset.filter(**qs_filters)[:500]
+
+    def _get_single_location_filter_class(self):
+        return services.BtsLocationFilterService
 
     def _get_locations_list(self):
-        raw_filters = dict(self.request.GET.copy())
+        icon_service = services.MapIconService()
+        filter_class = self._get_single_location_filter_class()
+        raw_filters = self.request.GET.copy()
         locations_list = []
-        for location in self.get_queryset():
-            locations_list.append({
-                'id': location.id,
-                'latitude': location.latitude,
-                'longitude': location.longitude,
-                'icon': self._get_location_icon_path(location, raw_filters),
-            })
+        locations = self.get_queryset()
+        for location in locations:
+            location_icon = icon_service.get_icon_by_location(
+                location,
+                filter_class(),
+                raw_filters
+            )
+            if location_icon:
+                locations_list.append({
+                    'id': location.id,
+                    'latitude': location.latitude,
+                    'longitude': location.longitude,
+                    'icon': location_icon,
+                })
         return locations_list
-
-    def _get_location_icon_path(self, location, raw_filters):
-        # TODO: I don't like this approach. Refactor it.
-        map_icon_factory = utils.MapIconFactory()
-        map_icon = map_icon_factory.get_icon_by_location(location, raw_filters)
-        return map_icon_factory.get_icon_path(map_icon)
 
 
 class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.DetailView):
     model = bts_models.Location
     template_name = 'map/location_info.html'
     context_object_name = 'location'
-
-    network_filter_field = 'network'
-    standard_filter_field = 'cells__standard__in'
-    band_filter_field = 'cells__band__in'
+    filter_class = services.BtsLocationFilterService
 
     def get_context_data(self, **kwargs):
         ctx = super(LocationDetailView, self).get_context_data(**kwargs)
@@ -73,14 +73,13 @@ class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.
             context, **response_kwargs)
 
         location = self.get_object()
-        map_icon = utils.MapIconFactory().get_icon_by_location(location)
         data = {
             'id': location.id,
             'latitude': location.latitude,
             'longitude': location.longitude,
             'summary': unicode(location),
             'info': response.render().rendered_content,
-            'icon': utils.MapIconFactory().get_icon_path(map_icon),
+            'icon': services.MapIconService().get_icon_by_location(location),
         }
         return self.render_json_response(data)
 
@@ -91,52 +90,44 @@ class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.
         """
         location = self.get_object()
         qs_filters = self.get_queryset_filters()
-        return location.base_stations.distinct().filter(**qs_filters)
+        return location.get_associated_objects(**qs_filters)
 
 
 class UkeLocationsView(LocationsView):
     model = uke_models.Location
     queryset = uke_models.Location.objects.distinct()
+    filter_class = services.UkeLocationsFilterService
 
-    network_filter_field = 'permissions__operator__network'
-    standard_filter_field = 'permissions__standard__in'
-    band_filter_field = 'permissions__band__in'
+    def _get_single_location_filter_class(self):
+        return services.UkeLocationFilterService
 
 
 class UkeLocationDetailView(LocationDetailView):
     model = uke_models.Location
     template_name = 'map/uke_location_info.html'
-
-    network_filter_field = 'operator__network'
-    standard_filter_field = 'standard__in'
-    band_filter_field = 'band__in'
+    filter_class = services.UkeLocationFilterService
 
     def _get_location_objects(self):
         """
         Returns objects associated to the location,
         ie. base stations or UKE permissions
         """
-        # TODO: It's slightly messy. Do something about it.
+        permissions = super(UkeLocationDetailView, self)._get_location_objects()
         permissions_by_network = {}
-        networks = []
-        location = self.get_object()
-        qs_filters = self.get_queryset_filters()
-        permissions = location.permissions.distinct().filter(**qs_filters)
+        # Group permissions by network
         for permission in permissions:
-            network = permission.operator.network
-            if network not in networks:
-                networks.append(network)
-
-            if network.code not in permissions_by_network:
-                permissions_by_network[network.code] = []
-            permissions_by_network[network.code].append(permission)
+            if permission.network not in permissions_by_network:
+                permissions_by_network[permission.network] = []
+            permissions_by_network[permission.network].append(permission)
 
         location_objects = []
-        for network in networks:
+        for network in permissions_by_network.keys():
+            supported = permissions.distinct().filter(operator__network=network). \
+                values('standard', 'band').exclude(standard='?', band='?')
             location_objects.append({
                 'network': network,
-                'supported': location.get_supported_standards_and_bands_by_network(network),
-                'permissions': permissions_by_network[network.code],
+                'supported': supported,
+                'permissions': permissions_by_network[network],
             })
         return location_objects
 

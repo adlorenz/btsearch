@@ -1,0 +1,14 @@
+{% extends 'site/layout.html' %}
+
+{% block search-form %}{% endblock search-form %}
+
+{% block main-content-container %}
+    <div class="container">
+        <h2>{% block content-title %}{% endblock content-title %}</h2>
+        <div class="row">
+            <div class="col-md-12">
+                {% block main-content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

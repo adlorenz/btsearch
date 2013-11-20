@@ -1,0 +1,10 @@
+/var/www/zoyalab/btsearch/logs/**/*.log {
+    weekly
+    missingok
+    rotate 10
+    compress
+    delaycompress
+    notifempty
+    create 640 root adm
+    sharedscripts
+}

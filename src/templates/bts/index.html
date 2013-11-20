@@ -1,0 +1,94 @@
+{% extends 'site/browse.html' %}
+{% block page-title %}Przeglądarka bazy danych BTSearch{% endblock %}
+
+{% block sidebar-content %}
+
+    <form action="" method="get" class="form">
+        <div class="form-group">
+            <label for="id_network">Sieć:</label>
+            {{ filter_form.network }}
+        </div>
+        <div class="form-group">
+            <label for="id_region">Region:</label>
+            {{ filter_form.region }}
+        </div>
+        <div class="form-group">
+            <label>Standard:</label>
+            {{ filter_form.standard }}
+        </div>
+        <div class="form-group">
+            <label>Pasmo:</label>
+            {{ filter_form.band }}
+        </div>
+        {{ filter_form.query }}
+        <input class="btn btn-primary" type="submit" value="Filtruj" />
+    </form>
+
+    <p>&nbsp;</p>
+    <p>Liczba rekordów: <strong>{{ page_obj.paginator.count }}</strong></p>
+
+{% endblock %}
+
+{% block current-search-query %}{{ get_params.query }}{% endblock %}
+
+{% block main-content %}
+
+    {% if base_stations %}
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Sieć</th>
+                    <th>Województwo</th>
+                    <th>Miejscowość</th>
+                    <th>Adres</th>
+                    <th>Technologie</th>
+                    <th><abbr title="Wewnętrzny identyfikator operatora">ID stacji</abbr></th>
+                    <th>Ostatnia aktualizacja</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for base_station in base_stations %}
+                <tr>
+                    <td><strong>{{ base_station.network }}</strong></td>
+                    <td>{{ base_station.region_name }}</td>
+                    <td>{{ base_station.town_name }}</td>
+                    <td>{{ base_station.address_name }}</td>
+                    <td>
+                        <a class="location-info" href="{% url 'bts:bts-extended-info-view' base_station.id %}" title="Szczegóły stacji bazowej">{% for stdbnd in base_station.get_supported_standards_and_bands %}
+                        {{ stdbnd.standard }}{{ stdbnd.band }}
+                    {% endfor %}</a>
+                    </td>
+                    <td>{{ base_station.station_id }}</td>
+                    <td>{{ base_station.date_updated|timesince }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% if is_paginated %}
+            {% include 'bts/partials/paginator.html' with page_obj=page_obj %}
+        {% endif %}
+
+    {% else %}
+
+        <p>Brak rekordów spełniających kryteria wyszukiwania</p>
+
+    {% endif %}
+
+{% endblock %}
+
+{% block extrascripts %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        $(function(){
+            $('a.location-info').each(function(){
+                $(this).fancybox({
+                    'type': 'ajax',
+                    'title': null
+                });
+            });
+        });
+    </script>
+{% endblock extrascripts %}

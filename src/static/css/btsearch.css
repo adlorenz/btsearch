@@ -1,23 +1,23 @@
-html, body { 
-	height: 100%; 
-	margin: 0; 
-	padding: 0; 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-#map-container { 
+#map-container {
     position: fixed;
     top: 105px;
-	border-top: 1px solid #2C2C2C;
-	width: 100%;
-	height: auto;
-	bottom: 0;
-	left: 0;
-	right: 0;
+    border-top: 1px solid #2C2C2C;
+    width: 100%;
+    height: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
-#main-content-container { 
-	width: 100%;
-	padding: 10px 0px;
+#main-content-container {
+    width: 100%;
+    padding: 10px 0px;
 }
 
 .span10 {
@@ -29,182 +29,183 @@ html, body {
 }
 
 #map img {
-	max-width: none;
+    max-width: none;
 }
 
 #topbar-container {
-	padding: 6px 0px;
-	border-bottom: 1px solid #D5DDF3;
+    padding: 6px 0px;
+    border-bottom: 1px solid #D5DDF3;
 }
 
 #topbar-container ul {
-	list-style: none;
-	margin: 0px;
-	padding: 0px;
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
 }
 
 #topbar-container li {
-	display: inline;
-	padding: 7px;
-	margin: 0px;
+    display: inline;
+    padding: 7px;
+    margin: 0px;
 }
 
 #topbar-container li.header {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 #topbar-container li a {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 #header-container {
-	margin: 0px;
-	padding: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 
 #header-container .lt {
-	margin: 8px 0px 0px 19px;
+    margin: 8px 0px 0px 19px;
 }
 
 #header-container .rt {
-	margin: 5px 7px 0px 0px;
+    margin: 5px 7px 0px 0px;
 }
 
 #header-container .lt img {
-	float: left;
+    float: left;
 }
 
 #header-container .lt form {
-	position: relative;
-	top: 24px;
-	float: left;
-	margin: 0px 19px;
+    position: relative;
+    top: 24px;
+    float: left;
+    margin: 0px 19px;
 }
 
 #google-ad-box {
-	width: 234px;
-	height: 60px;
-	border: 1px solid #ddd;
-	color: #ddd;
+    width: 234px;
+    height: 60px;
+    border: 1px solid #ddd;
+    color: #ddd;
 }
 
 #control-panel-container {
-	position: relative;
-	padding: 8px;
-	z-index: 199;
-	min-width: 240px;
-	max-width: 300px;
+    position: relative;
+    padding: 8px;
+    z-index: 199;
+    min-width: 240px;
+    max-width: 300px;
 }
 
 #control-panel-header {
-	padding: 4px 6px 4px 6px;
-	font-weight: bold;
-	
-	border-top: 1px solid grey;
-	border-left: 1px solid grey;
-	border-right: 1px solid grey;
-	-moz-border-radius: 5px 5px 0px 0px;
-	-webkit-border-radius: 5px 5px 0px 0px;
+    padding: 4px 6px 4px 6px;
+    font-weight: bold;
+
+    border-top: 1px solid grey;
+    border-left: 1px solid grey;
+    border-right: 1px solid grey;
+    -moz-border-radius: 5px 5px 0px 0px;
+    -webkit-border-radius: 5px 5px 0px 0px;
 }
 
 .control-panel-header-closed {
-	border-bottom: 1px solid grey;
-	-moz-border-radius: 5px 5px 5px 5px;
-	-webkit-border-radius: 5px 5px 5px 5px;
+    border-bottom: 1px solid grey;
+    -moz-border-radius: 5px 5px 5px 5px;
+    -webkit-border-radius: 5px 5px 5px 5px;
 }
 
 #control-panel-body {
-	padding: 4px 6px 4px 6px;
-	
-	min-height: 100px;
-	overflow: auto;
-	
-	border-bottom: 1px solid grey;
-	border-left: 1px solid grey;
-	border-right: 1px solid grey;
-	-moz-border-radius: 0px 0px 5px 5px;
-	-webkit-border-radius: 0px 0px 5px 5px;
+    padding: 4px 6px 4px 6px;
+
+    min-height: 100px;
+    overflow: auto;
+
+    border-bottom: 1px solid grey;
+    border-left: 1px solid grey;
+    border-right: 1px solid grey;
+    -moz-border-radius: 0px 0px 5px 5px;
+    -webkit-border-radius: 0px 0px 5px 5px;
 }
 
 #status-panel-container {
-	position: relative;
-	padding: 8px 8px 8px 0px;
-	z-index: 99;
+    position: relative;
+    padding: 8px 8px 8px 0px;
+    z-index: 99;
 }
 
 #status-panel-body {
-	font-size: x-small;
-	padding: 4px 6px 4px 6px;
+    font-size: x-small;
+    padding: 4px 6px 4px 6px;
 
-	border: 1px solid grey;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+    border: 1px solid grey;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 #waiting-label-container {
-	margin: 4px;
-	padding: 4px 6px 4px 6px;
-	z-index: 99;
-	background: red;
-	display: none;
+    margin: 4px;
+    padding: 4px 6px 4px 6px;
+    z-index: 99;
+    background: red;
+    display: none;
 }
 
 #location-info-container {
-	max-width: 280px;
+    max-width: 280px;
 }
 
 #location-info-container small,
 #location-info-container-extended small {
-	font-size: 8pt;
+    font-size: 8pt;
 }
 
 .location-address {
-	line-height: 1;
-	padding: 0px 0px 5px 0px;
-	margin: 0px 0px 5px 0px;
-	border-bottom: 1px solid lightgrey;
+    line-height: 1;
+    padding: 0px 0px 5px 0px;
+    margin: 0px 0px 5px 0px;
+    border-bottom: 1px solid lightgrey;
 }
 
-.location-network-icon { 
-	float: left;
-	padding: 0px 5px 0px 0px; 
+.location-network-icon {
+    float: left;
+    padding: 0px 5px 0px 0px;
 }
 
-.location-item-details { 
-	max-width: 240px;
-	line-height: 1;
-	float: left; 
+.location-item-details {
+    max-width: 240px;
+    line-height: 1;
+    float: left;
 }
 
 .location-info-footer {
-	font-size: 8pt;
-	color: grey;
+    font-size: 8pt;
+    color: grey;
 }
 
 #control-panel-location-info small, td, th {
-	font-size: 8pt;
+    font-size: 8pt;
 }
 
 #data-source-help {
-	width: 420px;
+    padding: 0px;
+    width: 420px;
 }
 
 /* Found on http://stackoverflow.com/questions/806000/css-semi-transparent-background-but-not-text */
 .panel-transparency {
-	background: rgb(255, 233, 166) transparent;
-	background: rgba(255, 233, 166, 0.9);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
+    background: rgb(255, 233, 166) transparent;
+    background: rgba(255, 233, 166, 0.9);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
 }
 
 .ad {
-	margin: 10px;
-	text-align: center;
+    margin: 10px;
+    text-align: center;
 }
 
 .ad img {
-	padding: 0px;
-	border: 1px solid lightgrey;
+    padding: 0px;
+    border: 1px solid lightgrey;
 }
 
 #control-panel-filters { display: block; }
@@ -212,15 +213,15 @@ html, body {
 #control-panel-search-results { display: none; }
 
 table.location-info {
-	margin-bottom: 3px;
+    margin-bottom: 3px;
 }
-table.location-info th, 
+table.location-info th,
 table.location-info td {
-	text-align: center; 
+    text-align: center;
 }
 
 ul.navv li {
-	display: inline;
+    display: inline;
 }
 
 
@@ -228,3 +229,15 @@ ul.navv li {
 .rt { float: right; }
 .cr { clear: both; }
 .no-border { border: none; }
+
+#CookielawBanner .container {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    width: 100%;
+    background-color: rgb(85, 85, 85);
+    color: rgb(255, 255, 255);
+    font-size: 8pt;
+    z-index: 10000;
+}
+
