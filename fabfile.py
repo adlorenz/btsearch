@@ -287,7 +287,7 @@ def migrate():
 def deploy_app_config():
     notify("Deploying application's environment-specific config")
     local_path = '%(web_dir)s/%(app_conf)s' % env
-    remote_path = '%(project_dir)s%(app_conf)s' % env
+    remote_path = '%(project_dir)s/%(app_conf)s' % env
     upload(local_path, remote_path)
 
 
