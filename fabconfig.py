@@ -30,9 +30,9 @@ def test():
     env.hosts = ['78.10.48.207']
 
 
-# def stage():
-#     _configure('stage')
-#     env.hosts = ['stage-%(project_code)s-%(client)s.%(build)s' % env]
+def stage():
+    _configure('stage')
+    env.hosts = ['stage-%(project_code)s-%(client)s.%(build)s' % env]
 
 
 def prod():
