@@ -39,6 +39,17 @@
   display: none;
 }
 
+#googlead-panel-container {
+  position: relative;
+  padding: 8px;
+  z-index: 199;
+}
+
+#googlead-panel {
+  width: 234px;
+  height: 60px;
+}
+
 #control-panel-body {
   overflow: auto;
 }
@@ -61,11 +72,13 @@
 
 @media (max-width: 650px) {
   #status-panel-container { display: none; }
+  #googlead-panel-container { display: none; }
   #control-panel-container { padding: 0px; }
 }
 
 @media (max-height: 500px) {
   #ad-panel { display: none; }
+  #googlead-panel-container { display: none; }
 }
 
 @media (max-height: 400px) {

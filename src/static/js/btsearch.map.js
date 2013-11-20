@@ -338,6 +338,15 @@ var requests = {
                 panel.innerHTML = data;
             }
         });
+    },
+
+    setAdPanelContent: function(panel) {
+        $.ajax({
+            url: "/map/ui/ad_panel/",
+            success: function(data) {
+                panel.innerHTML = data;
+            }
+        });
     }
 };
 
@@ -367,6 +376,7 @@ var ui = {
         this.createControlPanel(map);
         this.createStatusPanel(map);
         this.createWaitingLabel(map);
+        this.createAdPanel(map);
     },
 
     createControlPanel: function(map) {
@@ -391,6 +401,14 @@ var ui = {
         label.className = 'label label-important';
         label.innerHTML = 'Trwa ładowanie...';
         map.controls[google.maps.ControlPosition.TOP_RIGHT].push(label);
+    },
+
+    createAdPanel: function(map) {
+        var panel = document.createElement('DIV');
+        panel.id = 'googlead-panel-container';
+        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(panel);
+
+        requests.setAdPanelContent(panel);
     },
 
     bindControlPanelEvents: function() {

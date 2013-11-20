@@ -150,3 +150,7 @@ class ControlPanelView(generic.TemplateView):
 
 class StatusPanelView(generic.TemplateView):
     template_name = 'map/status_panel.html'
+
+
+class AdPanelView(generic.TemplateView):
+    template_name = 'map/ad_panel.html'
