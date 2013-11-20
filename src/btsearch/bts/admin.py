@@ -50,6 +50,7 @@ class BaseStationAdmin(admin.ModelAdmin):
     list_display = [
         'id',
         'network',
+        'station_id',
         'region_name',
         'town_name',
         'address_name',
@@ -69,7 +70,8 @@ class BaseStationAdmin(admin.ModelAdmin):
     search_fields = [
         '=id',
         'location__town',
-        'location__address'
+        'location__address',
+        'station_id'
     ]
     save_on_top = True
 

@@ -9,7 +9,7 @@ from . import forms
 
 
 class BtsListingView(mixins.QuerysetFilterMixin, generic.ListView):
-    template_name = 'bts/listing.html'
+    template_name = 'bts/index.html'
     model = models.BaseStation
     queryset = models.BaseStation.objects.distinct()
     context_object_name = 'base_stations'
@@ -61,7 +61,7 @@ class UkeDetailView(generic.DetailView):
             ctx['permissions'] = uke_models.Permission.objects.filter(
                 location=self.object,
                 operator__network=network
-            )
+            ).order_by('standard', 'band')
             ctx['network'] = network
         except:
             pass

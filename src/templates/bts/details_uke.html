@@ -3,8 +3,11 @@
 {% for permission in permissions %}
     {% if forloop.first %}
         <div class="location-address no-border">
-            <img src="{{ permission|get_icon }}" class="location-network-icon" />
-                <strong>{{ network.name }}</strong> ({{ network.code }})<br/>
+            <img src="{{ permission|get_icon }}" class="location-network-icon pull-left" />
+            <strong>{{ network.name }}</strong> ({{ network.code }})
+            {% if permission.station_id %}
+                ID: <abbr title="Identyfikator wewnętrzny operatora">{{ permission.station_id }}</abbr>
+            {% endif %}<br/>
             <small>
                 {{ permission.town }}{% if permission.address %}, {{ permission.address }}{% endif %}
             </small>
@@ -30,7 +33,7 @@
     {% if forloop.last %}
             </table>
         </div>
-        <div class="location-info-footer rt">
+        <div class="location-info-footer small pull-right">
             Data aktualizacji danych: {{ permission.date_updated|date:"d.m.Y" }}
         </div>
     {% endif %}

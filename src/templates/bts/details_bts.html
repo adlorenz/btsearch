@@ -2,8 +2,11 @@
 <div id="location-info-container-extended">
 
     <div class="location-address no-border">
-        <img src="{{ base_station|get_icon }}" class="location-network-icon" />
-            <strong>{{ base_station.network.name }}</strong> ({{ base_station.network.code }})<br/>
+        <img src="{{ base_station|get_icon }}" class="location-network-icon pull-left" />
+        <strong>{{ base_station.network.name }}</strong> ({{ base_station.network.code }})
+        {% if base_station.station_id %}
+            ID: <abbr title="Identyfikator wewnętrzny operatora">{{ base_station.station_id }}</abbr>
+        {% endif %}<br/>
         <small>
             {{ base_station.location.town }},
             {% if base_station.location_details %}
@@ -15,21 +18,19 @@
     </div>
 
     <div>
-        <table class="table table-bordered table-condensed location-info">
-            <thead>
+        <table class="table table-bordered table-condensed table-responsive location-info">
             <tr>
                 <th>Standard</th>
                 <th>Pasmo</th>
                 <th>LAC</th>
-                <th>CID 8b</th>
+                <th>CID</th>
                 <th>RNC</th>
                 <th>CID 16b</th>
                 <th>Nośna</th>
+                <th>Uwagi</th>
             </tr>
-            </thead>
     {% for cell in base_station.get_cells %}
-            <tbody>
-            <tr>
+            <tr {% if not cell.is_confirmed %}class="danger" title="Komórka nie potwierdzona"{% endif %}>
                 <td>{{cell.standard}}</td>
                 <td>{{cell.band}}</td>
                 <td>{{cell.lac}}</td>
@@ -40,15 +41,15 @@
                 <td>{% if cell.ua_freq == 0 %} ? {% else %} {{cell.ua_freq}} {% endif %}</td>
                 {% endif %}
                 {% if cell.standard != 'UMTS' %}
-                <td colspan="3">--</td>
+                <td colspan="3" style="text-align: center;">nie dotyczy</td>
                 {% endif %}
+                <td>{% if cell.notes %}{{ cell.notes }}{% else %}--{% endif %}</td>
             </tr>
-            </tbody>
     {% endfor %}
         </table>
     </div>
 
-    <div class="location-info-footer rt">
-        Data aktualizacji rekordu: {{ base_station.date_updated|date:"d.m.Y" }}
+    <div class="location-info-footer small pull-right">
+        Data aktualizacji danych: {{ base_station.date_updated|date:"d.m.Y" }}
     </div>
 </div>

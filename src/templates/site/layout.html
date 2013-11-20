@@ -1,60 +1,191 @@
 {% load staticfiles %}
 {% load cookielaw_tags %}
+{% load flatpages %}
+{% get_flatpages as flatpages %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="Content-Language" content="pl-PL" />
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <title>{% block page-title %}{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{% static "libs/fancybox/jquery.fancybox.css" %}" media="screen" />
+    <meta name="robots" content="index,follow" />
+    <meta name="keywords" content="mapa, bts, uke, lokalizacje, maszty, nadajnik, nadajniki, btsearch, urząd komunikacji elektronicznej, gsm, dcs, umts, 3g, hsdpa" />
+    <meta name="description" content="BTSearch: baza stacji bazowych sieci komórkowych w Polsce; mapa lokalizacji stacji bazowych w oparciu o ogólnodostępny wykaz pozwoleń radiowych Urzędu Komunikacji Elektronicznej (UKE) oraz własną bazę danych." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>BTSearch :: {% block page-title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static "libs/fancybox/jquery.fancybox.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "libs/bootstrap/css/bootstrap.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "cookielaw/css/cookielaw.css" %}" />
-    <link rel="stylesheet" type="text/css" href="{% static "css/btsearch.css" %}" />
+    {# <link rel="stylesheet" type="text/css" href="{% static "css/btsearch.css" %}" /> #}
+    <style type="text/css">
+
+    #map-container {
+        position: fixed;
+        width: 100%;
+        height: auto;
+        top: 51px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+#main-content-container {
+    width: 100%;
+    padding: 10px 0px;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+#map img {
+    max-width: none;
+}
+
+#control-panel-container {
+    position: relative;
+    padding: 8px;
+    z-index: 199;
+    min-width: 240px;
+    max-width: 300px;
+}
+
+#status-panel-container {
+    position: relative;
+    padding: 8px 8px 8px 0px;
+    z-index: 99;
+}
+
+#waiting-label-container {
+    margin: 4px;
+    padding: 4px 6px 4px 6px;
+    z-index: 99;
+    background: red;
+    display: none;
+}
+
+#control-panel-body {
+  overflow: auto;
+}
+
+/* Found on http://stackoverflow.com/questions/806000/css-semi-transparent-background-but-not-text */
+.panel-transparency {
+    background: rgb(255, 255, 255) transparent;
+    background: rgba(255, 255, 255, 0.9);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
+}
+
+#CookielawBanner .container {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    width: 100%;
+    background-color: rgb(85, 85, 85);
+    color: rgb(255, 255, 255);
+    font-size: 8pt;
+    z-index: 10000;
+}
+
+.container { width: 100% !important; }
+
+.container .form-group ul { list-style: none; padding: 0;}
+
+@media (max-width: 960px) {
+
+    .container .form-group ul li { display: inline-block !important; }
+    .container .form-group ul li+li { margin-left: 0.5em !important;}
+    #status-panel-gps { display: none; }
+
+
+}
+
+@media (max-width: 650px) {
+  #status-panel-container { display: none; }
+  #control-panel-container { padding: 0px; }
+}
+
+
+@media (max-height: 500px) {
+  #ad-panel { display: none; }
+
+}
+
+@media (max-height: 400px) {
+  #control-panel-container { bottom: 0px; }
+  .panel-transparency { overflow: auto; height: 100%; }
+  #control-panel-body { overflow: hidden; }
+  /*#control-panel-body { display: none; }*/
+}
+
+#control-panel-container .glyphicon {
+    font-size: 11pt;
+}
+
+
+
+img.location-network-icon {
+  margin-right: 7px;
+  margin-top: 3px;
+}
+
+.location-item {
+  margin-bottom: 3px;
+}
+    </style>
 </head>
 <body>
 
-    <div id="topbar-container">
-        <ul class="lt">
-            <li class="header"><a href="/">btsearch.pl</a></li>
-            <li><a href="/">Mapa</a></li>
-            <li><a href="{% url 'bts:listing' %}">Baza danych</a></li>
-            {% comment %}
-            <li><a href="/about">O serwisie</a></li>
-            <li><a href="/tutorial">Poradnik</a></li>
-            <li><a href="/export">Eksport CLF</a></li>
-            <li><a href="/api">API</a></li>
-            <li><a href="/contact">Kontakt</a></li>
-            {% endcomment %}
-        </ul>
-        <ul class="rt">
-            <li class="static"><strong>Śledź nas &raquo;</strong> <a href="http://twitter.com/btsearch">Twitter</a></li>
-        </ul>
-        <div class="cr"></div>
-    </div>
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+          <span class="sr-only">Nawigacja</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static "img/btsearch-logo-main.png" %}" border="0" height="30" alt="Logo" style="padding: -10px; margin: -6px;" /></a>
+      </div>
 
-    <div id="header-container">
-        <div class="lt">
-            <img src="{% static "img/btsearch-logo-main.png" %}" border="0" width="157" height="55" alt="Logo" />
-            {% block search-form %}
-            <form id="search-form" action="{% block search-form-action %}{% endblock %}" method="get">
-                <input type="text" id="search-box" value="{% block current-search-query %}{% endblock %}" name="query" />
-                <input type="submit" id="search-submit" value="Szukaj" />
-            </form>
-            {% endblock search-form %}
-        </div>
-        <div class="rt">
-            <div id="google-ad-box">Google ad box</div>
-        </div>
-        <div class="cr"></div>
-    </div>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="navbar-collapse">
+        {% block search-form %}
+        <form id="search-form" action="{% block search-form-action %}{% endblock %}" method="get" class="navbar-form navbar-left" role="search">
+          <div class="form-group">
+            <input type="text" class="form-control" id="search-box" value="{% block current-search-query %}{% endblock %}" name="query" placeholder="Znajdź lokalizację..." />
+          </div>
+          <button type="submit" class="btn btn-default">Szukaj</button>
+        </form>
+        {% endblock search-form %}
+
+        <ul class="nav navbar-nav">
+          <li><a href="{% url 'home' %}">Mapa</a></li>
+          <li><a href="{% url 'bts:listing' %}">Baza danych</a></li>
+          {% for page in flatpages %}
+            <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+          {% endfor %}
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Więcej <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://btsearch.pl/galeria/">Galeria BTS</a></li>
+              <li class="divider"></li>
+              <li><a href="http://twitter.com/btsearch">@btsearch</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </nav>
 
     {% block main-content-container %}{% endblock %}
     {% block extra-content %}{% endblock %}
     {% cookielaw_banner %}
 
     {# Core JavaScript libs #}
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="{% static "libs/fancybox/jquery.fancybox.pack.js" %}"></script>
     <script type="text/javascript" src="{% static "libs/bootstrap/js/bootstrap.js" %}"></script>
     <script type="text/javascript" src="{% static "cookielaw/js/cookielaw.js" %}"></script>

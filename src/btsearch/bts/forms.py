@@ -13,12 +13,13 @@ class ListingFilterForm(forms.Form):
     network = forms.ModelChoiceField(
         required=False,
         queryset=models.Network.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'})
         # empty_label='Sieć',
     )
     region = forms.ModelChoiceField(
         required=False,
         queryset=models.Region.objects.all(),
-        # empty_label='Województwo',
+        widget=forms.Select(attrs={'class': 'form-control'}),
     )
     standard = forms.MultipleChoiceField(
         required=False,

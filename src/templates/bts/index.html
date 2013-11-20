@@ -1,12 +1,31 @@
 {% extends 'site/browse.html' %}
-{% block page-title %}Przeglądarka bazy BTSearch{% endblock %}
+{% block page-title %}Przeglądarka bazy danych BTSearch{% endblock %}
 
 {% block sidebar-content %}
 
-    <form action="" method="get">
-        {{ filter_form }}
-        <input type="submit" value="Filtruj" />
+    <form action="" method="get" class="form">
+        <div class="form-group">
+            <label for="id_network">Sieć:</label>
+            {{ filter_form.network }}
+        </div>
+        <div class="form-group">
+            <label for="id_region">Region:</label>
+            {{ filter_form.region }}
+        </div>
+        <div class="form-group">
+            <label>Standard:</label>
+            {{ filter_form.standard }}
+        </div>
+        <div class="form-group">
+            <label>Pasmo:</label>
+            {{ filter_form.band }}
+        </div>
+        {{ filter_form.query }}
+        <input class="btn btn-primary" type="submit" value="Filtruj" />
     </form>
+
+    <p>&nbsp;</p>
+    <p>Liczba rekordów: <strong>{{ page_obj.paginator.count }}</strong></p>
 
 {% endblock %}
 
@@ -16,10 +35,6 @@
 
     {% if base_stations %}
 
-        <h4>
-            Rezultatów: {{ page_obj.paginator.count }}
-        </h4>
-
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -28,8 +43,8 @@
                     <th>Miejscowość</th>
                     <th>Adres</th>
                     <th>Technologie</th>
-                    <th>ID stacji</th>
-                    <th>Ost. aktualizacja</th>
+                    <th><abbr title="Wewnętrzny identyfikator operatora">ID stacji</abbr></th>
+                    <th>Ostatnia aktualizacja</th>
                 </tr>
             </thead>
             <tbody>
