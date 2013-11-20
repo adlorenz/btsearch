@@ -70,7 +70,7 @@
 
 @media (max-height: 400px) {
   #control-panel-container { bottom: 0px; }
-  .panel-transparency { overflow: auto; height: 100%; }
+  #control-panel-subcontainer { overflow: auto; height: 100%; }
   #control-panel-body { overflow: hidden; }
 }
 

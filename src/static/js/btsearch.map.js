@@ -462,8 +462,20 @@ var ui = {
     },
 
     toggleControlPanel: function() {
-        $('#control-panel-body').toggle('fast');
-        $('#control-panel-header').toggleClass('control-panel-header-closed');
+        $('#control-panel-body').toggle({
+            complete: function() {
+                // This little hack is needed to maintain scrollability of the
+                // control panel when the viewport's height is too low
+                var visible = $(this).is(':visible');
+                if (!visible && $('#control-panel-container').css('bottom') == '0px') {
+                    $('#control-panel-container').css('bottom', 'auto');
+                } else {
+                    $('#control-panel-container').css('bottom', '0px');
+                }
+            }
+        });
+
+        // $('#control-panel-header').toggleClass('control-panel-header-closed');
     }
 
 };
