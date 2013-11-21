@@ -107,6 +107,14 @@ img.location-network-icon {
   padding-top: 2px;
 }
 
+.fancybox-popup-container {
+  max-width: 600px;
+}
+
+#data-source-help {
+  display: none;
+}
+
 #CookielawBanner .container {
   position: fixed;
   bottom: 0px;
