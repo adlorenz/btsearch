@@ -34,14 +34,7 @@
 
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="navbar-collapse">
-        {% block search-form %}
-        <form id="search-form" action="{% block search-form-action %}{% endblock %}" method="get" class="navbar-form navbar-left" role="search">
-          <div class="form-group">
-            <input type="text" class="form-control" id="search-box" value="{% block current-search-query %}{% endblock %}" name="query" placeholder="Znajdź lokalizację..." />
-          </div>
-          <button type="submit" class="btn btn-default">Szukaj</button>
-        </form>
-        {% endblock search-form %}
+        {% block search-form %}{% endblock search-form %}
 
         <ul class="nav navbar-nav">
           <li><a href="{% url 'home' %}">Mapa</a></li>
