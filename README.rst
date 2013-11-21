@@ -5,4 +5,4 @@ Kompletny kod źródłowy serwisu btsearch.pl_, napisany w języku Python z wyko
 
 Więcej szczegółów wkrótce...
 
-.. _btsearch.pl: http://btsearch.pl
+.. _btsearch.pl: http://beta.btsearch.pl
