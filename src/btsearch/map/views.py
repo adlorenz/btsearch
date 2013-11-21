@@ -138,7 +138,7 @@ class UkeLocationDetailView(LocationDetailView):
 
 
 class ControlPanelView(generic.TemplateView):
-    template_name = 'map/control_panel.html'
+    template_name = 'map/panels/control.html'
 
     def get_context_data(self, **kwargs):
         context = super(ControlPanelView, self).get_context_data(**kwargs)
@@ -149,8 +149,8 @@ class ControlPanelView(generic.TemplateView):
 
 
 class StatusPanelView(generic.TemplateView):
-    template_name = 'map/status_panel.html'
+    template_name = 'map/panels/status.html'
 
 
 class AdPanelView(generic.TemplateView):
-    template_name = 'map/ad_panel.html'
+    template_name = 'map/panels/googlead.html'
