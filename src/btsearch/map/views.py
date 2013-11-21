@@ -59,7 +59,7 @@ class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListV
 
 class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.DetailView):
     model = bts_models.Location
-    template_name = 'map/location_info.html'
+    template_name = 'popups/location_bts.html'
     context_object_name = 'location'
     filter_class = services.BtsLocationFilterService
 
@@ -104,7 +104,7 @@ class UkeLocationsView(LocationsView):
 
 class UkeLocationDetailView(LocationDetailView):
     model = uke_models.Location
-    template_name = 'map/uke_location_info.html'
+    template_name = 'popups/location_uke.html'
     filter_class = services.UkeLocationFilterService
 
     def _get_location_objects(self):
