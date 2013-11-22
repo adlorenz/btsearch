@@ -59,7 +59,7 @@ class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListV
 
 class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.DetailView):
     model = bts_models.Location
-    template_name = 'map/location_info.html'
+    template_name = 'popups/location_bts.html'
     context_object_name = 'location'
     filter_class = services.BtsLocationFilterService
 
@@ -104,7 +104,7 @@ class UkeLocationsView(LocationsView):
 
 class UkeLocationDetailView(LocationDetailView):
     model = uke_models.Location
-    template_name = 'map/uke_location_info.html'
+    template_name = 'popups/location_uke.html'
     filter_class = services.UkeLocationFilterService
 
     def _get_location_objects(self):
@@ -138,7 +138,7 @@ class UkeLocationDetailView(LocationDetailView):
 
 
 class ControlPanelView(generic.TemplateView):
-    template_name = 'map/control_panel.html'
+    template_name = 'map/panels/control.html'
 
     def get_context_data(self, **kwargs):
         context = super(ControlPanelView, self).get_context_data(**kwargs)
@@ -149,8 +149,8 @@ class ControlPanelView(generic.TemplateView):
 
 
 class StatusPanelView(generic.TemplateView):
-    template_name = 'map/status_panel.html'
+    template_name = 'map/panels/status.html'
 
 
 class AdPanelView(generic.TemplateView):
-    template_name = 'map/ad_panel.html'
+    template_name = 'map/panels/googlead.html'

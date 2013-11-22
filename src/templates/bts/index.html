@@ -1,6 +1,10 @@
 {% extends 'site/browse.html' %}
 {% block page-title %}Przeglądarka bazy danych BTSearch{% endblock %}
 
+{% block search-form %}
+    {% include "partials/search_form.html" with search_query=get_params.query %}
+{% endblock search-form %}
+
 {% block sidebar-content %}
 
     <form action="" method="get" class="form">
@@ -28,8 +32,6 @@
     <p>Liczba rekordów: <strong>{{ page_obj.paginator.count }}</strong></p>
 
 {% endblock %}
-
-{% block current-search-query %}{{ get_params.query }}{% endblock %}
 
 {% block main-content %}
 

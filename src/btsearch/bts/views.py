@@ -43,7 +43,7 @@ class BtsListingView(mixins.QuerysetFilterMixin, generic.ListView):
 class BtsDetailView(generic.DetailView):
     model = models.BaseStation
     context_object_name = 'base_station'
-    template_name = 'bts/details_bts.html'
+    template_name = 'popups/details_bts.html'
 
 
 class UkeDetailView(generic.DetailView):
@@ -52,7 +52,7 @@ class UkeDetailView(generic.DetailView):
     """
     model = uke_models.Location
     context_object_name = 'uke_location'
-    template_name = 'bts/details_uke.html'
+    template_name = 'popups/details_uke.html'
 
     def get_context_data(self, **kwargs):
         try:

@@ -162,6 +162,10 @@ def init():
         sudo('mkdir -p media/%(build)s' % env)
         sudo('mkdir -p run/%(build)s' % env)
 
+        # Change directory permissions so uwsgi and nginx don't trip over
+        sudo('chown -R root.www-data logs/ media/ run/')
+        sudo('chmod -R g+w logs/ media/ run/')
+
         # Check for virtualenv
         virtualenv_dir = 'virtualenvs/%(build)s' % env
         if not exists(virtualenv_dir):

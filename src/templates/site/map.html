@@ -1,6 +1,10 @@
 {% extends 'site/layout.html' %}
 {% load staticfiles %}
 
+{% block search-form %}
+    {% include "partials/search_form.html" %}
+{% endblock search-form %}
+
 {% block main-content-container %}
     <div id="map-container">
         {% block main-content %}{% endblock %}

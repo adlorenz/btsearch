@@ -1,8 +1,8 @@
 BTSearch v2
 ===========
 
-Podwaliny pod zupełnie nową wersję serwisu btsearch.pl_
+Kompletny kod źródłowy serwisu btsearch.pl_, napisany w języku Python z wykorzystaniem frameworku webowego Django.
 
-*Under construction....*
+Więcej szczegółów wkrótce...
 
-.. _btsearch.pl: http://btsearch.pl
+.. _btsearch.pl: http://beta.btsearch.pl

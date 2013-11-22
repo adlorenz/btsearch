@@ -6,27 +6,28 @@
 {% endblock %}
 
 {% block extra-content %}
-	<div style="display:none;">
-		<div id="data-source-help">
-			<h3>Źródło danych</h3>
-			<dl class="dl-horizontal">
-				<dt>BTSearch</dt>
-				<dd>
-					Lokalizacje stacji bazowych oraz ich szczegółowe dane (CID/LAC/itp.)
-				zgromadzone przez entuzjastów telefonii komórkowej w
-				<a href="{% url 'bts:listing' %}">bazie danych BTSearch</a>.
-				</dd>
-				<dt>UKE</dt>
-				<dd>
-					Lokalizacje oparte o ogólnodostępny wykaz pozwoleń radiowych wydanych
-				operatorom przez Urząd Komunikacji Elektronicznej.
-				</dd>
-				<dt>Wyświetl najnowsze</dt>
-				<dd>
-					Wyświetl tylko lokalizacje, których stacje bazowe bądź pozwolenia
-					zostały dodane/uaktualnione w ciągu ostatnich <strong>30&nbsp;dni</strong>.
-				</dd>
-			</dl>
+	<div id="data-source-help" class="fancybox-popup-container">
+		<h3>Źródło danych</h3>
+		<dl class="dl-horizontal">
+			<dt>BTSearch</dt>
+			<dd>
+				Lokalizacje stacji bazowych oraz ich szczegółowe dane (CID/LAC/itp.)
+			zgromadzone przez entuzjastów telefonii komórkowej w
+			<a href="{% url 'bts:listing' %}">bazie danych BTSearch</a>.
+			</dd>
+			<dt>UKE</dt>
+			<dd>
+				Lokalizacje oparte o ogólnodostępny wykaz pozwoleń radiowych wydanych
+			operatorom przez Urząd Komunikacji Elektronicznej.
+			</dd>
+			<dt>Wyświetl najnowsze</dt>
+			<dd>
+				Wyświetl tylko lokalizacje, których stacje bazowe bądź pozwolenia
+				zostały dodane/uaktualnione w ciągu ostatnich <strong>30&nbsp;dni</strong>.
+			</dd>
+		</dl>
+		<p class="pull-right">
+			Więcej szczegółów o danych źródłowych na stronie <a href="/interpretacja-danych-mapy/">Interpretacja danych na mapie</a>
+		</p>
 		</div>
-	</div>
 {% endblock %}
