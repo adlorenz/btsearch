@@ -115,6 +115,10 @@ img.location-network-icon {
   display: none;
 }
 
+.container dd {
+  margin-bottom: 15px;
+}
+
 #CookielawBanner .container {
   position: fixed;
   bottom: 0px;
