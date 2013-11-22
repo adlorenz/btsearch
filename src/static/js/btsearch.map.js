@@ -404,11 +404,17 @@ var ui = {
     },
 
     createAdPanel: function(map) {
-        var panel = document.createElement('DIV');
-        panel.id = 'googlead-panel-container';
-        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(panel);
-
-        requests.setAdPanelContent(panel);
+        // Reference: https://developers.google.com/maps/documentation/javascript/advertising
+        var adUnitDiv = document.createElement('div');
+        adUnitDiv.id = 'googlead-panel-container';
+        var adUnitOptions = {
+            format: google.maps.adsense.AdFormat.HALF_BANNER,
+            position: google.maps.ControlPosition.RIGHT_BOTTOM,
+            map: core.map,
+            visible: true,
+            publisherId: 'pub-0983719504949481'
+        }
+        new google.maps.adsense.AdUnit(adUnitDiv, adUnitOptions);
     },
 
     bindControlPanelEvents: function() {
