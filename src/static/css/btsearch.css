@@ -42,12 +42,12 @@
 #googlead-panel-container {
   position: relative;
   padding: 8px;
-  z-index: 199;
 }
 
 #googlead-panel {
   width: 234px;
   height: 60px;
+  z-index: 9999;
 }
 
 #control-panel-body {
