@@ -62,6 +62,13 @@
 
     {% block main-content-container %}{% endblock %}
     {% block extra-content %}{% endblock %}
+    {% block footer %}
+        <div class="container">
+          <div class="text-right text-muted footer">
+            &copy;2000-{% now "Y" %} Krzysztof Niemczyk, Dawid Lorenz
+          </div>
+        </div>
+    {% endblock footer %}
     {% cookielaw_banner %}
 
     {# Core JavaScript libs #}
