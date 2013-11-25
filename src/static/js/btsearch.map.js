@@ -147,6 +147,7 @@ var core = {
             latlng = new google.maps.LatLng(locations[i].latitude, locations[i].longitude);
             marker = this.createMarker(latlng, icon);
             events.locationClick(marker, locations[i]);
+            events.locationRightClick(marker);
         }
         mapStatus.updateLocationsCount();
         mapStatus.waitDone();
@@ -238,6 +239,12 @@ var events = {
         });
     },
 
+    locationRightClick: function(marker) {
+        google.maps.event.addListener(marker, 'rightclick', function(){
+            distanceService.reset(marker.getPosition());
+        });
+    },
+
     infoWindowClose: function(infoWindow) {
         google.maps.event.addListener(infoWindow, 'closeclick', function() {
             core.clearInfoWindow();
@@ -247,8 +254,47 @@ var events = {
 
     mouseMove: function(map) {
         google.maps.event.addListener(map, 'mousemove', function(event) {
-            mapStatus.updateGpsLocation(event.latLng.lat().toFixed(6), event.latLng.lng().toFixed(6));
+            distanceService.draw(event.latLng);
+            mapStatus.updateDistance();
+            mapStatus.updateGpsLocation(event.latLng);
         });
+    }
+};
+
+var distanceService = {
+    startPoint: null,
+    polyline: null,
+    distance: 0,
+
+    reset: function(startPoint) {
+        if (this.startPoint) {
+            this.startPoint = null;
+            if (this.polyline) {
+                this.polyline.setMap(null);
+            }
+            this.polyline = null;
+            this.distance = 0;
+        } else {
+            this.startPoint = startPoint;
+            this.polyline = new google.maps.Polyline({
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.2,
+                strokeWeight: 3,
+                geodesic: true
+            });
+        }
+    },
+
+    draw: function(endPoint) {
+        if (this.polyline) {
+            path = [
+                this.startPoint,
+                endPoint
+            ];
+            this.polyline.setPath(path);
+            this.polyline.setMap(core.map);
+            this.distance = google.maps.geometry.spherical.computeLength(path);
+        }
     }
 };
 
@@ -571,6 +617,15 @@ var filters = {
 };
 
 var mapStatus = {
+
+    getLatLngExtendedInfo: function(point) {
+        var lat = point.lat().toFixed(6);
+        var lng = point.lng().toFixed(6);
+        var lat2 = utils.deg2dms(lat, 'lat');
+        var lng2 = utils.deg2dms(lng, 'lng');
+        return lat + ' ' + lng + ' &hArr; ' + lat2 + ' ' + lng2;
+    },
+
     updateAll: function() {
         this.updateZoom();
         this.updateLocationsCount();
@@ -596,11 +651,23 @@ var mapStatus = {
         $('#status-data-source').html(source);
     },
 
-    updateGpsLocation: function(lat, lng) {
-        var lat2 = utils.deg2dms(lat, 'lat');
-        var lng2 = utils.deg2dms(lng, 'lng');
-        var latlng_info = lat + ' ' + lng + ' &hArr; ' + lat2 + ' ' + lng2;
-        $('#status-gps').html(latlng_info);
+    updateGpsLocation: function(point) {
+        $('#status-gps').html(this.getLatLngExtendedInfo(point));
+    },
+
+    updateDistance: function() {
+        var distance = distanceService.distance.toFixed(0);
+        if (distance > 0) {
+            $('#status-panel-distance').show();
+            var distance_km = (distance / 1000).toFixed(2);
+            var distance_ta = Math.floor(distance / 550);
+            if (distance_ta > 63) distance_ta = 'max';
+            $('#status-distance').html(distance_km);
+            $('#status-ta').html(distance_ta);
+            $('#status-gps-marker').html(this.getLatLngExtendedInfo(distanceService.startPoint));
+        } else {
+            $('#status-panel-distance').hide();
+        }
     },
 
     wait: function() {
