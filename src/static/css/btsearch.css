@@ -1,3 +1,7 @@
+body {
+  padding-top: 70px;
+}
+
 #map-container {
   position: fixed;
   width: 100%;
