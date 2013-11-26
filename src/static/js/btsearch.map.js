@@ -277,6 +277,7 @@ var distanceService = {
     startPoint: null,
     polyline: null,
     distance: 0,
+    heading: null,
 
     reset: function() {
         this.startPoint = null;
@@ -311,6 +312,8 @@ var distanceService = {
             this.polyline.setPath(path);
             this.polyline.setMap(core.map);
             this.distance = google.maps.geometry.spherical.computeLength(path);
+            //this.heading = google.maps.geometry.spherical.computeHeading(path[0], path[1]);
+            this.heading = utils.calculateHeading(path[0], path[1]);
         }
     }
 };
@@ -676,11 +679,13 @@ var mapStatus = {
         var distance = distanceService.distance.toFixed(0);
         if (distance > 0) {
             $('#status-panel-distance').show();
+            var heading = distanceService.heading.toFixed(2);
             var distance_km = (distance / 1000).toFixed(2);
             var distance_ta = Math.floor(distance / 550);
             if (distance_ta > 63) distance_ta = 'max';
             $('#status-distance').html(distance_km);
             $('#status-ta').html(distance_ta);
+            $('#status-heading').html(heading);
             $('#status-gps-marker').html(this.getLatLngExtendedInfo(distanceService.startPoint));
         } else {
             $('#status-panel-distance').hide();
@@ -754,5 +759,22 @@ var utils = {
         var suffix = latlng == 'lat' ? coordinate > 0 ? 'N' : 'S' : coordinate > 0 ? 'E' : 'W';
 
         return d + '&ordm;' + m + '\'' + s + '\'\'&nbsp;' + suffix;
-    }
+    },
+
+    calculateHeading: function(point1, point2) {
+        var lat1 = point1.lat(); var lon1 = point1.lng();
+        var lat2 = point2.lat(); var lon2 = point2.lng();
+
+        var lat1 = lat1 * Math.PI / 180;
+        var lat2 = lat2 * Math.PI / 180;
+        var dLon = (lon2 - lon1) * Math.PI / 180;
+
+        var y = Math.sin(dLon) * Math.cos(lat2);
+        var x = Math.cos(lat1) * Math.sin(lat2) -
+        Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+
+        var brng = Math.atan2(y, x);
+
+        return (((brng * 180 / Math.PI) + 360) % 360);
+}
 };
