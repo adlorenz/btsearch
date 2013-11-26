@@ -96,6 +96,14 @@ body {
   #control-panel-body { overflow: hidden; }
 }
 
+#location-info-container {
+  max-width: 240px;
+}
+
+.location-info-footer {
+  padding-top: 6px;
+}
+
 img.location-network-icon {
   margin-right: 7px;
   margin-top: 3px;
@@ -126,10 +134,6 @@ img.location-network-icon {
 .footer {
   padding-top: 20px;
   padding-bottom: 20px;
-}
-
-.location-info-footer {
-  padding-top: 6px;
 }
 
 #CookielawBanner .container {

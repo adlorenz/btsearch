@@ -13,6 +13,9 @@
             {% if base_station.station_id %}
                 <small>ID: <abbr title="Identyfikator wewnętrzny operatora">{{ base_station.station_id }}</abbr></small>
             {% endif %}<br/>
+            {% if base_station.location_details != '' and base_station.location_details|lower != location.address|lower %}
+                <small>{{ base_station.location_details }}</small><br/>
+            {% endif %}
 
             {% comment %}
             {% if base_station.location_details != location.address %}
