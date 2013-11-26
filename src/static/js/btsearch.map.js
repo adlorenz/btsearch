@@ -241,7 +241,7 @@ var events = {
 
     locationRightClick: function(marker) {
         google.maps.event.addListener(marker, 'rightclick', function(){
-            distanceService.reset(marker.getPosition());
+            distanceService.toggle(marker.getPosition());
         });
         google.maps.event.addListener(marker, 'mouseover', function() {
             if (!distanceService.startPoint) {
@@ -264,6 +264,12 @@ var events = {
             mapStatus.updateGpsLocation(event.latLng);
             $('#status-panel-distance-info').hide();
         });
+    },
+
+    distanceCancel: function(polyline) {
+        google.maps.event.addListener(polyline, 'rightclick', function(event) {
+            distanceService.reset();
+        });
     }
 };
 
@@ -272,14 +278,18 @@ var distanceService = {
     polyline: null,
     distance: 0,
 
-    reset: function(startPoint) {
+    reset: function() {
+        this.startPoint = null;
+        if (this.polyline) {
+            this.polyline.setMap(null);
+        }
+        this.polyline = null;
+        this.distance = 0;
+    },
+
+    toggle: function(startPoint) {
         if (this.startPoint) {
-            this.startPoint = null;
-            if (this.polyline) {
-                this.polyline.setMap(null);
-            }
-            this.polyline = null;
-            this.distance = 0;
+            this.reset();
         } else {
             this.startPoint = startPoint;
             this.polyline = new google.maps.Polyline({
@@ -288,6 +298,7 @@ var distanceService = {
                 strokeWeight: 3,
                 geodesic: true
             });
+            events.distanceCancel(this.polyline);
         }
     },
 
