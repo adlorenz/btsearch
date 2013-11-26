@@ -243,6 +243,11 @@ var events = {
         google.maps.event.addListener(marker, 'rightclick', function(){
             distanceService.reset(marker.getPosition());
         });
+        google.maps.event.addListener(marker, 'mouseover', function() {
+            if (!distanceService.startPoint) {
+                $('#status-panel-distance-info').show();
+            }
+        });
     },
 
     infoWindowClose: function(infoWindow) {
@@ -257,6 +262,7 @@ var events = {
             distanceService.draw(event.latLng);
             mapStatus.updateDistance();
             mapStatus.updateGpsLocation(event.latLng);
+            $('#status-panel-distance-info').hide();
         });
     }
 };
