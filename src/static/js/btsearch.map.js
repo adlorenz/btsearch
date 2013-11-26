@@ -629,7 +629,7 @@ var mapStatus = {
         var lng = point.lng().toFixed(6);
         var lat2 = utils.deg2dms(lat, 'lat');
         var lng2 = utils.deg2dms(lng, 'lng');
-        return lat + ' ' + lng + ' &hArr; ' + lat2 + ' ' + lng2;
+        return lat + '&nbsp;' + lng + '&nbsp;&hArr;&nbsp;' + lat2 + '&nbsp;' + lng2;
     },
 
     updateAll: function() {
@@ -742,6 +742,6 @@ var utils = {
 
         var suffix = latlng == 'lat' ? coordinate > 0 ? 'N' : 'S' : coordinate > 0 ? 'E' : 'W';
 
-        return d + '&ordm;' + m + '\'' + s + '\'\' ' + suffix;
+        return d + '&ordm;' + m + '\'' + s + '\'\'&nbsp;' + suffix;
     }
 };
