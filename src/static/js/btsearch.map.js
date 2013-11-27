@@ -688,7 +688,7 @@ var mapStatus = {
             if (distance_ta > 63) distance_ta = 'max';
             $('#status-distance').html(distance_km);
             $('#status-ta').html(distance_ta);
-            $('#status-heading').html(heading);
+            $('#status-heading').html(heading + '&deg;');
             $('#status-gps-marker').html(this.getLatLngExtendedInfo(distanceService.startPoint));
         } else {
             $('#status-panel-distance').hide();
