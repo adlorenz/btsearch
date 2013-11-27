@@ -1,3 +1,7 @@
+body {
+  padding-top: 70px;
+}
+
 #map-container {
   position: fixed;
   width: 100%;
@@ -92,6 +96,14 @@
   #control-panel-body { overflow: hidden; }
 }
 
+#location-info-container {
+  max-width: 240px;
+}
+
+.location-info-footer {
+  padding-top: 6px;
+}
+
 img.location-network-icon {
   margin-right: 7px;
   margin-top: 3px;
@@ -117,6 +129,11 @@ img.location-network-icon {
 
 .container dd {
   margin-bottom: 15px;
+}
+
+.footer {
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 #CookielawBanner .container {

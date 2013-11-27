@@ -11,10 +11,13 @@
     </div>
 {% endblock %}
 
+{# No footer on the map page #}
+{% block footer %}{% endblock footer %}
+
 {% block extrascripts %}
     {{ block.super }}
 
-    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=true&amp;libraries=places,adsense&amp;language=pl"></script>
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=true&amp;libraries=places,adsense,geometry&amp;language=pl"></script>
 
     <script type="text/javascript" src="{% static "js/btsearch.map.js" %}"></script>
 
