@@ -312,8 +312,8 @@ var distanceService = {
             this.polyline.setPath(path);
             this.polyline.setMap(core.map);
             this.distance = google.maps.geometry.spherical.computeLength(path);
-            //this.heading = google.maps.geometry.spherical.computeHeading(path[0], path[1]);
-            this.heading = utils.calculateHeading(path[0], path[1]);
+            this.heading = google.maps.geometry.spherical.computeHeading(path[0], path[1]);
+            // this.heading = utils.calculateHeading(path[0], path[1]);
         }
     }
 };
@@ -680,6 +680,9 @@ var mapStatus = {
         if (distance > 0) {
             $('#status-panel-distance').show();
             var heading = distanceService.heading.toFixed(2);
+            if (heading < 0) {
+                heading = +heading + 360;
+            }
             var distance_km = (distance / 1000).toFixed(2);
             var distance_ta = Math.floor(distance / 550);
             if (distance_ta > 63) distance_ta = 'max';
@@ -761,7 +764,7 @@ var utils = {
         return d + '&ordm;' + m + '\'' + s + '\'\'&nbsp;' + suffix;
     },
 
-    calculateHeading: function(point1, point2) {
+    /*calculateHeading: function(point1, point2) {
         var lat1 = point1.lat(); var lon1 = point1.lng();
         var lat2 = point2.lat(); var lon2 = point2.lng();
 
@@ -776,5 +779,5 @@ var utils = {
         var brng = Math.atan2(y, x);
 
         return (((brng * 180 / Math.PI) + 360) % 360);
-}
+    }*/
 };
