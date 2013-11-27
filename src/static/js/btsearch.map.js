@@ -681,7 +681,7 @@ var mapStatus = {
             $('#status-panel-distance').show();
             var heading = distanceService.heading.toFixed(2);
             if (heading < 0) {
-                heading = +heading + 360;
+                heading = (+heading + 360).toFixed(2);
             }
             var distance_km = (distance / 1000).toFixed(2);
             var distance_ta = Math.floor(distance / 550);
