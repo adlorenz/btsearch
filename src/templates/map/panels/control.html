@@ -37,9 +37,30 @@
             <p>
                 <select name="network" id="network-filter">
                     <option value="-1">Wszystkie sieci</option>
+                    <optgroup label="Główni operatorzy">
+                        <option value="26001">Plus</option>
+                        <option value="26002">T-Mobile</option>
+                        <option value="26003">Orange</option>
+                        <option value="26006">Play</option>
+                    </optgroup>
+                    <optgroup label="Pozostali">
+                        <option value="26017">Aero 2</option>
+                        <option value="26015">CenterNet</option>
+                        <option value="26016">Mobyland</option>
+                        <option value="26011">Nordisk</option>
+                        <option value="26010">Sferia</option>
+                    </optgroup>
+                    <optgroup label="Inne konfiguracje">
+                        <option value="26034">NetWorks!</option>
+                        <option value="26001,26017,26016">Plus + roaming + MOCN</option>
+                        <option value="26016,26017">Cyfrowy Polsat Internet</option>
+                    </optgroup>
+                    {% comment %}
                     {% for network in networks %}
                     <option value="{{ network.code }}">{{ network.name }}</option>
                     {% endfor %}
+                    {% endcomment %}
+
                 </select>
             </p>
 
