@@ -131,7 +131,8 @@ class MapIconService():
         return self.get_icon_by_network_code(network.code)
 
     def get_icon_by_network_code(self, network_code):
-        icon_code = self._get_icon_code_from_network_code(network_code)
+        icon_code = self._get_icon_code_from_network_code(network_code) \
+            if network_code != '26034' else '34'  # 26034 (NetWorks!) is a special case
         return self._get_icon_path(icon_code)
 
     def get_icon_by_location(self, location, filter_service=None, raw_filters=[]):
@@ -159,7 +160,16 @@ class MapIconService():
             if icon_code not in icon_codes_list:
                 icon_codes_list.append(icon_code)
 
-        # Always put '00' code at the end of the list
+        # Special case for 26034 (NetWorks!)
+        # In case NetWorks! icon in the list, make sure that 26002 (TMPL)
+        # and 26003 (Orange) are always displayed
+        if '34' in icon_codes_list:
+            icon_codes_list.append('02')
+            icon_codes_list.append('03')
+            icon_codes_list.remove('34')
+            icon_codes_list = list(set(icon_codes_list))
+
+        # Sort list and always put '00' code at the end of the list
         icon_codes_list.sort()
         if '00' in icon_codes_list:
             icon_codes_list.remove('00')
@@ -178,7 +188,9 @@ class MapIconService():
         # all above networks share same icon)
         if network_code:
             icon_code = network_code[-2:]
-            return icon_code if int(icon_code) <= 6 else '00'
+            int_code = int(icon_code)
+            # Special case for '34' (NetWorks!)
+            return icon_code if int_code <= 6 or int_code == 34 else '00'
         return '00'
 
 
