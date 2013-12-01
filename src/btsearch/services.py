@@ -18,8 +18,9 @@ class QuerysetFilterService(object):
             )
 
         if 'network' in raw_filters and raw_filters['network']:
+            networks = raw_filters['network'].split(',')
             processed_filters.update(
-                self._get_network_filter(raw_filters['network'])
+                self._get_network_filter(networks)
             )
 
         if 'region' in raw_filters and raw_filters['region']:
@@ -56,9 +57,9 @@ class QuerysetFilterService(object):
             'longitude__lte': bounds[3]
         }
 
-    def _get_network_filter(self, network):
+    def _get_network_filter(self, networks):
         return {
-            self.network_filter_field: network
+            self.network_filter_field: networks
         }
 
     def _get_region_filter(self, region):
@@ -91,14 +92,14 @@ class QuerysetFilterService(object):
 
 
 class BtsLocationsFilterService(QuerysetFilterService):
-    network_filter_field = 'base_stations__network'
+    network_filter_field = 'base_stations__network__in'
     standard_filter_field = 'base_stations__cells__standard__in'
     band_filter_field = 'base_stations__cells__band__in'
     timedelta_filter_field = 'base_stations__date_updated__gte'
 
 
 class BtsLocationFilterService(QuerysetFilterService):
-    network_filter_field = 'network'
+    network_filter_field = 'network__in'
     standard_filter_field = 'cells__standard__in'
     band_filter_field = 'cells__band__in'
     region_filter_field = 'location__region'
@@ -107,14 +108,14 @@ class BtsLocationFilterService(QuerysetFilterService):
 
 
 class UkeLocationsFilterService(QuerysetFilterService):
-    network_filter_field = 'permissions__operator__network'
+    network_filter_field = 'permissions__operator__network__in'
     standard_filter_field = 'permissions__standard__in'
     band_filter_field = 'permissions__band__in'
     timedelta_filter_field = 'permissions__date_added__gte'
 
 
 class UkeLocationFilterService(QuerysetFilterService):
-    network_filter_field = 'operator__network'
+    network_filter_field = 'operator__network__in'
     standard_filter_field = 'standard__in'
     band_filter_field = 'band__in'
     timedelta_filter_field = 'date_added__gte'
@@ -139,7 +140,9 @@ class MapIconService():
 
         # Network filter makes it easy
         if 'network' in raw_filters and raw_filters['network']:
-            return self.get_icon_by_network_code(raw_filters['network'])
+            networks = raw_filters['network'].split(',')
+            if len(networks) == 1:
+                return self.get_icon_by_network_code(networks[0])
 
         # Apply filters if specified
         if filter_service:
