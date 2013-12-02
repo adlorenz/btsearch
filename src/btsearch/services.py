@@ -97,6 +97,15 @@ class BtsLocationsFilterService(QuerysetFilterService):
     band_filter_field = 'base_stations__cells__band__in'
     timedelta_filter_field = 'base_stations__date_updated__gte'
 
+    def _get_network_filter(self, networks):
+        # Special case for 26034 (NetWorks!)
+        if '26034' in networks:
+            return {
+                'base_stations__network__in': ['26002', '26003', '26034'],
+                'base_stations__cells__notes__icontains': 'networks'
+            }
+        return super(BtsLocationFilterService, self)._get_network_filter(networks)
+
 
 class BtsLocationFilterService(QuerysetFilterService):
     network_filter_field = 'network__in'
