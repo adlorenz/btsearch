@@ -11,7 +11,7 @@ from . import forms
 class BtsListingView(mixins.QuerysetFilterMixin, generic.ListView):
     template_name = 'bts/index.html'
     model = models.BaseStation
-    queryset = models.BaseStation.objects.distinct()
+    queryset = models.BaseStation.objects.select_related().distinct()
     context_object_name = 'base_stations'
     paginate_by = 20
     filter_class = services.BtsLocationFilterService
