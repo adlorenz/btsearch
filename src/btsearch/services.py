@@ -150,8 +150,7 @@ class MapIconService():
         return self.get_icon_by_network_code(network.code)
 
     def get_icon_by_network_code(self, network_code):
-        icon_code = self._get_icon_code_from_network_code(network_code) \
-            if network_code != '26034' else '34'  # 26034 (NetWorks!) is a special case
+        icon_code = self._get_icon_code_from_network_code(network_code)
         return self._get_icon_path(icon_code)
 
     def get_icon_by_location(self, location, filter_service=None, raw_filters=[]):
@@ -159,7 +158,7 @@ class MapIconService():
         # Network filter makes it easy
         if 'network' in raw_filters and raw_filters['network']:
             networks = raw_filters['network'].split(',')
-            if len(networks) == 1:
+            if len(networks) == 1 and '26034' not in networks:
                 return self.get_icon_by_network_code(networks[0])
 
         # Apply filters if specified
@@ -182,8 +181,8 @@ class MapIconService():
                 icon_codes_list.append(icon_code)
 
         # Special case for 26034 (NetWorks!)
-        # In case NetWorks! icon in the list, make sure that 26002 (TMPL)
-        # and 26003 (Orange) are always displayed
+        # When 26034 (NetWorks!) icon is in the list, make sure that
+        # 26002 (TMPL) and 26003 (Orange) icons are always displayed
         if '34' in icon_codes_list:
             icon_codes_list.append('02')
             icon_codes_list.append('03')
