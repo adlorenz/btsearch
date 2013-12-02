@@ -104,7 +104,7 @@ class BtsLocationsFilterService(QuerysetFilterService):
                 'base_stations__network__in': ['26002', '26003', '26034'],
                 'base_stations__cells__notes__icontains': 'networks'
             }
-        return super(BtsLocationFilterService, self)._get_network_filter(networks)
+        return super(BtsLocationsFilterService, self)._get_network_filter(networks)
 
 
 class BtsLocationFilterService(QuerysetFilterService):
