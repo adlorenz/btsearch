@@ -106,6 +106,15 @@ class BtsLocationFilterService(QuerysetFilterService):
     timedelta_filter_field = 'date_updated__gte'
     skip_bounds_filter = True
 
+    def _get_network_filter(self, networks):
+        # Special case for 26034 (NetWorks!)
+        if '26034' in networks:
+            return {
+                'network__in': ['26002', '26003', '26034'],
+                'cells__notes__icontains': 'networks'
+            }
+        return super(BtsLocationFilterService, self)._get_network_filter(networks)
+
 
 class UkeLocationsFilterService(QuerysetFilterService):
     network_filter_field = 'permissions__operator__network__in'
