@@ -102,7 +102,8 @@ class BtsLocationsFilterService(QuerysetFilterService):
         if '26034' in networks:
             return {
                 'base_stations__network__in': ['26002', '26003', '26034'],
-                'base_stations__cells__notes__icontains': 'networks'
+                # 'base_stations__cells__notes__icontains': 'networks',
+                'base_stations__is_networks': True,
             }
         return super(BtsLocationsFilterService, self)._get_network_filter(networks)
 
@@ -120,7 +121,8 @@ class BtsLocationFilterService(QuerysetFilterService):
         if '26034' in networks:
             return {
                 'network__in': ['26002', '26003', '26034'],
-                'cells__notes__icontains': 'networks'
+                # 'cells__notes__icontains': 'networks',
+                'is_networks': True,
             }
         return super(BtsLocationFilterService, self)._get_network_filter(networks)
 

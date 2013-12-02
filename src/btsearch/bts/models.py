@@ -117,6 +117,7 @@ class BaseStation(models.Model):
     is_umts = models.BooleanField(default=False)
     is_cdma = models.BooleanField(default=False)
     is_lte = models.BooleanField(default=False)
+    is_networks = models.BooleanField('Is NetWorks!', default=False, db_index=True)
     # ^^ Really necessary? ^^
 
     notes = models.CharField(
