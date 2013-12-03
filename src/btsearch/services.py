@@ -18,8 +18,9 @@ class QuerysetFilterService(object):
             )
 
         if 'network' in raw_filters and raw_filters['network']:
+            networks = raw_filters['network'].split(',')
             processed_filters.update(
-                self._get_network_filter(raw_filters['network'])
+                self._get_network_filter(networks)
             )
 
         if 'region' in raw_filters and raw_filters['region']:
@@ -56,9 +57,9 @@ class QuerysetFilterService(object):
             'longitude__lte': bounds[3]
         }
 
-    def _get_network_filter(self, network):
+    def _get_network_filter(self, networks):
         return {
-            self.network_filter_field: network
+            self.network_filter_field: networks
         }
 
     def _get_region_filter(self, region):
@@ -91,30 +92,50 @@ class QuerysetFilterService(object):
 
 
 class BtsLocationsFilterService(QuerysetFilterService):
-    network_filter_field = 'base_stations__network'
+    network_filter_field = 'base_stations__network__in'
     standard_filter_field = 'base_stations__cells__standard__in'
     band_filter_field = 'base_stations__cells__band__in'
     timedelta_filter_field = 'base_stations__date_updated__gte'
 
+    def _get_network_filter(self, networks):
+        # Special case for 26034 (NetWorks!)
+        if '26034' in networks:
+            return {
+                'base_stations__network__in': ['26002', '26003', '26034'],
+                # 'base_stations__cells__notes__icontains': 'networks',
+                'base_stations__is_networks': True,
+            }
+        return super(BtsLocationsFilterService, self)._get_network_filter(networks)
+
 
 class BtsLocationFilterService(QuerysetFilterService):
-    network_filter_field = 'network'
+    network_filter_field = 'network__in'
     standard_filter_field = 'cells__standard__in'
     band_filter_field = 'cells__band__in'
     region_filter_field = 'location__region'
     timedelta_filter_field = 'date_updated__gte'
     skip_bounds_filter = True
 
+    def _get_network_filter(self, networks):
+        # Special case for 26034 (NetWorks!)
+        if '26034' in networks:
+            return {
+                'network__in': ['26002', '26003', '26034'],
+                # 'cells__notes__icontains': 'networks',
+                'is_networks': True,
+            }
+        return super(BtsLocationFilterService, self)._get_network_filter(networks)
+
 
 class UkeLocationsFilterService(QuerysetFilterService):
-    network_filter_field = 'permissions__operator__network'
+    network_filter_field = 'permissions__operator__network__in'
     standard_filter_field = 'permissions__standard__in'
     band_filter_field = 'permissions__band__in'
     timedelta_filter_field = 'permissions__date_added__gte'
 
 
 class UkeLocationFilterService(QuerysetFilterService):
-    network_filter_field = 'operator__network'
+    network_filter_field = 'operator__network__in'
     standard_filter_field = 'standard__in'
     band_filter_field = 'band__in'
     timedelta_filter_field = 'date_added__gte'
@@ -138,7 +159,9 @@ class MapIconService():
 
         # Network filter makes it easy
         if 'network' in raw_filters and raw_filters['network']:
-            return self.get_icon_by_network_code(raw_filters['network'])
+            networks = raw_filters['network'].split(',')
+            if len(networks) == 1 and '26034' not in networks:
+                return self.get_icon_by_network_code(networks[0])
 
         # Apply filters if specified
         if filter_service:
@@ -159,7 +182,16 @@ class MapIconService():
             if icon_code not in icon_codes_list:
                 icon_codes_list.append(icon_code)
 
-        # Always put '00' code at the end of the list
+        # Special case for 26034 (NetWorks!)
+        # When 26034 (NetWorks!) icon is in the list, make sure that
+        # 26002 (TMPL) and 26003 (Orange) icons are always displayed
+        if '34' in icon_codes_list:
+            icon_codes_list.append('02')
+            icon_codes_list.append('03')
+            icon_codes_list.remove('34')
+            icon_codes_list = list(set(icon_codes_list))
+
+        # Sort list and always put '00' code at the end of the list
         icon_codes_list.sort()
         if '00' in icon_codes_list:
             icon_codes_list.remove('00')
@@ -178,7 +210,9 @@ class MapIconService():
         # all above networks share same icon)
         if network_code:
             icon_code = network_code[-2:]
-            return icon_code if int(icon_code) <= 6 else '00'
+            int_code = int(icon_code)
+            # Special case for '34' (NetWorks!)
+            return icon_code if int_code <= 6 or int_code == 34 else '00'
         return '00'
 
 

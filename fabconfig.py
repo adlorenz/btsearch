@@ -37,4 +37,4 @@ def stage():
 
 def prod():
     _configure('prod')
-    env.hosts = ['162.243.110.39']
+    env.hosts = ['146.185.177.44']
