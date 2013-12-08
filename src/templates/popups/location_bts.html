@@ -12,6 +12,9 @@
             <strong>{{ base_station.network.name }}</strong>
             {% if base_station.station_id %}
                 <small>ID: <abbr title="Identyfikator wewnętrzny operatora">{{ base_station.station_id }}</abbr></small>
+            {% endif %}
+            {% if base_station.is_networks %}
+                <small>(<abbr title="Stacja będąca częścią NetWorks!">N!</abbr>)</small>
             {% endif %}<br/>
             {% if base_station.location_details != '' and base_station.location_details|lower != location.address|lower %}
                 <small>{{ base_station.location_details }}</small><br/>
