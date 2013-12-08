@@ -338,6 +338,9 @@ class BaseStationPermission(models.Model):
         verbose_name="StationId",
     )
 
+    class Meta:
+        unique_together = ['base_station', 'permission', 'station_id']
+
 
 '''
 --- LEGACY MODELS
