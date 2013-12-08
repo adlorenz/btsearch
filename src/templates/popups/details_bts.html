@@ -62,13 +62,13 @@
                     <th>Nr pozwolenia</th>
                     <th>Data ważności</th>
                 </tr>
-            {% for permission in permissions %}
+            {% for p in permissions %}
                 <tr>
-                    <td>{{permission.standard}}</td>
-                    <td>{{permission.band}}</td>
-                    <td>{{permission.station_id}}</td>
-                    <td>{{permission.case_number}}</td>
-                    <td>{{permission.expiry_date}}</td>
+                    <td>{{ p.permission.standard }}</td>
+                    <td>{{ p.permission.band }}</td>
+                    <td>{{ p.permission.station_id }}</td>
+                    <td>{{ p.permission.case_number }}</td>
+                    <td>{{ p.permission.expiry_date }}</td>
                 </tr>
             {% endfor %}
             </table>
