@@ -47,6 +47,30 @@
             </tr>
     {% endfor %}
         </table>
+
+        {% with base_station.permissions.all as permissions %}
+        {% if permissions %}
+            <p><strong>Powiązane pozwolenia UKE</strong></p>
+            <table class="table table-bordered table-condensed table-responsive location-info">
+                <tr>
+                    <th>Standard</th>
+                    <th>Pasmo</th>
+                    <th>Nr stacji</th>
+                    <th>Nr pozwolenia</th>
+                    <th>Data ważności</th>
+                </tr>
+            {% for permission in permissions %}
+                <tr>
+                    <td>{{permission.standard}}</td>
+                    <td>{{permission.band}}</td>
+                    <td>{{permission.station_id}}</td>
+                    <td>{{permission.case_number}}</td>
+                    <td>{{permission.expiry_date}}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% endif %}
+        {% endwith %}
     </div>
 
     <div class="location-info-footer small pull-right">
