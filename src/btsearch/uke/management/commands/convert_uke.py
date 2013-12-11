@@ -57,6 +57,7 @@ class Command(BaseCommand):
                         'town': rawrecord.town,
                         'address': rawrecord.address,
                         'case_number': rawrecord.case_number,
+                        'case_number_orig': rawrecord.case_number_orig,
                         'case_type': rawrecord.case_type,
                         'expiry_date': rawrecord.expiry_date,
                     }
