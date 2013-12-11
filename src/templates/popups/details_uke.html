@@ -20,15 +20,17 @@
                     <th>Pasmo</th>
                     <th>Nr stacji</th>
                     <th>Nr pozwolenia</th>
+                    <th><abbr title="P=pozwolenie; zmP=zmiana pozwolenia">Typ</abbr></th>
                     <th>Data ważności</th>
                 </tr>
     {% endif %}
                 <tr>
-                    <td>{{permission.standard}}</td>
-                    <td>{{permission.band}}</td>
-                    <td>{{permission.station_id}}</td>
-                    <td>{{permission.case_number}}</td>
-                    <td>{{permission.expiry_date}}</td>
+                    <td>{{ permission.standard }}</td>
+                    <td>{{ permission.band }}</td>
+                    <td>{{ permission.station_id }}</td>
+                    <td>{{ permission.case_number_display }}</td>
+                    <td>{{ permission.case_type }}</td>
+                    <td>{{ permission.expiry_date }}</td>
                 </tr>
     {% if forloop.last %}
             </table>

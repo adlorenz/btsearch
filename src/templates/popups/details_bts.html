@@ -6,6 +6,9 @@
         <strong>{{ base_station.network.name }}</strong> ({{ base_station.network.code }})
         {% if base_station.station_id %}
             ID: <abbr title="Identyfikator wewnętrzny operatora">{{ base_station.station_id }}</abbr>
+        {% endif %}
+        {% if base_station.is_networks %}
+            (<abbr title="Stacja będąca częścią NetWorks!">N!</abbr>)
         {% endif %}<br/>
         <small>
             {{ base_station.location.town }},
@@ -47,6 +50,32 @@
             </tr>
     {% endfor %}
         </table>
+
+        {% with base_station.permissions.all as permissions %}
+        {% if permissions %}
+            <p><strong>Powiązane pozwolenia UKE</strong></p>
+            <table class="table table-bordered table-condensed table-responsive location-info">
+                <tr>
+                    <th>Standard</th>
+                    <th>Pasmo</th>
+                    <th>Nr stacji</th>
+                    <th>Nr pozwolenia</th>
+                    <th><abbr title="P=pozwolenie; zmP=zmiana pozwolenia">Typ</abbr></th>
+                    <th>Data ważności</th>
+                </tr>
+            {% for p in permissions %}
+                <tr>
+                    <td>{{ p.permission.standard }}</td>
+                    <td>{{ p.permission.band }}</td>
+                    <td>{{ p.permission.station_id }}</td>
+                    <td>{{ p.permission.case_number_display }}</td>
+                    <td>{{ p.permission.case_type }}</td>
+                    <td>{{ p.permission.expiry_date }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% endif %}
+        {% endwith %}
     </div>
 
     <div class="location-info-footer small pull-right">

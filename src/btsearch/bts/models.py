@@ -117,9 +117,9 @@ class BaseStation(models.Model):
     is_umts = models.BooleanField(default=False)
     is_cdma = models.BooleanField(default=False)
     is_lte = models.BooleanField(default=False)
-    is_networks = models.BooleanField('Is NetWorks!', default=False, db_index=True)
     # ^^ Really necessary? ^^
 
+    is_networks = models.BooleanField('Is NetWorks!', default=False, db_index=True)
     notes = models.CharField(
         max_length=500,
         blank=True,
@@ -132,6 +132,12 @@ class BaseStation(models.Model):
         max_length=32,
         choices=EDIT_STATUS_CHOICES,
     )
+    # permissions = models.ManyToManyField(
+    #     'uke.Permission',
+    #     verbose_name=u'UKE permissions',
+    #     through='BaseStationPermission',
+    #     related_name='base_stations',
+    # )
     date_added = models.DateTimeField(
         auto_now_add=True,
     )
@@ -313,6 +319,27 @@ class Region(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class BaseStationPermission(models.Model):
+    base_station = models.ForeignKey(
+        'BaseStation',
+        verbose_name=u'Base station',
+        related_name='permissions',
+    )
+    permission = models.ForeignKey(
+        'uke.Permission',
+        verbose_name=u'UKE Permission',
+        related_name='base_stations',
+    )
+    station_id = models.CharField(
+        max_length=16,
+        db_index=True,
+        verbose_name="StationId",
+    )
+
+    class Meta:
+        unique_together = ['base_station', 'permission', 'station_id']
 
 
 '''

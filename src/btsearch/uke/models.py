@@ -73,6 +73,9 @@ class Permission(models.Model):
         db_index=True,
         unique=True,
     )
+    case_number_orig = models.CharField(
+        max_length=64,
+    )
     case_type = models.CharField(
         max_length=16,
     )
@@ -89,6 +92,9 @@ class Permission(models.Model):
 
     def __unicode__(self):
         return '{0}, {1}'.format(self.network.code, self.case_number)
+
+    def case_number_display(self):
+        return self.case_number_orig if self.case_number_orig else self.case_number
 
     # @property
     # def network(self):
@@ -116,6 +122,9 @@ class RawRecord(models.Model):
     )
     case_number = models.CharField(
         primary_key=True,
+        max_length=64,
+    )
+    case_number_orig = models.CharField(
         max_length=64,
     )
     case_type = models.CharField(
