@@ -60,6 +60,7 @@
                     <th>Pasmo</th>
                     <th>Nr stacji</th>
                     <th>Nr pozwolenia</th>
+                    <th><abbr title="P=pozwolenie; zmP=zmiana pozwolenia">Typ</abbr></th>
                     <th>Data ważności</th>
                 </tr>
             {% for p in permissions %}
@@ -68,6 +69,7 @@
                     <td>{{ p.permission.band }}</td>
                     <td>{{ p.permission.station_id }}</td>
                     <td>{{ p.permission.case_number }}</td>
+                    <td>{{ p.permission.case_type }}</td>
                     <td>{{ p.permission.expiry_date }}</td>
                 </tr>
             {% endfor %}
