@@ -133,6 +133,15 @@ class UkeLocationsFilterService(QuerysetFilterService):
     band_filter_field = 'permissions__band__in'
     timedelta_filter_field = 'permissions__date_added__gte'
 
+    def get_processed_filters(self, raw_filters):
+        processed_filters = super(UkeLocationsFilterService, self).get_processed_filters(raw_filters)
+        if 'timedelta' in raw_filters:
+            # When filtering the latest records, only display case_type=P rows
+            processed_filters.update({
+                'permissions__case_type': 'P'
+            })
+        return processed_filters
+
 
 class UkeLocationFilterService(QuerysetFilterService):
     network_filter_field = 'operator__network__in'
