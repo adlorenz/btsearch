@@ -1,4 +1,5 @@
 {% load staticfiles %}
+
 <div id="control-panel-subcontainer" class="panel panel-default panel-transparency">
     <div class="panel-heading">
         <span id="control-panel-header-title">Filtr lokalizacji</span>
@@ -29,6 +30,10 @@
                 <label class="checkbox-inline">
                     <input type="checkbox" id="timedelta-filter" name="timedelta-filter" class="timedelta-filter" value="30" /> <span title="Wyświetl lokalizacje uaktualnione w ciągu ostatnich 30 dni">Wyświetl najnowsze</span>
                 </label>
+            </p>
+            <p>
+                <span id="bts-last-update-date"><small>Ost. akt.: {{ bts_last_update_date|date:"d.m.Y" }} ({{ bts_last_update_date|timesince }})</small></span>
+                <span id="uke-last-update-date" style="display: none;"><small>Ost. akt.: {{ uke_last_update_date|date:"d.m.Y" }} ({{ uke_last_update_date|timesince }})</small></span>
             </p>
 
             <p>

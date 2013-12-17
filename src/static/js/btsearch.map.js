@@ -518,10 +518,16 @@ var ui = {
         });
 
         // Data source filter
-        //$('#data-source-filter').change(function(){
         $('input[name=data-source]').click(function(){
             core.selectedMarker = null;
             google.maps.event.trigger(core.map, 'idle');
+            if ($(this).val() == 'locations') {
+                $('#bts-last-update-date').show();
+                $('#uke-last-update-date').hide();
+            } else {
+                $('#bts-last-update-date').hide();
+                $('#uke-last-update-date').show();
+            }
         });
 
         $('#control-panel-header-icon').click(function(){
