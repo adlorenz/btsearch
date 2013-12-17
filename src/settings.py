@@ -14,3 +14,5 @@ else:
     for k in dir(module):
         if not k.startswith("__"):
             locals()[k] = getattr(module, k)
+
+VERSION = 'UNVERSIONED'

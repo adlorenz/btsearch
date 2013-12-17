@@ -7,5 +7,6 @@ def metadata(request):
     https://github.com/tangentlabs/django-oscar/blob/5642461b61feef2a2e93c6a7de34061ad7d66ed4/oscar/core/context_processors.py
     """
     return {
-        'google_analytics_id': getattr(settings, 'GOOGLE_ANALYTICS_ID', None)
+        'google_analytics_id': getattr(settings, 'GOOGLE_ANALYTICS_ID', None),
+        'version': getattr(settings, 'VERSION', None)
     }
