@@ -28,11 +28,19 @@ class BtsListingView(mixins.QuerysetFilterMixin, generic.ListView):
         filters = self.request.GET.copy()
         if filters.get('query'):
             query = filters.get('query')
-            qs = qs.filter(
-                Q(location__town__icontains=query) |
-                Q(location__address__icontains=query) |
-                Q(station_id=query)
-            )
+            if query.isdigit():
+                qs = qs.filter(
+                    Q(station_id=query) |
+                    Q(cells__lac__contains=query) |
+                    Q(cells__cid__contains=query) |
+                    Q(cells__cid_long__contains=query)
+                )
+            else:
+                qs = qs.filter(
+                    Q(location__town__icontains=query) |
+                    Q(location__address__icontains=query) |
+                    Q(station_id=query)
+                )
 
         qs_filters = self.get_queryset_filters()
         qs = qs.filter(**qs_filters)
