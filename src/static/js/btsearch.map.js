@@ -16,10 +16,17 @@ var core = {
         streetViewControl: false,
         scaleControl: true,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
-        panControlOptions: {position: google.maps.ControlPosition.RIGHT_TOP},
-        zoomControlOptions: {position: google.maps.ControlPosition.RIGHT_TOP}
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+        },
+        panControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_TOP
+        },
+        zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_TOP
+        }
     },
+    initParams: null,
     map: null,
     infoWindow: null,
     geocoder: null,
@@ -27,23 +34,54 @@ var core = {
     selectedMarker: null,
     defaultMarkerIcon: "http://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|ff776b|000000",
 
-    init: function(mapCanvas) {
+    init: function(mapCanvas, initParams) {
         this.map = new google.maps.Map(mapCanvas, this.mapParams);
-        this.locationAutodetect();
         this.geocoder = new google.maps.Geocoder();
-        this.markers = new Array();
+        this.markers = [];
+        this.initParams = initParams;
+        this.initMapBounds();
         ui.createMapControls(this.map);
     },
 
-    locationAutodetect: function() {
-        // TODO: Do not auto-detect locations outside of Poland?
+    initMapBounds: function() {
+        if (this.initParams.zoom && (this.initParams.bounds || this.initParams.center)) {
+            if (this.initParams.center) {
+                var centerCoords = this.initParams.center.split(',');
+                this.map.setCenter(
+                    new google.maps.LatLng(centerCoords[0],centerCoords[1])
+                );
+            } else if (this.initParams.bounds) {
+                var boundsCoords = this.initParams.bounds.split(',');
+                this.map.panToBounds(new google.maps.LatLngBounds(
+                    new google.maps.LatLng(boundsCoords[0],boundsCoords[1]),
+                    new google.maps.LatLng(boundsCoords[2],boundsCoords[3])
+                ));
+            }
+            this.map.setZoom(this.initParams.zoom);
+        } else {
+            this.userLocationAutodetect();
+        }
+    },
+
+    userLocationAutodetect: function() {
         // Reference: https://developers.google.com/maps/articles/geolocation
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
-                core.map.setCenter(
-                    new google.maps.LatLng(position.coords.latitude,position.coords.longitude)
+                var detectedLatLng = new google.maps.LatLng(
+                    position.coords.latitude,
+                    position.coords.longitude
                 );
-                core.map.setZoom(15);
+                var boundsOfPoland = new google.maps.LatLngBounds(
+                    new google.maps.LatLng(49.253465,13.710938),
+                    new google.maps.LatLng(55.065787,24.268799)
+                );
+                // Only pan to auto-detected location when it is within Poland
+                if (boundsOfPoland.contains(detectedLatLng)) {
+                    core.map.setCenter(detectedLatLng);
+                    core.map.setZoom(15);
+                } else {
+                    console.log('Autodetected user location outside of Poland');
+                }
             }, function() {
                 console.log('Error autodetecting location');
             });
@@ -69,7 +107,7 @@ var core = {
     },
 
     clearSelectedMarker: function() {
-        if (this.selectedMarker != null) {
+        if (this.selectedMarker !== null) {
             this.selectedMarker.setMap(null);
             this.selectedMarker = null;
         }
@@ -77,27 +115,27 @@ var core = {
 
     clearMarkers: function() {
         // Clear selected marker if it is out of current map bounds
-        if (this.selectedMarker != null
-            && this.map.getBounds().contains(this.selectedMarker.getPosition()) == false) {
+        if (this.selectedMarker !== null &&
+            this.map.getBounds().contains(this.selectedMarker.getPosition()) === false) {
             this.clearSelectedMarker();
         }
 
         // Clear all markers but not selected one
-        for (i in this.markers) {
+        for (var i in this.markers) {
             if (this.markers[i] != this.selectedMarker) {
                 this.markers[i].setMap(null);
             }
         }
 
         // Reset markers array
-        this.markers = new Array();
+        this.markers = [];
     },
 
     createMarker: function(latlng, icon) {
         // Reuse selected marker if possible instead of creating a new one
         // (this is mainly to preserve opened infoWindow over selected marker)
-        if (this.selectedMarker != null
-            && this.selectedMarker.getPosition().equals(latlng)) {
+        if (this.selectedMarker !== null &&
+            this.selectedMarker.getPosition().equals(latlng)) {
             this.markers.push(this.selectedMarker);
             return this.selectedMarker;
         }
@@ -142,8 +180,8 @@ var core = {
     displayLocations: function(data) {
         this.clearMarkers();
         locations = data.objects;
-        for (i in locations) {
-            icon = locations[i].icon != null ? locations[i].icon : this.defaultMarkerIcon;
+        for (var i in locations) {
+            icon = locations[i].icon !== null ? locations[i].icon : this.defaultMarkerIcon;
             latlng = new google.maps.LatLng(locations[i].latitude, locations[i].longitude);
             marker = this.createMarker(latlng, icon);
             events.locationClick(marker, locations[i]);
@@ -185,7 +223,7 @@ var core = {
                 core.map.setCenter(results[0].geometry.location);
                 if (results.length > 1) {
                     resultsHtml = '<ul>';
-                    for (i in results) {
+                    for (var i in results) {
                         // @TODO: Use jquery .click/.live event instead of onclick
                         // Or use jQuery's .on() event? See:
                         // https://github.com/zoyalab/zoyalab.com/blob/master/js/main.js#L20
@@ -389,6 +427,7 @@ var requests = {
                     if (ui.ready()) {
                         core.bindMapEvents();
                         ui.bindControlPanelEvents();
+                        filters.init(core.initParams);
                         core.loadLocations();
                         clearInterval(inv);
                     }
@@ -432,7 +471,7 @@ var ui = {
                              'search-form',
                              'network-filter'];
 
-        for (i in uiElementsToCheck) {
+        for (var i in uiElementsToCheck) {
             if (null === document.getElementById(uiElementsToCheck[i])) return false;
         }
         return true;
@@ -479,7 +518,7 @@ var ui = {
             map: core.map,
             visible: true,
             publisherId: 'pub-0983719504949481'
-        }
+        };
         new google.maps.adsense.AdUnit(adUnitDiv, adUnitOptions);
     },
 
@@ -487,7 +526,7 @@ var ui = {
         // Search form submission
         $('#search-form').submit(function(){
             query = $('#search-box').val();
-            if (query != '') {
+            if (query !== '') {
                 core.searchLocation(query);
                 return false;
             }
@@ -518,10 +557,16 @@ var ui = {
         });
 
         // Data source filter
-        //$('#data-source-filter').change(function(){
-        $('input[name=data-source]').click(function(){
+        $('input[name=data-source]').change(function(){
             core.selectedMarker = null;
             google.maps.event.trigger(core.map, 'idle');
+            if ($(this).val() == 'locations') {
+                $('#bts-last-update-date').show();
+                $('#uke-last-update-date').hide();
+            } else {
+                $('#bts-last-update-date').hide();
+                $('#uke-last-update-date').show();
+            }
         });
 
         $('#control-panel-header-icon').click(function(){
@@ -575,6 +620,27 @@ var filters = {
     timedelta: null,
     dataSource: 'locations',
 
+    init: function(params) {
+        if (params.network) {
+            $('#network-filter').val(params.network);
+        }
+        if (params.dataSource) {
+            $('input[name=data-source][value='+params.dataSource+']').prop('checked', true);
+        }
+        if (params.standards) {
+            var standards = params.standards.split(',');
+            for (var i in standards) {
+                $('#standard-filter-'+standards[i]).prop('checked', true);
+            }
+        }
+        if (params.bands) {
+            var bands = params.bands.split(',');
+            for (var j in bands) {
+                $('#band-filter-'+bands[j]).prop('checked', true);
+            }
+        }
+    },
+
     get: function() {
         this.setNetworkFilter();
         this.setStandardFilter();
@@ -597,7 +663,7 @@ var filters = {
     },
 
     setBandFilter: function() {
-        this.band= [];
+        this.band = [];
         $('.band-filter:checked').each(function(index, element){
             filters.band.push(element.value);
         });
@@ -615,17 +681,17 @@ var filters = {
 
     toUrlValue: function() {
         var url = '';
-        if (this.network != null) {
+        if (this.network !== null) {
             url += '&network=' + this.network;
         }
 
         std = this.standard.join(',');
-        if (std != '') {
+        if (std !== '') {
             url += '&standard=' + std;
         }
 
         bnd = this.band.join(',');
-        if (bnd != '') {
+        if (bnd !== '') {
             url += '&band=' + bnd;
         }
 
@@ -762,7 +828,7 @@ var utils = {
         var suffix = latlng == 'lat' ? coordinate > 0 ? 'N' : 'S' : coordinate > 0 ? 'E' : 'W';
 
         return d + '&ordm;' + m + '\'' + s + '\'\'&nbsp;' + suffix;
-    },
+    }
 
     /*calculateHeading: function(point1, point2) {
         var lat1 = point1.lat(); var lon1 = point1.lng();

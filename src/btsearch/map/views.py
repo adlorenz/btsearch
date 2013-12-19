@@ -145,7 +145,15 @@ class ControlPanelView(generic.TemplateView):
         context['networks'] = bts_models.Network.objects.all()
         context['standards'] = bts_models.Cell.STANDARDS
         context['bands'] = bts_models.Cell.BANDS
+        context['bts_last_update_date'] = self._get_last_update_date(bts_models.BaseStation)
+        context['uke_last_update_date'] = self._get_last_update_date(uke_models.Permission)
         return context
+
+    def _get_last_update_date(self, model):
+        vals = model.objects.values('date_updated').order_by('-date_updated')
+        if vals:
+            return vals[0]['date_updated']
+        return None
 
 
 class StatusPanelView(generic.TemplateView):
