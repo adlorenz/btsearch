@@ -16,9 +16,15 @@ var core = {
         streetViewControl: false,
         scaleControl: true,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
-        panControlOptions: {position: google.maps.ControlPosition.RIGHT_TOP},
-        zoomControlOptions: {position: google.maps.ControlPosition.RIGHT_TOP}
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+        },
+        panControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_TOP
+        },
+        zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_TOP
+        }
     },
     map: null,
     infoWindow: null,
@@ -31,7 +37,7 @@ var core = {
         this.map = new google.maps.Map(mapCanvas, this.mapParams);
         this.locationAutodetect();
         this.geocoder = new google.maps.Geocoder();
-        this.markers = new Array();
+        this.markers = [];
         ui.createMapControls(this.map);
     },
 
@@ -79,7 +85,7 @@ var core = {
     },
 
     clearSelectedMarker: function() {
-        if (this.selectedMarker != null) {
+        if (this.selectedMarker !== null) {
             this.selectedMarker.setMap(null);
             this.selectedMarker = null;
         }
@@ -87,27 +93,27 @@ var core = {
 
     clearMarkers: function() {
         // Clear selected marker if it is out of current map bounds
-        if (this.selectedMarker != null
-            && this.map.getBounds().contains(this.selectedMarker.getPosition()) == false) {
+        if (this.selectedMarker !== null &&
+            this.map.getBounds().contains(this.selectedMarker.getPosition()) === false) {
             this.clearSelectedMarker();
         }
 
         // Clear all markers but not selected one
-        for (i in this.markers) {
+        for (var i in this.markers) {
             if (this.markers[i] != this.selectedMarker) {
                 this.markers[i].setMap(null);
             }
         }
 
         // Reset markers array
-        this.markers = new Array();
+        this.markers = [];
     },
 
     createMarker: function(latlng, icon) {
         // Reuse selected marker if possible instead of creating a new one
         // (this is mainly to preserve opened infoWindow over selected marker)
-        if (this.selectedMarker != null
-            && this.selectedMarker.getPosition().equals(latlng)) {
+        if (this.selectedMarker !== null &&
+            this.selectedMarker.getPosition().equals(latlng)) {
             this.markers.push(this.selectedMarker);
             return this.selectedMarker;
         }
@@ -152,8 +158,8 @@ var core = {
     displayLocations: function(data) {
         this.clearMarkers();
         locations = data.objects;
-        for (i in locations) {
-            icon = locations[i].icon != null ? locations[i].icon : this.defaultMarkerIcon;
+        for (var i in locations) {
+            icon = locations[i].icon !== null ? locations[i].icon : this.defaultMarkerIcon;
             latlng = new google.maps.LatLng(locations[i].latitude, locations[i].longitude);
             marker = this.createMarker(latlng, icon);
             events.locationClick(marker, locations[i]);
@@ -195,7 +201,7 @@ var core = {
                 core.map.setCenter(results[0].geometry.location);
                 if (results.length > 1) {
                     resultsHtml = '<ul>';
-                    for (i in results) {
+                    for (var i in results) {
                         // @TODO: Use jquery .click/.live event instead of onclick
                         // Or use jQuery's .on() event? See:
                         // https://github.com/zoyalab/zoyalab.com/blob/master/js/main.js#L20
@@ -442,7 +448,7 @@ var ui = {
                              'search-form',
                              'network-filter'];
 
-        for (i in uiElementsToCheck) {
+        for (var i in uiElementsToCheck) {
             if (null === document.getElementById(uiElementsToCheck[i])) return false;
         }
         return true;
@@ -489,7 +495,7 @@ var ui = {
             map: core.map,
             visible: true,
             publisherId: 'pub-0983719504949481'
-        }
+        };
         new google.maps.adsense.AdUnit(adUnitDiv, adUnitOptions);
     },
 
@@ -497,7 +503,7 @@ var ui = {
         // Search form submission
         $('#search-form').submit(function(){
             query = $('#search-box').val();
-            if (query != '') {
+            if (query !== '') {
                 core.searchLocation(query);
                 return false;
             }
@@ -613,7 +619,7 @@ var filters = {
     },
 
     setBandFilter: function() {
-        this.band= [];
+        this.band = [];
         $('.band-filter:checked').each(function(index, element){
             filters.band.push(element.value);
         });
@@ -631,17 +637,17 @@ var filters = {
 
     toUrlValue: function() {
         var url = '';
-        if (this.network != null) {
+        if (this.network !== null) {
             url += '&network=' + this.network;
         }
 
         std = this.standard.join(',');
-        if (std != '') {
+        if (std !== '') {
             url += '&standard=' + std;
         }
 
         bnd = this.band.join(',');
-        if (bnd != '') {
+        if (bnd !== '') {
             url += '&band=' + bnd;
         }
 
@@ -778,7 +784,7 @@ var utils = {
         var suffix = latlng == 'lat' ? coordinate > 0 ? 'N' : 'S' : coordinate > 0 ? 'E' : 'W';
 
         return d + '&ordm;' + m + '\'' + s + '\'\'&nbsp;' + suffix;
-    },
+    }
 
     /*calculateHeading: function(point1, point2) {
         var lat1 = point1.lat(); var lon1 = point1.lng();
