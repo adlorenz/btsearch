@@ -7,6 +7,7 @@
 
 {% block main-content-container %}
     <div id="map-container">
+
         {% block main-content %}{% endblock %}
     </div>
 {% endblock %}
@@ -23,8 +24,15 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
-            // Bootstrap JS
-            core.init(document.getElementById("map"));
+            core.init(document.getElementById("map"), {
+                bounds: {% if request.GET.bounds %}'{{ request.GET.bounds }}'{% else %}null{% endif %},  // '51.944564,15.462614,51.9621,15.503469',
+                center: {% if request.GET.center %}'{{ request.GET.center }}'{% else %}null{% endif %},
+                zoom: {% if request.GET.zoom %}{{ request.GET.zoom }}{% else %}null{% endif %},
+                dataSource: {% if request.GET.dataSource %}'{{ request.GET.dataSource }}'{% else %}null{% endif %},
+                network: {% if request.GET.network %}'{{ request.GET.network }}'{% else %}null{% endif %},
+                standards: {% if request.GET.standards %}'{{ request.GET.standards }}'{% else %}null{% endif %},
+                bands: {% if request.GET.bands %}'{{ request.GET.bands }}'{% else %}null{% endif %}
+            });
         });
     </script>
 {% endblock extrascripts %}

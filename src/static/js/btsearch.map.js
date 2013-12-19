@@ -26,6 +26,7 @@ var core = {
             position: google.maps.ControlPosition.RIGHT_TOP
         }
     },
+    initParams: null,
     map: null,
     infoWindow: null,
     geocoder: null,
@@ -33,15 +34,36 @@ var core = {
     selectedMarker: null,
     defaultMarkerIcon: "http://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|ff776b|000000",
 
-    init: function(mapCanvas) {
+    init: function(mapCanvas, initParams) {
         this.map = new google.maps.Map(mapCanvas, this.mapParams);
-        this.locationAutodetect();
         this.geocoder = new google.maps.Geocoder();
         this.markers = [];
+        this.initParams = initParams;
+        this.initMapBounds();
         ui.createMapControls(this.map);
     },
 
-    locationAutodetect: function() {
+    initMapBounds: function() {
+        if (this.initParams.zoom && (this.initParams.bounds || this.initParams.center)) {
+            if (this.initParams.center) {
+                var centerCoords = this.initParams.center.split(',');
+                this.map.setCenter(
+                    new google.maps.LatLng(centerCoords[0],centerCoords[1])
+                );
+            } else if (this.initParams.bounds) {
+                var boundsCoords = this.initParams.bounds.split(',');
+                this.map.panToBounds(new google.maps.LatLngBounds(
+                    new google.maps.LatLng(boundsCoords[0],boundsCoords[1]),
+                    new google.maps.LatLng(boundsCoords[2],boundsCoords[3])
+                ));
+            }
+            this.map.setZoom(this.initParams.zoom);
+        } else {
+            this.userLocationAutodetect();
+        }
+    },
+
+    userLocationAutodetect: function() {
         // Reference: https://developers.google.com/maps/articles/geolocation
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
@@ -405,6 +427,7 @@ var requests = {
                     if (ui.ready()) {
                         core.bindMapEvents();
                         ui.bindControlPanelEvents();
+                        filters.init(core.initParams);
                         core.loadLocations();
                         clearInterval(inv);
                     }
@@ -534,7 +557,7 @@ var ui = {
         });
 
         // Data source filter
-        $('input[name=data-source]').click(function(){
+        $('input[name=data-source]').change(function(){
             core.selectedMarker = null;
             google.maps.event.trigger(core.map, 'idle');
             if ($(this).val() == 'locations') {
@@ -596,6 +619,27 @@ var filters = {
     band: [],
     timedelta: null,
     dataSource: 'locations',
+
+    init: function(params) {
+        if (params.network) {
+            $('#network-filter').val(params.network);
+        }
+        if (params.dataSource) {
+            $('input[name=data-source][value='+params.dataSource+']').prop('checked', true);
+        }
+        if (params.standards) {
+            var standards = params.standards.split(',');
+            for (var i in standards) {
+                $('#standard-filter-'+standards[i]).prop('checked', true);
+            }
+        }
+        if (params.bands) {
+            var bands = params.bands.split(',');
+            for (var j in bands) {
+                $('#band-filter-'+bands[j]).prop('checked', true);
+            }
+        }
+    },
 
     get: function() {
         this.setNetworkFilter();
