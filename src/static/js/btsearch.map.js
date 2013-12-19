@@ -36,14 +36,24 @@ var core = {
     },
 
     locationAutodetect: function() {
-        // TODO: Do not auto-detect locations outside of Poland?
         // Reference: https://developers.google.com/maps/articles/geolocation
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
-                core.map.setCenter(
-                    new google.maps.LatLng(position.coords.latitude,position.coords.longitude)
+                var detectedLatLng = new google.maps.LatLng(
+                    position.coords.latitude,
+                    position.coords.longitude
                 );
-                core.map.setZoom(15);
+                var boundsOfPoland = new google.maps.LatLngBounds(
+                    new google.maps.LatLng(49.253465,13.710938),
+                    new google.maps.LatLng(55.065787,24.268799)
+                );
+                // Only pan to auto-detected location when it is within Poland
+                if (boundsOfPoland.contains(detectedLatLng)) {
+                    core.map.setCenter(detectedLatLng);
+                    core.map.setZoom(15);
+                } else {
+                    console.log('Autodetected user location outside of Poland');
+                }
             }, function() {
                 console.log('Error autodetecting location');
             });
