@@ -180,12 +180,12 @@ class BaseStation(models.Model):
         return qs.order_by('standard', 'band', 'ua_freq', 'cid')
 
     def get_supported_standards_and_bands(self):
-        cells = self.get_cells()
-        return cells.distinct().values('standard', 'band').exclude(standard='?').exclude(band='?').order_by('standard')
+        cells = self.get_cells().distinct()
+        return cells.values('standard', 'band').exclude(standard='?').order_by('standard')
 
     def get_supported_standards(self):
-        cells = self.get_cells()
-        return cells.distinct().values('standard').exclude(standard='?')
+        cells = self.get_cells().distinct()
+        return cells.values('standard').exclude(standard='?')
 
     def get_cells_by_standard_and_band(self):
         cells = []
