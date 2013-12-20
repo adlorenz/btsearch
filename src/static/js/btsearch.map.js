@@ -369,6 +369,7 @@ var requests = {
             },
             success: function(data) {
                 core.displayLocations(data);
+                ui.updateUrl();
             }
         });
     },
@@ -459,6 +460,10 @@ var requests = {
  * User interface elements handling
  */
 var ui = {
+
+    pushStateSupport: function(){
+        return (typeof(window.onpopstate) != 'undefined');
+    },
 
     /**
      * Check if dynamically created elements are properly rendered
@@ -609,6 +614,20 @@ var ui = {
                 }
             }
         });
+    },
+
+    updateUrl: function() {
+        if (!this.pushStateSupport) return;
+        stateObject = {
+            dataSource: filters.dataSource,
+            network: filters.network,
+            standards: filters.standard.join(','),
+            bands: filters.band.join(','),
+            center: core.map.getCenter().toUrlValue(6),
+            zoom: core.map.getZoom()
+        };
+        var query_path = '?' + $.param(stateObject);
+        history.replaceState(stateObject, '', query_path);
     }
 
 };
