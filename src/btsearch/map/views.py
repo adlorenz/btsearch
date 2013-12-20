@@ -150,7 +150,7 @@ class ControlPanelView(generic.TemplateView):
         return context
 
     def _get_last_update_date(self, model):
-        vals = model.objects.values('date_updated').order_by('-date_updated')
+        vals = model.objects.values('date_updated').order_by('-date_updated')[:1]
         if vals:
             return vals[0]['date_updated']
         return None
