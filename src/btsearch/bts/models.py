@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.db import models
 
 
@@ -109,6 +110,13 @@ class BaseStation(models.Model):
     )
     rnc = models.PositiveSmallIntegerField(
         verbose_name="RNC",
+        default=0,
+        help_text='Dla stacji UMTS'
+    )
+    enbi = models.PositiveIntegerField(
+        verbose_name='eNBI',
+        default=0,
+        help_text='Dla stacji LTE'
     )
 
     # Are these 5 fields below *really* necessary??
@@ -119,7 +127,11 @@ class BaseStation(models.Model):
     is_lte = models.BooleanField(default=False)
     # ^^ Really necessary? ^^
 
-    is_networks = models.BooleanField('Is NetWorks!', default=False, db_index=True)
+    is_networks = models.BooleanField(
+        'Is NetWorks!',
+        default=False,
+        db_index=True
+    )
     notes = models.CharField(
         max_length=500,
         blank=True,
@@ -240,15 +252,27 @@ class Cell(models.Model):
     )
     ua_freq = models.PositiveSmallIntegerField(
         verbose_name="UaFreq",
+        default=0,
+        help_text=u'Częstotliwość nośnej (kanał RF)',
     )
     lac = models.PositiveSmallIntegerField(
         verbose_name="LAC",
+        default=0
     )
     cid = models.PositiveSmallIntegerField(
         verbose_name="CID",
+        default=0,
+        help_text='8-bit CID',
     )
     cid_long = models.PositiveIntegerField(
-        verbose_name="LongCID",
+        verbose_name="Long CID",
+        default=0,
+        help_text='16-bit CID (dla stacji UMTS)',
+    )
+    ecid = models.PositiveIntegerField(
+        verbose_name='ECI',
+        default=0,
+        help_text='Eutran CID = eNBI * 256 + CID (dla stacji LTE)',
     )
     azimuth = models.PositiveSmallIntegerField(
         blank=True,
