@@ -262,7 +262,7 @@ class Cell(models.Model):
     cid = models.PositiveSmallIntegerField(
         verbose_name="CID",
         default=0,
-        help_text='8-bit CID',
+        help_text='8-bit CID/CLID (uniwersalny)',
     )
     cid_long = models.PositiveIntegerField(
         verbose_name="Long CID",
@@ -272,7 +272,7 @@ class Cell(models.Model):
     ecid = models.PositiveIntegerField(
         verbose_name='ECI',
         default=0,
-        help_text='Eutran CID = eNBI * 256 + CID (dla stacji LTE)',
+        help_text='28-bit Eutran CID = eNBI * 256 + CLID (dla stacji LTE)',
     )
     azimuth = models.PositiveSmallIntegerField(
         blank=True,
