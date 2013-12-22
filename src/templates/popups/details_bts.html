@@ -21,6 +21,85 @@
     </div>
 
     <div>
+    {% for standard in base_station.get_cells_by_standard %}
+        {% if standard.standard == 'GSM' %}
+        <table class="table table-condensed table-responsive location-info">
+            <tr>
+                <th colspan="4" style="border-top: none;">{{ standard.standard }}</th>
+            </tr>
+            <tr>
+                <th>Pasmo</th>
+                <th>LAC</th>
+                <th>CID</th>
+                <th>Uwagi</th>
+            </tr>
+            {% for cell in standard.cells %}
+            <tr {% if not cell.is_confirmed %}class="danger" title="Komórka nie potwierdzona"{% endif %}>
+                <td>{{ cell.band }}</td>
+                <td>{{ cell.lac }}</td>
+                <td>{{ cell.cid }}</td>
+                <td>{% if cell.notes %}{{ cell.notes }}{% else %}--{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+        {% if standard.standard == 'UMTS' %}
+        <table class="table table-condensed table-responsive location-info">
+            <tr>
+                <th colspan="7" style="border-top: none;">{{ standard.standard }}</th>
+            </tr>
+            <tr>
+                <th>Pasmo</th>
+                <th>LAC</th>
+                <th>RNC</th>
+                <th>CID</th>
+                <th>CID 16b</th>
+                <th>Nośna</th>
+                <th>Uwagi</th>
+            </tr>
+            {% for cell in standard.cells %}
+            <tr {% if not cell.is_confirmed %}class="danger" title="Komórka nie potwierdzona"{% endif %}>
+                <td>{{ cell.band }}</td>
+                <td>{{ cell.lac }}</td>
+                <td>{% if base_station.rnc == 0 %}?{% else %}{{ base_station.rnc }}{% endif %}</td>
+                <td>{{ cell.cid }}</td>
+                <td>{{ cell.cid_long }}</td>
+                <td>{% if cell.ua_freq == 0 %}?{% else %}{{ cell.ua_freq }}{% endif %}</td>
+                <td>{% if cell.notes %}{{ cell.notes }}{% else %}--{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+        {% if standard.standard == 'LTE' %}
+        <table class="table table-condensed table-responsive location-info">
+            <tr>
+                <th colspan="6" style="border-top: none;">{{ standard.standard }}</th>
+            </tr>
+            <tr>
+                <th>Pasmo</th>
+                <th>LAC</th>
+                <th>eNBI</th>
+                <th>ECI</th>
+                <th>CLID</th>
+                <th>Uwagi</th>
+            </tr>
+            {% for cell in standard.cells %}
+            <tr {% if not cell.is_confirmed %}class="danger" title="Komórka nie potwierdzona"{% endif %}>
+                <td>{{ cell.band }}</td>
+                <td>{{ cell.lac }}</td>
+                <td>{% if base_station.enbi == 0 %}?{% else %}{{ base_station.enbi }}{% endif %}</td>
+                <td>{{ cell.ecid }}</td>
+                <td>{{ cell.cid }}</td>
+                <td>{% if cell.notes %}{{ cell.notes }}{% else %}--{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    {% endfor %}
+    </div>
+
+{% comment %}
+    <div>
         <table class="table table-bordered table-condensed table-responsive location-info">
             <tr>
                 <th>Standard</th>
@@ -50,11 +129,14 @@
             </tr>
     {% endfor %}
         </table>
+{% endcomment %}
 
         {% with base_station.permissions.all as permissions %}
         {% if permissions %}
-            <p><strong>Powiązane pozwolenia UKE</strong></p>
-            <table class="table table-bordered table-condensed table-responsive location-info">
+            <table class="table table-condensed table-responsive location-info">
+                <tr>
+                    <th colspan="6" style="border-top: none;">Powiązane pozwolenia UKE</th>
+                </tr>
                 <tr>
                     <th>Standard</th>
                     <th>Pasmo</th>
