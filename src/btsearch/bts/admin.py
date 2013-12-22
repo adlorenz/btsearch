@@ -18,6 +18,7 @@ class CellInline(admin.TabularInline):
         'ua_freq',
         'lac',
         'cid',
+        'ecid',
         'azimuth',
         'is_confirmed',
         'notes',
