@@ -295,6 +295,7 @@ class Cell(models.Model):
     )
     date_ping = models.DateTimeField(
         blank=True,
+        null=True,
     )
 
     def __unicode__(self):
