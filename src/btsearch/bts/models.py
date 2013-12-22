@@ -197,7 +197,7 @@ class BaseStation(models.Model):
 
     def get_supported_standards(self):
         cells = self.get_cells().distinct()
-        return cells.values('standard').exclude(standard='?')
+        return cells.values('standard').exclude(standard='?').order_by('standard')
 
     def get_cells_by_standard_and_band(self):
         cells = []
@@ -212,9 +212,10 @@ class BaseStation(models.Model):
     def get_cells_by_standard(self):
         cells = []
         for support in self.get_supported_standards():
-            cells.append({'standard': support['standard'],
-                          'cells': self.get_cells().filter(standard=support.get('standard'))
-                          })
+            cells.append({
+                'standard': support['standard'],
+                'cells': self.get_cells().filter(standard=support.get('standard'))
+            })
         return cells
 
 
