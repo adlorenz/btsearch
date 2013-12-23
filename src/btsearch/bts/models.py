@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.db import models
 
 
@@ -102,13 +103,21 @@ class BaseStation(models.Model):
         max_length=255,
     )
     station_id = models.CharField(
+        verbose_name="StationId",
         max_length=16,
         blank=True,
         db_index=True,
-        verbose_name="StationId",
+        help_text='Wewnętrzny identyfikator stacji operatora'
     )
     rnc = models.PositiveSmallIntegerField(
         verbose_name="RNC",
+        default=0,
+        help_text='Radio Network Controller (dla stacji UMTS)'
+    )
+    enbi = models.PositiveIntegerField(
+        verbose_name='eNBID',
+        default=0,
+        help_text='eNodeB ID (dla stacji LTE)'
     )
 
     # Are these 5 fields below *really* necessary??
@@ -119,7 +128,11 @@ class BaseStation(models.Model):
     is_lte = models.BooleanField(default=False)
     # ^^ Really necessary? ^^
 
-    is_networks = models.BooleanField('Is NetWorks!', default=False, db_index=True)
+    is_networks = models.BooleanField(
+        'Is NetWorks!',
+        default=False,
+        db_index=True
+    )
     notes = models.CharField(
         max_length=500,
         blank=True,
@@ -185,7 +198,7 @@ class BaseStation(models.Model):
 
     def get_supported_standards(self):
         cells = self.get_cells().distinct()
-        return cells.values('standard').exclude(standard='?')
+        return cells.values('standard').exclude(standard='?').order_by('standard')
 
     def get_cells_by_standard_and_band(self):
         cells = []
@@ -200,9 +213,10 @@ class BaseStation(models.Model):
     def get_cells_by_standard(self):
         cells = []
         for support in self.get_supported_standards():
-            cells.append({'standard': support['standard'],
-                          'cells': self.get_cells().filter(standard=support.get('standard'))
-                          })
+            cells.append({
+                'standard': support['standard'],
+                'cells': self.get_cells().filter(standard=support.get('standard'))
+            })
         return cells
 
 
@@ -240,15 +254,27 @@ class Cell(models.Model):
     )
     ua_freq = models.PositiveSmallIntegerField(
         verbose_name="UaFreq",
+        default=0,
+        help_text=u'Częstotliwość nośnej (kanał RF)',
     )
     lac = models.PositiveSmallIntegerField(
         verbose_name="LAC",
+        default=0
     )
     cid = models.PositiveSmallIntegerField(
-        verbose_name="CID",
+        verbose_name="CID/CLID",
+        default=0,
+        help_text='CellID / Cell Local ID (uniwersalny)',
     )
     cid_long = models.PositiveIntegerField(
-        verbose_name="LongCID",
+        verbose_name="Long CID",
+        default=0,
+        help_text='RNC * 65536 + CID (dla stacji UMTS)',
+    )
+    ecid = models.PositiveIntegerField(
+        verbose_name='Enhanced CID',
+        default=0,
+        help_text='eNBID * 256 + CLID (dla stacji LTE)',
     )
     azimuth = models.PositiveSmallIntegerField(
         blank=True,
@@ -270,6 +296,7 @@ class Cell(models.Model):
     )
     date_ping = models.DateTimeField(
         blank=True,
+        null=True,
     )
 
     def __unicode__(self):

@@ -18,6 +18,7 @@ class CellInline(admin.TabularInline):
         'ua_freq',
         'lac',
         'cid',
+        'ecid',
         'azimuth',
         'is_confirmed',
         'notes',
@@ -35,6 +36,7 @@ class BaseStationAdmin(admin.ModelAdmin):
         'network',
         'station_id',
         'rnc',
+        'enbi',
         'is_common_bcch',
         'is_gsm',
         'is_umts',
@@ -102,6 +104,7 @@ class CellAdmin(admin.ModelAdmin):
         '=lac',
         '=cid',
         '=cid_long',
+        '=ecid',
         'base_station__location__town'
     ]
     save_on_top = True
