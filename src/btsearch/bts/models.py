@@ -103,20 +103,21 @@ class BaseStation(models.Model):
         max_length=255,
     )
     station_id = models.CharField(
+        verbose_name="StationId",
         max_length=16,
         blank=True,
         db_index=True,
-        verbose_name="StationId",
+        help_text='Wewnętrzny identyfikator stacji operatora'
     )
     rnc = models.PositiveSmallIntegerField(
         verbose_name="RNC",
         default=0,
-        help_text='Dla stacji UMTS'
+        help_text='Radio Network Controller (dla stacji UMTS)'
     )
     enbi = models.PositiveIntegerField(
-        verbose_name='eNBI',
+        verbose_name='eNBID',
         default=0,
-        help_text='Dla stacji LTE'
+        help_text='eNodeB ID (dla stacji LTE)'
     )
 
     # Are these 5 fields below *really* necessary??
@@ -261,19 +262,19 @@ class Cell(models.Model):
         default=0
     )
     cid = models.PositiveSmallIntegerField(
-        verbose_name="CID",
+        verbose_name="CID/CLID",
         default=0,
-        help_text='8-bit CID/CLID (uniwersalny)',
+        help_text='CellID / Cell Local ID (uniwersalny)',
     )
     cid_long = models.PositiveIntegerField(
         verbose_name="Long CID",
         default=0,
-        help_text='16-bit CID (dla stacji UMTS)',
+        help_text='RNC * 65536 + CID (dla stacji UMTS)',
     )
     ecid = models.PositiveIntegerField(
-        verbose_name='ECI',
+        verbose_name='Enhanced CID',
         default=0,
-        help_text='28-bit Eutran CID = eNBI * 256 + CLID (dla stacji LTE)',
+        help_text='eNBID * 256 + CLID (dla stacji LTE)',
     )
     azimuth = models.PositiveSmallIntegerField(
         blank=True,

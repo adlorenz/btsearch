@@ -29,8 +29,8 @@
             </tr>
             <tr>
                 <th>Pasmo</th>
-                <th>LAC</th>
-                <th>CID</th>
+                <th><abbr title="Local Area Code">LAC</abbr></th>
+                <th><abbr title="Cell ID">CID</abbr></th>
                 <th>Uwagi</th>
             </tr>
             {% for cell in standard.cells %}
@@ -50,10 +50,10 @@
             </tr>
             <tr>
                 <th>Pasmo</th>
-                <th>LAC</th>
-                <th>RNC</th>
-                <th>CID</th>
-                <th>CID 16b</th>
+                <th><abbr title="Local Area Code">LAC</abbr></th>
+                <th><abbr title="Radio Network Controller">RNC</abbr></th>
+                <th><abbr title="Cell ID">CID</abbr></th>
+                <th><abbr title="Long Cell ID">LongCID</abbr></th>
                 <th>Nośna</th>
                 <th>Uwagi</th>
             </tr>
@@ -68,6 +68,9 @@
                 <td>{% if cell.notes %}{{ cell.notes }}{% else %}--{% endif %}</td>
             </tr>
             {% endfor %}
+            <tr>
+                <td colspan="7"><small>LongCID = RNC * 65536 + CID</small></td>
+            </tr>
         </table>
         {% endif %}
         {% if standard.standard == 'LTE' %}
@@ -77,22 +80,25 @@
             </tr>
             <tr>
                 <th>Pasmo</th>
-                <th>LAC</th>
-                <th>eNBI</th>
-                <th>ECI</th>
-                <th>CLID</th>
+                <th><abbr title="Local Area Code">LAC</abbr></th>
+                <th><abbr title="Enhanced CID">E-CID</abbr></th>
+                <th><abbr title="eNodeB ID">eNBID</abbr></th>
+                <th><abbr title="Cell Local ID">CLID</abbr></th>
                 <th>Uwagi</th>
             </tr>
             {% for cell in standard.cells %}
             <tr {% if not cell.is_confirmed %}class="danger" title="Komórka nie potwierdzona"{% endif %}>
                 <td>{{ cell.band }}</td>
                 <td>{{ cell.lac }}</td>
-                <td>{% if base_station.enbi == 0 %}?{% else %}{{ base_station.enbi }}{% endif %}</td>
                 <td>{{ cell.ecid }}</td>
+                <td>{% if base_station.enbi == 0 %}?{% else %}{{ base_station.enbi }}{% endif %}</td>
                 <td>{{ cell.cid }}</td>
                 <td>{% if cell.notes %}{{ cell.notes }}{% else %}--{% endif %}</td>
             </tr>
             {% endfor %}
+            <tr>
+                <td colspan="6"><small>E-CID = eNBI * 256 + CLID</small></td>
+            </tr>
         </table>
         {% endif %}
     {% endfor %}
