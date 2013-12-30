@@ -92,6 +92,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_panel.middleware.DebugPanelMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -121,6 +123,8 @@ INSTALLED_APPS = [
               # specifically instructed to by installation instructions
     'django_extensions',
     'cookielaw',
+    'debug_toolbar',
+    # 'debug_panel',
 
     'btsearch.bts',
     'btsearch.uke',
@@ -212,6 +216,6 @@ def create_logging_dict(root):
 # This setting should be overridden in each environment
 LOGGING = create_logging_dict(location('logs'))
 
-INTERNAL_IPS = ('127.0.0.1', '33.33.33.1', '10.0.2.2')
+INTERNAL_IPS = ('127.0.0.1',)
 
 MAP_ICON_PATH = STATIC_URL + 'map_icons/'
