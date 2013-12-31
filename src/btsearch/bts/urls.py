@@ -11,6 +11,14 @@ urlpatterns = patterns(
         views.UkeDetailView.as_view(),
         name='uke-extended-info-view'),
 
+    url(r'^export/download$',
+        views.ExportDownloadView.as_view(),
+        name='export-download-view'),
+
+    url(r'^export',
+        views.ExportFilterView.as_view(),
+        name='export-filter-view'),
+
     url(r'',
         views.BtsListingView.as_view(),
         name='listing')

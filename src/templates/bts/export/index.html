@@ -1,0 +1,69 @@
+{% extends 'site/content.html' %}
+{% block page-title %}Eksport danych BTSearch{% endblock %}
+
+{% block extrahead %}
+
+    <style type="text/css">
+
+        .container .form-group ul {
+          list-style: none;
+          padding: 0;
+        }
+
+        @media (max-width: 960px) {
+            .container .form-group ul li {
+                display: inline-block !important;
+            }
+            .container .form-group ul li+li {
+                margin-left: 0.5em !important;
+            }
+        }
+
+    </style>
+
+{% endblock extrahead %}
+
+{% block content-title %}
+    Eksport danych bazy BTSearch
+{% endblock content-title %}
+
+{% block main-content %}
+
+    <form action="" method="post" class="form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <p>
+            <span class="text-danger">{{ form.non_field_errors }}</span>
+        </p>
+        {% endif %}
+        <div class="form-group">
+            <label for="id_network">Sieć:</label>
+            <span class="text-danger">{{ form.network.errors }}</span>
+            {{ form.network }}
+        </div>
+        <div class="form-group">
+            <label for="id_region">Region:</label>
+            <span class="text-danger">{{ form.region.errors }}</span>
+            {{ form.region }}
+        </div>
+        <div class="form-group">
+            <label>Standard: (opcjonalnie)</label>
+            {{ form.standard }}
+        </div>
+        <div class="form-group">
+            <label>Pasmo: (opcjonalnie)</label>
+            {{ form.band }}
+        </div>
+        <div class="form-group">
+            <label>Format wyjściowy:</label><br/>
+            (wkrótce)<br/>
+            [&nbsp;] CLF v2.0<br/>
+            [&nbsp;] CLF v2.1<br/>
+            [&nbsp;] CLF v3.0 (dec)<br/>
+            [&nbsp;] CLF v3.0 (hex)<br/>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Eksportuj" />
+    </form>
+
+
+{% endblock %}

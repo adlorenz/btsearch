@@ -31,3 +31,26 @@ class ListingFilterForm(forms.Form):
         choices=models.Cell.BANDS,
         widget=forms.CheckboxSelectMultiple(),
     )
+
+
+class ExportFilterForm(forms.Form):
+    network = forms.ModelChoiceField(
+        required=True,
+        queryset=models.Network.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    region = forms.MultipleChoiceField(
+        required=True,
+        choices=((region.id, region.name) for region in models.Region.objects.all()),
+        widget=forms.CheckboxSelectMultiple(),
+    )
+    standard = forms.MultipleChoiceField(
+        required=False,
+        choices=models.Cell.STANDARDS,
+        widget=forms.CheckboxSelectMultiple(),
+    )
+    band = forms.MultipleChoiceField(
+        required=False,
+        choices=models.Cell.BANDS,
+        widget=forms.CheckboxSelectMultiple(),
+    )

@@ -112,7 +112,7 @@ class BtsLocationFilterService(QuerysetFilterService):
     network_filter_field = 'network__in'
     standard_filter_field = 'cells__standard__in'
     band_filter_field = 'cells__band__in'
-    region_filter_field = 'location__region'
+    region_filter_field = 'location__region__in'
     timedelta_filter_field = 'date_updated__gte'
     skip_bounds_filter = True
 
@@ -125,6 +125,30 @@ class BtsLocationFilterService(QuerysetFilterService):
                 'is_networks': True,
             }
         return super(BtsLocationFilterService, self)._get_network_filter(networks)
+
+
+class BtsExportFilterService(QuerysetFilterService):
+    network_filter_field = 'base_station__network__in'
+    standard_filter_field = 'standard__in'
+    band_filter_field = 'band__in'
+    region_filter_field = 'base_station__location__region'
+    timedelta_filter_field = 'date_updated__gte'
+    skip_bounds_filter = True
+
+    def _get_network_filter(self, networks):
+        # Special case for 26034 (NetWorks!)
+        if '26034' in networks:
+            return {
+                'base_station__network__in': ['26002', '26003', '26034'],
+                'is_networks': True,
+            }
+        return super(BtsExportFilterService, self)._get_network_filter(networks)
+
+    def _get_region_filter(self, region):
+        # TODO: Multiple regions allowed
+        return {
+            self.region_filter_field: region
+        }
 
 
 class UkeLocationsFilterService(QuerysetFilterService):

@@ -1,4 +1,8 @@
+from urllib import urlencode
+
+from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.http import HttpResponse
 from django.views import generic
 
 from ..uke import models as uke_models
@@ -74,3 +78,42 @@ class UkeDetailView(generic.DetailView):
         except:
             pass
         return ctx
+
+
+class ExportFilterView(generic.FormView):
+    template_name = 'bts/export/index.html'
+    form_class = forms.ExportFilterForm
+
+    def get_success_url(self):
+        return '{}?{}'.format(
+            reverse('bts:export-download-view'),
+            urlencode(self.request.POST.copy())
+        )
+
+
+class ExportDownloadView(mixins.QuerysetFilterMixin, generic.ListView):
+    template_name = 'bts/export/clf.html'
+    model = models.Cell
+    context_object_name = 'cells'
+    filter_class = services.BtsExportFilterService
+    # paginate_by = 10
+
+    def get_queryset(self):
+        qs = super(ExportDownloadView, self).get_queryset()
+        qs_filters = self.get_queryset_filters()
+        return qs.filter(**qs_filters).order_by('cid')
+
+    def render_to_response(self, context, **response_kwargs):
+        # from django.template import loader, Context
+        response_kwargs.update({
+            'content_type': 'text/csv',
+        })
+        response = super(ExportDownloadView, self).render_to_response(context, **response_kwargs)
+        # response = HttpResponse(**response_kwargs)
+        response['Content-Disposition'] = 'attachment; filename="{}.clf"'.format(
+            self.request.GET.get('network')
+        )
+        # t = loader.get_template(self.template_name)
+        # c = Context(context)
+        # response.write(t.render(c))
+        return response
