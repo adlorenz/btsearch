@@ -87,7 +87,7 @@ class ExportFilterView(generic.FormView):
     def get_success_url(self):
         return '{}?{}'.format(
             reverse('bts:export-download-view'),
-            urlencode(self.request.POST.copy())
+            self.request.POST.urlencode()
         )
 
 

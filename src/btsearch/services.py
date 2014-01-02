@@ -11,21 +11,24 @@ class QuerysetFilterService(object):
     skip_bounds_filter = False
 
     def get_processed_filters(self, raw_filters):
+        # The raw_filters parameter is an instance of QueryDict
         processed_filters = {}
+
         if 'bounds' in raw_filters and not self.skip_bounds_filter:
             processed_filters.update(
                 self._get_bounds_filter(raw_filters['bounds'])
             )
 
         if 'network' in raw_filters and raw_filters['network']:
-            networks = raw_filters['network'].split(',')
+            networks = raw_filters.getlist('network')
             processed_filters.update(
                 self._get_network_filter(networks)
             )
 
         if 'region' in raw_filters and raw_filters['region']:
+            regions = raw_filters.getlist('region')
             processed_filters.update(
-                self._get_region_filter(raw_filters['region'])
+                self._get_region_filter(regions)
             )
 
         if 'timedelta' in raw_filters and raw_filters['timedelta']:
@@ -35,11 +38,11 @@ class QuerysetFilterService(object):
 
         standards = []
         if 'standard' in raw_filters and raw_filters['standard']:
-            standards = raw_filters['standard'].split(',')
+            standards = raw_filters.getlist('standard')
 
         bands = []
         if 'band' in raw_filters and raw_filters['band']:
-            bands = raw_filters['band'].split(',')
+            bands = raw_filters.getlist('band')
 
         if standards or bands:
             processed_filters.update(
@@ -62,9 +65,9 @@ class QuerysetFilterService(object):
             self.network_filter_field: networks
         }
 
-    def _get_region_filter(self, region):
+    def _get_region_filter(self, regions):
         return {
-            self.region_filter_field: region
+            self.region_filter_field: regions
         }
 
     def _get_timedelta_filter(self, timedelta):
@@ -102,7 +105,6 @@ class BtsLocationsFilterService(QuerysetFilterService):
         if '26034' in networks:
             return {
                 'base_stations__network__in': ['26002', '26003', '26034'],
-                # 'base_stations__cells__notes__icontains': 'networks',
                 'base_stations__is_networks': True,
             }
         return super(BtsLocationsFilterService, self)._get_network_filter(networks)
@@ -121,7 +123,6 @@ class BtsLocationFilterService(QuerysetFilterService):
         if '26034' in networks:
             return {
                 'network__in': ['26002', '26003', '26034'],
-                # 'cells__notes__icontains': 'networks',
                 'is_networks': True,
             }
         return super(BtsLocationFilterService, self)._get_network_filter(networks)
@@ -131,7 +132,7 @@ class BtsExportFilterService(QuerysetFilterService):
     network_filter_field = 'base_station__network__in'
     standard_filter_field = 'standard__in'
     band_filter_field = 'band__in'
-    region_filter_field = 'base_station__location__region'
+    region_filter_field = 'base_station__location__region__in'
     timedelta_filter_field = 'date_updated__gte'
     skip_bounds_filter = True
 
@@ -143,12 +144,6 @@ class BtsExportFilterService(QuerysetFilterService):
                 'is_networks': True,
             }
         return super(BtsExportFilterService, self)._get_network_filter(networks)
-
-    def _get_region_filter(self, region):
-        # TODO: Multiple regions allowed
-        return {
-            self.region_filter_field: region
-        }
 
 
 class UkeLocationsFilterService(QuerysetFilterService):
