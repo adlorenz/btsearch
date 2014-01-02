@@ -56,11 +56,8 @@
         </div>
         <div class="form-group">
             <label>Format wyjściowy:</label><br/>
-            (wkrótce)<br/>
-            [&nbsp;] CLF v2.0<br/>
-            [&nbsp;] CLF v2.1<br/>
-            [&nbsp;] CLF v3.0 (dec)<br/>
-            [&nbsp;] CLF v3.0 (hex)<br/>
+            <span class="text-danger">{{ form.output_format.errors }}</span>
+            {{ form.output_format }}
         </div>
         <input class="btn btn-primary" type="submit" value="Eksportuj" />
     </form>
