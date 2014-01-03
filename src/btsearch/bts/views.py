@@ -1,8 +1,5 @@
-from urllib import urlencode
-
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.http import HttpResponse
 from django.views import generic
 
 from ..uke import models as uke_models
