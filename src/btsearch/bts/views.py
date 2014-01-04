@@ -116,7 +116,7 @@ class ExportDownloadView(mixins.QuerysetFilterMixin, generic.ListView):
             'content_type': 'text/csv',
         })
         response = super(ExportDownloadView, self).render_to_response(context, **response_kwargs)
-        response['Content-Disposition'] = 'attachment; filename="{}-{}.clf"'.format(
+        response['Content-Disposition'] = 'attachment; filename="{}-v{}.clf"'.format(
             self.request.GET.get('network'),
             self.request.GET.get('output_format')
         )
