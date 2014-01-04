@@ -95,6 +95,11 @@ class ExportDownloadView(mixins.QuerysetFilterMixin, generic.ListView):
     filter_class = services.BtsExportFilterService
     # paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        ctx = super(ExportDownloadView, self).get_context_data(**kwargs)
+        ctx['return_char'] = "\r"
+        return ctx
+
     def get_template_names(self):
         template_name = 'bts/export/clf-{}.html'.format(
             self.request.GET.get('output_format')
