@@ -1,3 +1,3 @@
-//cell list exchange format v2.0//
-{% if cells %}{% for cell in cells %}{{ cell.cid|stringformat:"04X" }}{{ cell.lac|stringformat:"04X" }}{{ cell.base_station.network.code }}	{% if not cell.is_confirmed %}[?]{% endif %}{% if cell.standard != '?' %}[{{ cell.standard }}{{ cell.band }}]{% endif %} {{ cell.base_station.location.town }}, {% if cell.base_station.location_details %}{{ cell.base_station.location_details }}{% else %}{{ cell.base_station.location.address }}{% endif %} [{{ cell.base_station.station_id}}:{{ cell.base_station.rnc }}:{% if cell.standard != '?' %}{{ cell.standard|first }}{{ cell.band }}-{{ cell.ua_freq }}{% endif %}]
+{% load clf_tags %}//cell list exchange format v2.0//
+{% if cells %}{% for cell in cells %}{{ cell.cid|stringformat:"04X" }}{{ cell.lac|stringformat:"04X" }}{{ cell.base_station.network.code }}	{% if not cell.is_confirmed %}[?]{% endif %} {{ cell.base_station.location.town }}, {% if cell.base_station.location_details %}{{ cell.base_station.location_details }}{% else %}{{ cell.base_station.location.address }}{% endif %} [{{ cell|metadata }}]
 {% endfor %}{% endif %}
