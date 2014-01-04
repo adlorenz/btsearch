@@ -93,7 +93,7 @@ class ExportDownloadView(mixins.QuerysetFilterMixin, generic.ListView):
     model = models.Cell
     context_object_name = 'cells'
     filter_class = services.BtsExportFilterService
-    # paginate_by = 10
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         ctx = super(ExportDownloadView, self).get_context_data(**kwargs)
@@ -116,7 +116,8 @@ class ExportDownloadView(mixins.QuerysetFilterMixin, generic.ListView):
             'content_type': 'text/csv',
         })
         response = super(ExportDownloadView, self).render_to_response(context, **response_kwargs)
-        response['Content-Disposition'] = 'attachment; filename="{}.clf"'.format(
-            self.request.GET.get('network')
+        response['Content-Disposition'] = 'attachment; filename="{}-{}.clf"'.format(
+            self.request.GET.get('network'),
+            self.request.GET.get('output_format')
         )
         return response
