@@ -340,6 +340,9 @@ class Region(models.Model):
     name = models.CharField(
         max_length=64,
     )
+    code = models.CharField(
+        max_length=3,
+    )
     country_code = models.CharField(
         max_length=2,
     )
