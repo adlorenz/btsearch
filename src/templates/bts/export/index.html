@@ -1,4 +1,5 @@
 {% extends 'site/content.html' %}
+
 {% block page-title %}Eksport danych BTSearch{% endblock %}
 
 {% block extrahead %}
@@ -65,3 +66,18 @@
 
 
 {% endblock %}
+
+{% block extrascripts %}
+    <script type="text/javascript">
+    $(function(){
+        $("form").on("submit", function (e) {
+            $('input[type=submit]').attr('disabled', 'disabled');
+            $('input[type=submit]').val('Proszę czekać...');
+            setTimeout(function(){
+                $('input[type=submit]').removeAttr('disabled');
+                $('input[type=submit]').val('Eksportuj');
+            }, 10000);
+        });
+    });
+    </script>
+{% endblock extrascripts %}
