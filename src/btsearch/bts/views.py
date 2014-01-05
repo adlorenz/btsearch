@@ -91,13 +91,13 @@ class ExportFilterView(generic.FormView):
 class ExportDownloadView(mixins.QuerysetFilterMixin, generic.ListView):
     template_name = 'bts/export/clf-30d.html'
     model = models.Cell
+    queryset = models.Cell.objects.select_related().all()
     context_object_name = 'cells'
     filter_class = services.BtsExportFilterService
-    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         ctx = super(ExportDownloadView, self).get_context_data(**kwargs)
-        ctx['return_char'] = "\r"
+        ctx['return_char'] = "\r"  # \r\n line endings are required by CellTrack app
         return ctx
 
     def get_template_names(self):
@@ -107,11 +107,18 @@ class ExportDownloadView(mixins.QuerysetFilterMixin, generic.ListView):
         return [template_name]
 
     def get_queryset(self):
-        qs = super(ExportDownloadView, self).get_queryset()
         qs_filters = self.get_queryset_filters()
-        return qs.filter(**qs_filters).order_by('cid')
+        qs = self.queryset.filter(**qs_filters).order_by('cid')
+        if 'limit' in self.request.GET:
+            limit = self.request.GET.get('limit')
+            return qs[:limit]
+        return qs
 
     def render_to_response(self, context, **response_kwargs):
+        if self.request.GET.get('output_format') == 'test':
+            # Do not render as text/csv when output is test
+            return super(ExportDownloadView, self).render_to_response(context, **response_kwargs)
+
         response_kwargs.update({
             'content_type': 'text/csv',
         })
