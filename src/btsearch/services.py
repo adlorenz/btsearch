@@ -137,12 +137,18 @@ class BtsExportFilterService(QuerysetFilterService):
     skip_bounds_filter = True
 
     def _get_network_filter(self, networks):
-        # Special case for 26034 (NetWorks!)
-        if '26034' in networks:
+        # Append NetWorks! records for TMP or Orange
+        if '26002' in networks or '26003' in networks:
+            networks.append('26034')
             return {
-                'base_station__network__in': ['26002', '26003', '26034'],
-                'is_networks': True,
+                'base_station__network__in': networks,
+                'base_station__is_networks': True,
             }
+
+        # Append Aero2 to Plus
+        if '26001' in networks:
+            networks.append('26017')
+
         return super(BtsExportFilterService, self)._get_network_filter(networks)
 
 
