@@ -21,10 +21,36 @@
 {% endblock extrahead %}
 
 {% block content-title %}
-    Eksport danych bazy BTSearch
+    Eksport danych do plików CLF
 {% endblock content-title %}
 
 {% block main-content %}
+
+    <p>
+        Poniższy formularz umożliwia eksportowanie danych z bazy BTSearch do plików typu CLF (Cell List File), które następnie można wykorzystać w aplikacjach służących do monitorowania sieci komórkowych. Przy pomocy plików CLF aplikacje te będą mogły zidentyfikować dane stacji bazowej obsługującej w danej chwili telefon komórkowy.
+    </p>
+
+    <p>
+        Popularne aplikacje monitorujące korzystające z plików CLF:
+        <dl>
+            <dt>Android</dt>
+            <dd>
+                <ul>
+                    <li><a href="https://play.google.com/store/apps/details?id=com.parizene.netmonitor">Netmonitor</a> (CLF v2.0, v2.1, v3.0)</li>
+                    <li><a href="https://play.google.com/store/apps/details?id=de.carknue.gmon2">G-MoN</a> (CLF v4.0)</li>
+                </ul>
+            </dd>
+            <dt>Symbian</dt>
+            <dd>
+                <ul>
+                    <li><a href="http://www.afischer-online.de/sos/celltrack/">CellTrack</a> (CLF v2.0, v3.0)</li>
+                    <li><a href="https://sites.google.com/site/pynetmony/home">PyNetMony</a> (CLF v3.0)</li>
+                </ul>
+            </dd>
+        </dl>
+    </p>
+
+    <h3>Formularz eksportu</h3
 
     <form action="" method="post" class="form">
         {% csrf_token %}
@@ -55,7 +81,7 @@
             <label>Format wyjściowy:</label><br/>
             <span class="text-danger">{{ form.output_format.errors }}</span>
             {{ form.output_format }}
-            <p><small>Format CLF v4.0 jest wykorzystywany przez aplikację <a href="https://play.google.com/store/apps/details?id=de.carknue.gmon2" target="_blank">G-MoN</a> dla Androida. <a href="https://sites.google.com/site/clfgmon/" target="_blank">Więcej szczegółów...</a></small></p>
+            <p><small>Szczegółowe informacje dotyczące formatów: <a href="http://www.afischer-online.de/sos/celltrack/" target="_blank">2.x i 3.x</a> oraz <a href="https://sites.google.com/site/clfgmon/" target="_blank">4.0</a></small></p>
         </div>
         <input class="btn btn-primary" type="submit" value="Eksportuj" />
     </form>
@@ -68,7 +94,7 @@
     $(function(){
         $("form").on("submit", function (e) {
             $('input[type=submit]').attr('disabled', 'disabled');
-            $('input[type=submit]').val('Proszę czekać...');
+            $('input[type=submit]').val('Proszę czekać na pobranie pliku CLF...');
             setTimeout(function(){
                 $('input[type=submit]').removeAttr('disabled');
                 $('input[type=submit]').val('Eksportuj');
