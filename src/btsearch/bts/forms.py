@@ -48,6 +48,11 @@ class ExportFilterForm(forms.Form):
         queryset=models.Network.objects.all(),
         widget=forms.Select(attrs={'class': 'form-control'})
     )
+    # network = forms.MultipleChoiceField(
+    #     required=True,
+    #     choices=((network.code, network) for network in models.Network.objects.all()),
+    #     widget=forms.CheckboxSelectMultiple(),
+    # )
     region = forms.MultipleChoiceField(
         required=True,
         choices=((region.id, region.name) for region in models.Region.objects.all()),
