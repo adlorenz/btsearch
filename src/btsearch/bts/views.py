@@ -97,6 +97,7 @@ class ExportDownloadView(mixins.QuerysetFilterMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         ctx = super(ExportDownloadView, self).get_context_data(**kwargs)
+        ctx['arbitrary_network_code'] = self.request.GET.get('network')
         ctx['return_char'] = "\r"  # \r\n line endings are required by CellTrack app
         return ctx
 
