@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.views import generic
 
@@ -74,3 +75,57 @@ class UkeDetailView(generic.DetailView):
         except:
             pass
         return ctx
+
+
+class ExportFilterView(generic.FormView):
+    template_name = 'bts/export/index.html'
+    form_class = forms.ExportFilterForm
+
+    def get_success_url(self):
+        return '{}?{}'.format(
+            reverse('bts:export-download-view'),
+            self.request.POST.urlencode()
+        )
+
+
+class ExportDownloadView(mixins.QuerysetFilterMixin, generic.ListView):
+    template_name = 'bts/export/clf-30d.html'
+    model = models.Cell
+    queryset = models.Cell.objects.select_related().all()
+    context_object_name = 'cells'
+    filter_class = services.BtsExportFilterService
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ExportDownloadView, self).get_context_data(**kwargs)
+        ctx['arbitrary_network_code'] = self.request.GET.get('network')
+        ctx['return_char'] = "\r"  # \r\n line endings are required by CellTrack app
+        return ctx
+
+    def get_template_names(self):
+        template_name = 'bts/export/clf-{}.html'.format(
+            self.request.GET.get('output_format')
+        )
+        return [template_name]
+
+    def get_queryset(self):
+        qs_filters = self.get_queryset_filters()
+        qs = self.queryset.filter(**qs_filters).order_by('cid')
+        if 'limit' in self.request.GET:
+            limit = self.request.GET.get('limit')
+            return qs[:limit]
+        return qs
+
+    def render_to_response(self, context, **response_kwargs):
+        if self.request.GET.get('output_format') == 'test':
+            # Do not render as text/csv when output is test
+            return super(ExportDownloadView, self).render_to_response(context, **response_kwargs)
+
+        response_kwargs.update({
+            'content_type': 'text/csv',
+        })
+        response = super(ExportDownloadView, self).render_to_response(context, **response_kwargs)
+        response['Content-Disposition'] = 'attachment; filename="{}-v{}.clf"'.format(
+            '-'.join(self.request.GET.getlist('network')),
+            self.request.GET.get('output_format')
+        )
+        return response

@@ -134,23 +134,13 @@ class LocationAdmin(admin.ModelAdmin):
     ]
     save_on_top = True
 
-#class UkeLocationAdmin(admin.ModelAdmin):
-#    model = UkeLocation
-#    list_display = ['station_id', 'network', 'location', 'location_details', 'band', 'case_number']
-#    list_filter = ['network', 'band']
-#    readonly_fields = ['station_id', 'network', 'location', 'location_details', 'band', 'band_all', 'latitude', 'longitude', 'latlng_hash', 'case_number']
 
-
-# class LegacyBaseStationAdmin(admin.ModelAdmin):
-#     list_display = ['id', 'network', 'region', 'town', 'location', 'standard', 'band', 'lac', 'btsid', 'station_id']
-#     list_filter = ['network', 'region', 'standard']
-#     search_fields = ['=id', 'town', 'location', 'btsid']
+class RegionAdmin(admin.ModelAdmin):
+    list_display = ['name', 'code', 'country_code']
 
 
 admin.site.register(models.BaseStation, BaseStationAdmin)
 admin.site.register(models.Network)
 admin.site.register(models.Cell, CellAdmin)
 admin.site.register(models.Location, LocationAdmin)
-admin.site.register(models.Region)
-#admin.site.register(UkeLocation, UkeLocationAdmin)
-# admin.site.register(LegacyBaseStation, LegacyBaseStationAdmin)
+admin.site.register(models.Region, RegionAdmin)

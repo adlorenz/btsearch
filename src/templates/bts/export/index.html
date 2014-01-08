@@ -1,0 +1,105 @@
+{% extends 'site/content.html' %}
+
+{% block page-title %}Eksport danych BTSearch{% endblock %}
+
+{% block extrahead %}
+    <style type="text/css">
+
+        .container .form-group ul {
+          list-style: none;
+          padding: 0;
+        }
+
+        .container .form-group ul li {
+            display: inline-block !important;
+        }
+        .container .form-group ul li+li {
+            margin-left: 0.5em !important;
+        }
+
+    </style>
+{% endblock extrahead %}
+
+{% block content-title %}
+    Eksport danych do plików CLF
+{% endblock content-title %}
+
+{% block main-content %}
+
+    <p>
+        Poniższy formularz umożliwia eksportowanie danych z bazy BTSearch do plików typu CLF (Cell List File), które następnie można wykorzystać w aplikacjach służących do monitorowania sieci komórkowych. Przy pomocy plików CLF aplikacje te będą mogły zidentyfikować dane stacji bazowej obsługującej w danej chwili telefon komórkowy.
+    </p>
+
+    <p>
+        Popularne aplikacje monitorujące korzystające z plików CLF:
+        <dl>
+            <dt>Android</dt>
+            <dd>
+                <ul>
+                    <li><a href="https://play.google.com/store/apps/details?id=com.parizene.netmonitor">Netmonitor</a> (CLF v2.0, v2.1, v3.0)</li>
+                    <li><a href="https://play.google.com/store/apps/details?id=de.carknue.gmon2">G-MoN</a> (CLF v4.0)</li>
+                </ul>
+            </dd>
+            <dt>Symbian</dt>
+            <dd>
+                <ul>
+                    <li><a href="http://www.afischer-online.de/sos/celltrack/">CellTrack</a> (CLF v2.0, v3.0)</li>
+                    <li><a href="https://sites.google.com/site/pynetmony/home">PyNetMony</a> (CLF v3.0)</li>
+                </ul>
+            </dd>
+        </dl>
+    </p>
+
+    <h3>Formularz eksportu</h3>
+
+    <form action="" method="post" class="form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <p>
+            <span class="text-danger">{{ form.non_field_errors }}</span>
+        </p>
+        {% endif %}
+        <div class="form-group">
+            <label for="id_network">Sieć:</label>
+            <span class="text-danger">{{ form.network.errors }}</span>
+            {{ form.network }}
+        </div>
+        <div class="form-group">
+            <label for="id_region">Region:</label>
+            <span class="text-danger">{{ form.region.errors }}</span>
+            {{ form.region }}
+        </div>
+        <div class="form-group">
+            <label>Standard: (opcjonalnie)</label>
+            {{ form.standard }}
+        </div>
+        <div class="form-group">
+            <label>Pasmo: (opcjonalnie)</label>
+            {{ form.band }}
+        </div>
+        <div class="form-group">
+            <label>Format wyjściowy:</label><br/>
+            <span class="text-danger">{{ form.output_format.errors }}</span>
+            {{ form.output_format }}
+            <p><small>Szczegółowe informacje dotyczące formatów: <a href="http://www.afischer-online.de/sos/celltrack/" target="_blank">2.x i 3.x</a> oraz <a href="https://sites.google.com/site/clfgmon/" target="_blank">4.0</a></small></p>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Eksportuj" />
+    </form>
+
+
+{% endblock %}
+
+{% block extrascripts %}
+    <script type="text/javascript">
+    $(function(){
+        $("form").on("submit", function (e) {
+            $('input[type=submit]').attr('disabled', 'disabled');
+            $('input[type=submit]').val('Proszę czekać na pobranie pliku CLF...');
+            setTimeout(function(){
+                $('input[type=submit]').removeAttr('disabled');
+                $('input[type=submit]').val('Eksportuj');
+            }, 10000);
+        });
+    });
+    </script>
+{% endblock extrascripts %}

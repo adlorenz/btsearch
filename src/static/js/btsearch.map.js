@@ -704,14 +704,12 @@ var filters = {
             url += '&network=' + this.network;
         }
 
-        std = this.standard.join(',');
-        if (std !== '') {
-            url += '&standard=' + std;
+        for (var s in this.standard) {
+            url += '&standard=' + this.standard[s];
         }
 
-        bnd = this.band.join(',');
-        if (bnd !== '') {
-            url += '&band=' + bnd;
+        for (var b in this.band) {
+            url += '&band=' + this.band[b];
         }
 
         if (this.timedelta) {
