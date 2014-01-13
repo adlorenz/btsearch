@@ -546,31 +546,26 @@ var ui = {
 
         // Network filter dropdown change
         $('#network-filter').change(function(){
-            core.selectedMarker = null;
-            google.maps.event.trigger(core.map, 'idle');
+            ui.resetMap();
         });
 
         // Network standards filter
         $('.standard-filter').click(function(){
-            core.selectedMarker = null;
-            google.maps.event.trigger(core.map, 'idle');
+            ui.resetMap();
         });
 
         // Network standards filter
         $('.band-filter').click(function(){
-            core.selectedMarker = null;
-            google.maps.event.trigger(core.map, 'idle');
+            ui.resetMap();
         });
 
         $('.timedelta-filter').click(function(){
-            core.selectedMarker = null;
-            google.maps.event.trigger(core.map, 'idle');
+            ui.resetMap();
         });
 
         // Data source filter
         $('input[name=data-source]').change(function(){
-            core.selectedMarker = null;
-            google.maps.event.trigger(core.map, 'idle');
+            ui.resetMap();
             if ($(this).val() == 'locations') {
                 $('#bts-last-update-date').show();
                 $('#uke-last-update-date').hide();
@@ -605,6 +600,11 @@ var ui = {
         if (!mainPanelObject.is(':visible')) {
             this.activatePanel(mainPanelObject, 'Filtr lokalizacji');
         }
+    },
+
+    resetMap: function() {
+        core.selectedMarker = null;
+        google.maps.event.trigger(core.map, 'idle');
     },
 
     toggleControlPanel: function() {
@@ -871,8 +871,32 @@ var utils = {
     }*/
 };
 
-// $(document).ready(function(){
-//     $('.search-result-item').on('click', function(){
-//         console.log('ale kutas');
-//     });
-// });
+$(document).bind('keypress', 'g', function(){
+    $('#standard-filter-gsm').prop('checked', !$('#standard-filter-gsm').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', 'u', function(){
+    $('#standard-filter-umts').prop('checked', !$('#standard-filter-umts').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', 'l', function(){
+    $('#standard-filter-lte').prop('checked', !$('#standard-filter-lte').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', '9', function(){
+    $('#band-filter-900').prop('checked', !$('#band-filter-900').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', '1', function(){
+    $('#band-filter-1800').prop('checked', !$('#band-filter-1800').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', '2', function(){
+    $('#band-filter-2100').prop('checked', !$('#band-filter-2100').prop('checked'));
+    ui.resetMap();
+});
