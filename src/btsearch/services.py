@@ -142,7 +142,6 @@ class BtsExportFilterService(QuerysetFilterService):
             networks.append('26034')
             return {
                 'base_station__network__in': networks,
-                'base_station__is_networks': True,
             }
 
         # Append Aero2 to Plus

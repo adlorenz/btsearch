@@ -1,6 +1,6 @@
 {% extends 'site/content.html' %}
 
-{% block page-title %}Eksport danych BTSearch{% endblock %}
+{% block page-title %}Eksport danych do plików CLF{% endblock %}
 
 {% block extrahead %}
     <style type="text/css">
@@ -63,6 +63,9 @@
             <label for="id_network">Sieć:</label>
             <span class="text-danger">{{ form.network.errors }}</span>
             {{ form.network }}
+            <p>
+                <small>Przy wyborze sieci T-Mobile (26002) lub Orange (26003), do wynikowego pliku CLF są dołączane rekordy NetWorks! (26034). Analogicznie przy wyborze sieci Plus (26001) do pliku są dołączane rekordy Aero2 (26017).</small>
+            </p>
         </div>
         <div class="form-group">
             <label for="id_region">Region:</label>
@@ -70,11 +73,11 @@
             {{ form.region }}
         </div>
         <div class="form-group">
-            <label>Standard: (opcjonalnie)</label>
+            <label>Standard:</label> (opcjonalnie, domyślnie wszystkie standardy są eksportowane)
             {{ form.standard }}
         </div>
         <div class="form-group">
-            <label>Pasmo: (opcjonalnie)</label>
+            <label>Pasmo:</label> (opcjonalnie, domyślnie wszystkie pasma są eksportowane)
             {{ form.band }}
         </div>
         <div class="form-group">

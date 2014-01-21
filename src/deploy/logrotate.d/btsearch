@@ -5,6 +5,14 @@
     compress
     delaycompress
     notifempty
-    create 640 root adm
+    create 640 root www-data
     sharedscripts
+    su root www-data
+
+    # Reload nginx/supervisord so it picks up the new log
+    postrotate
+        [ ! -f /run/nginx.pid ] || kill -USR1 `cat /run/nginx.pid`
+        /usr/bin/supervisorctl reload zoyalab-btsearch-prod
+    endscript
+
 }

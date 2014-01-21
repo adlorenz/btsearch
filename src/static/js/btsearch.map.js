@@ -33,6 +33,7 @@ var core = {
     markers: null,
     selectedMarker: null,
     defaultMarkerIcon: "http://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|ff776b|000000",
+    searchResultIcon: "http://maps.google.com/mapfiles/kml/pal3/icon52.png",
 
     init: function(mapCanvas, initParams) {
         this.map = new google.maps.Map(mapCanvas, this.mapParams);
@@ -220,19 +221,23 @@ var core = {
         };
         this.geocoder.geocode(params, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
-                core.map.setCenter(results[0].geometry.location);
+                core.displaySearchResult(results[0].geometry.location.lat(), results[0].geometry.location.lng());
                 if (results.length > 1) {
-                    resultsHtml = '<ul>';
+                    // Generate results list
+                    var resultsHtml = '<ul>';
                     for (var i in results) {
-                        // @TODO: Use jquery .click/.live event instead of onclick
-                        // Or use jQuery's .on() event? See:
-                        // https://github.com/zoyalab/zoyalab.com/blob/master/js/main.js#L20
-                        onclickAction = 'core.setMapCenter(' + results[i].geometry.location.lat() + ',' + results[i].geometry.location.lng() + ');';
-                        resultsHtml += '<li><a href="javascript:void();" class="search-result-item" onclick="' + onclickAction + '">' + results[i].formatted_address + '</a></li>';
+                        resultsHtml += '<li><a href="javascript:void(0);" class="search-result-item" data-latitude="' + results[i].geometry.location.lat() + '" data-longitude="' + results[i].geometry.location.lng() + '">' + results[i].formatted_address + '</a></li>';
                     }
                     resultsHtml += '</ul>';
                     $('#control-panel-search-results').html(resultsHtml);
+
+                    // Display search results panel
                     ui.activatePanel($('#control-panel-search-results'), 'Rezultat wyszukiwania');
+
+                    // Attach event to search results
+                    $('.search-result-item').on('click', function(){
+                        core.displaySearchResult($(this).data('latitude'), $(this).data('longitude'));
+                    });
                 }
             } else {
                 $('#control-panel-search-results').html(status);
@@ -240,9 +245,10 @@ var core = {
         });
     },
 
-    setMapCenter: function(lat, lng) {
+    displaySearchResult: function(lat, lng) {
         latlng = new google.maps.LatLng(lat, lng);
         core.map.setCenter(latlng);
+        this.selectedMarker = core.createMarker(latlng, core.searchResultIcon);
     }
 
 };
@@ -540,31 +546,26 @@ var ui = {
 
         // Network filter dropdown change
         $('#network-filter').change(function(){
-            core.selectedMarker = null;
-            google.maps.event.trigger(core.map, 'idle');
+            ui.resetMap();
         });
 
         // Network standards filter
         $('.standard-filter').click(function(){
-            core.selectedMarker = null;
-            google.maps.event.trigger(core.map, 'idle');
+            ui.resetMap();
         });
 
         // Network standards filter
         $('.band-filter').click(function(){
-            core.selectedMarker = null;
-            google.maps.event.trigger(core.map, 'idle');
+            ui.resetMap();
         });
 
         $('.timedelta-filter').click(function(){
-            core.selectedMarker = null;
-            google.maps.event.trigger(core.map, 'idle');
+            ui.resetMap();
         });
 
         // Data source filter
         $('input[name=data-source]').change(function(){
-            core.selectedMarker = null;
-            google.maps.event.trigger(core.map, 'idle');
+            ui.resetMap();
             if ($(this).val() == 'locations') {
                 $('#bts-last-update-date').show();
                 $('#uke-last-update-date').hide();
@@ -599,6 +600,11 @@ var ui = {
         if (!mainPanelObject.is(':visible')) {
             this.activatePanel(mainPanelObject, 'Filtr lokalizacji');
         }
+    },
+
+    resetMap: function() {
+        core.selectedMarker = null;
+        google.maps.event.trigger(core.map, 'idle');
     },
 
     toggleControlPanel: function() {
@@ -864,3 +870,33 @@ var utils = {
         return (((brng * 180 / Math.PI) + 360) % 360);
     }*/
 };
+
+$(document).bind('keypress', 'g', function(){
+    $('#standard-filter-gsm').prop('checked', !$('#standard-filter-gsm').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', 'u', function(){
+    $('#standard-filter-umts').prop('checked', !$('#standard-filter-umts').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', 'l', function(){
+    $('#standard-filter-lte').prop('checked', !$('#standard-filter-lte').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', '9', function(){
+    $('#band-filter-900').prop('checked', !$('#band-filter-900').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', '1', function(){
+    $('#band-filter-1800').prop('checked', !$('#band-filter-1800').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', '2', function(){
+    $('#band-filter-2100').prop('checked', !$('#band-filter-2100').prop('checked'));
+    ui.resetMap();
+});
