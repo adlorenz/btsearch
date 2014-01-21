@@ -19,7 +19,15 @@ urlpatterns = patterns(
         views.ExportFilterView.as_view(),
         name='export-filter-view'),
 
-    url(r'',
+    url(r'^panel/(?P<pk>\d+)$',
+        views.BaseStationPanelView.as_view(),
+        name='panel-details-view'),
+
+    url(r'^panel$',
+        views.BaseStationPanelView.as_view(),
+        name='panel-view'),
+
+    url(r'^$',
         views.BtsListingView.as_view(),
         name='listing')
 )

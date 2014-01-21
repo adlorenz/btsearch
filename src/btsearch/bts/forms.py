@@ -3,6 +3,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from . import models
+from . import widgets
 
 
 class ListingFilterForm(forms.Form):
@@ -74,3 +75,12 @@ class ExportFilterForm(forms.Form):
         widget=forms.RadioSelect(),
         initial='3.0d'
     )
+
+
+class BaseStationEditForm(forms.ModelForm):
+
+    class Meta:
+        model = models.BaseStation
+        widgets = {
+            'location': widgets.LocationSelectorWidget()
+        }

@@ -1,0 +1,26 @@
+{% extends 'site/content.html' %}
+
+{% block content-title %}
+    {% if base_station %}
+        {{ base_station }} ({{ base_station.id }})
+    {% else %}
+        Nowa stacja bazowa
+    {% endif %}
+{% endblock content-title %}
+
+{% block main-content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Zachowaj" />
+    </form>
+
+{% endblock main-content %}
