@@ -79,8 +79,17 @@ class ExportFilterForm(forms.Form):
 
 class BaseStationEditForm(forms.ModelForm):
 
+    location_info = forms.CharField(max_length=255, required=False)
+
     class Meta:
         model = models.BaseStation
         widgets = {
             'location': widgets.LocationSelectorWidget()
         }
+
+    def __init__(self, *args, **kwargs):
+        super(BaseStationEditForm, self).__init__(*args, **kwargs)
+        if 'instance' in kwargs:
+            instance = kwargs['instance']
+            self.initial['location_info'] = instance.location
+            self.fields['location_info'].widget.attrs['readonly'] = True
