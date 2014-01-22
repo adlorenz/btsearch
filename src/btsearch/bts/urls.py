@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, url
+from django.contrib.admin.views.decorators import staff_member_required
 from . import views
 
 urlpatterns = patterns(
@@ -20,11 +21,11 @@ urlpatterns = patterns(
         name='export-filter-view'),
 
     url(r'^panel/(?P<pk>\d+)$',
-        views.BaseStationPanelView.as_view(),
+        staff_member_required(views.BaseStationPanelView.as_view()),
         name='panel-details-view'),
 
     url(r'^panel$',
-        views.BaseStationPanelView.as_view(),
+        staff_member_required(views.BaseStationPanelView.as_view()),
         name='panel-view'),
 
     url(r'^$',
