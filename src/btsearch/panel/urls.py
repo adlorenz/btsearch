@@ -8,9 +8,9 @@ urlpatterns = patterns(
     '',
     url(r'^basestation/(?P<pk>\d+)$',
         staff_member_required(views.BaseStationPanelView.as_view()),
-        name='panel-details-view'),
+        name='basestation-edit-view'),
 
     url(r'^basestation$',
         staff_member_required(views.BaseStationPanelView.as_view()),
-        name='panel-view'),
+        name='basestation-add-view'),
 )

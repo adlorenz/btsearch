@@ -1,4 +1,9 @@
 {% extends 'site/content.html' %}
+{% load staticfiles %}
+
+{% block page-title %}
+    Panel edycji stacji bazowej
+{% endblock page-title %}
 
 {% block content-title %}
     {% if base_station %}
@@ -18,14 +23,31 @@
         {% endfor %}
     {% endif %}
 
-    <form action="" method="post">{% csrf_token %}
+    <form action="" method="post" id="basestation-form">{% csrf_token %}
         {{ form.as_p }}
 
+        {{ cell_formset.management_form }}
+        {{ cell_formset.non_form_errors }}
         {% for cell_form in cell_formset  %}
-            <h3>Cell</h3>
-            {{ cell_form }}
+            <div class="cell-formset-container">
+                <h3>Cell</h3>
+                {{ cell_form }}
+            </div>
         {% endfor %}
         <input type="submit" value="Zachowaj" />
     </form>
 
 {% endblock main-content %}
+
+{% block extrascripts %}
+    <script type="text/javascript" src="{% static 'libs/jquery.formset.js' %}"></script>
+    <script type="text/javascript">
+       $(function() {
+           $('.cell-formset-container').formset({
+                prefix: '{{ cell_formset.prefix }}',
+                keepFieldValues: 'input',
+           });
+       });
+   </script>
+
+{% endblock extrascripts %}

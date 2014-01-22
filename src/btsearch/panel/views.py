@@ -27,8 +27,20 @@ class BaseStationPanelView(generic.UpdateView):
 
     def get_context_data(self, **kwargs):
         ctx = super(BaseStationPanelView, self).get_context_data(**kwargs)
-        ctx['cell_formset'] = forms.BaseStationCellsFormSet(instance=self.object)
+        if not self.creating:
+            ctx['cell_formset'] = forms.BaseStationCellsFormSet(instance=self.object)
         return ctx
+
+    def form_valid(self, form):
+        if not self.creating:
+            # If not creating a new BaseStation record, validate the formset
+            cell_formset = forms.BaseStationCellsFormSet(self.request.POST,
+                                                         instance=self.object)
+            if not cell_formset.is_valid():
+                return self.form_invalid(form)
+            cell_formset.save()
+
+        return super(BaseStationPanelView, self).form_valid(form)
 
     def form_invalid(self, form):
         messages.warning(self.request, 'Formularz zawiera błędy')
@@ -36,4 +48,4 @@ class BaseStationPanelView(generic.UpdateView):
 
     def get_success_url(self):
         messages.success(self.request, 'Rekord zachowano poprawnie')
-        return reverse('bts:panel-details-view', kwargs={'pk': self.object.id})
+        return reverse('panel:basestation-edit-view', kwargs={'pk': self.object.id})

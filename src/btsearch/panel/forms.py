@@ -18,10 +18,16 @@ class BaseStationEditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BaseStationEditForm, self).__init__(*args, **kwargs)
-        if 'instance' in kwargs:
+        if 'instance' in kwargs and kwargs['instance']:
             instance = kwargs['instance']
             self.initial['location_info'] = instance.location
             self.fields['location_info'].widget.attrs['readonly'] = True
 
 BaseStationCellsFormSet = inlineformset_factory(
-    models.BaseStation, models.Cell, extra=1)
+    models.BaseStation,
+    models.Cell,
+    extra=1,
+    can_delete=True,
+    fields=('standard', 'band', 'ua_freq', 'lac', 'cid', 'cid_long', 'ecid',
+            'is_confirmed', 'notes')
+)
