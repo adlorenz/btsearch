@@ -151,6 +151,11 @@ class BaseStationPanelView(generic.UpdateView):
             return None
         return super(BaseStationPanelView, self).get_object(queryset)
 
+    def get_context_data(self, **kwargs):
+        ctx = super(BaseStationPanelView, self).get_context_data(**kwargs)
+        ctx['cell_formset'] = forms.BaseStationCellsFormSet(instance=self.object)
+        return ctx
+
     def form_invalid(self, form):
         messages.warning(self.request, 'Formularz zawiera błędy')
         return super(BaseStationPanelView, self).form_invalid(form)

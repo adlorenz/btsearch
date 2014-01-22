@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from django.forms.models import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
 
 from . import models
@@ -93,3 +94,6 @@ class BaseStationEditForm(forms.ModelForm):
             instance = kwargs['instance']
             self.initial['location_info'] = instance.location
             self.fields['location_info'].widget.attrs['readonly'] = True
+
+BaseStationCellsFormSet = inlineformset_factory(
+    models.BaseStation, models.Cell, extra=1)

@@ -20,6 +20,11 @@
 
     <form action="" method="post">{% csrf_token %}
         {{ form.as_p }}
+
+        {% for cell_form in cell_formset  %}
+            <h3>Cell</h3>
+            {{ cell_form }}
+        {% endfor %}
         <input type="submit" value="Zachowaj" />
     </form>
 
