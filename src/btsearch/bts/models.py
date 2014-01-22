@@ -101,6 +101,7 @@ class BaseStation(models.Model):
     )
     location_details = models.CharField(
         max_length=255,
+        blank=True
     )
     station_id = models.CharField(
         verbose_name="StationId",
