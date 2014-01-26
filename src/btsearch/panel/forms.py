@@ -18,6 +18,7 @@ class BaseStationEditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BaseStationEditForm, self).__init__(*args, **kwargs)
+        self.fields['location'].widget = forms.HiddenInput()
         if 'instance' in kwargs and kwargs['instance']:
             instance = kwargs['instance']
             self.initial['location_info'] = instance.location

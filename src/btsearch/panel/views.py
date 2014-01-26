@@ -28,7 +28,10 @@ class BaseStationPanelView(generic.UpdateView):
     def get_context_data(self, **kwargs):
         ctx = super(BaseStationPanelView, self).get_context_data(**kwargs)
         if not self.creating:
-            ctx['cell_formset'] = forms.BaseStationCellsFormSet(instance=self.object)
+            ctx['cell_formset'] = forms.BaseStationCellsFormSet(
+                instance=self.object,
+                queryset=models.Cell.objects.order_by('standard', '-band', 'ua_freq', 'cid')
+            )
         return ctx
 
     def form_valid(self, form):

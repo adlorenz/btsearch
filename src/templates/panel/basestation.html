@@ -1,13 +1,31 @@
 {% extends 'site/content.html' %}
 {% load staticfiles %}
 
+{% block extrahead %}
+    <style type="text/css">
+        .bts-form label {
+            width: 140px;
+            text-align: right;
+            padding: 0px 5px;
+        }
+
+        .bts-form label.inline {
+            width: auto;
+        }
+
+        .cell-formset-container input {
+            width: 70px;
+        }
+    </style>
+{% endblock extrahead %}
+
 {% block page-title %}
     Panel edycji stacji bazowej
 {% endblock page-title %}
 
 {% block content-title %}
     {% if base_station %}
-        {{ base_station }} ({{ base_station.id }})
+        {{ base_station }} (ID: {{ base_station.id }})
     {% else %}
         Nowa stacja bazowa
     {% endif %}
@@ -23,17 +41,127 @@
         {% endfor %}
     {% endif %}
 
-    <form action="" method="post" id="basestation-form">{% csrf_token %}
-        {{ form.as_p }}
+    <form action="" method="post" id="basestation-form" class="bts-form" role="form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {# location #}
+        <div>
+            {{ form.location.label_tag }}
+            {{ form.location_info.value }} (ID: {{ form.location.value }}) [<a href="javascript:void(0);">Edycja</a>]<br/>
+            {{ form.location }} {{ form.location.errors }}
+        </div>
+
+        {# location_details #}
+        <div>
+            {{ form.location_details.label_tag }}
+            <input type="text" name="{{ form.location_details.html_name }}" id="{{ form.location_details.id_for_label }}" value="{{ forn.location_details.value }}" style="width: 500px;" />
+            {{ form.location_details.errors }}
+        </div>
+
+        {# network & is_networks #}
+        <div>
+            {{ form.network.label_tag }}
+            {{ form.network }} <label class="inline">{{ form.is_networks }} NetWorks!</label>
+            {{ form.network.errors }}
+        </div>
+
+        {# station_id & rnc & enbi #}
+        <div>
+            {{ form.station_id.label_tag }}
+            <input type="text" name="{{ form.station_id.html_name }}" id="{{ form.station_id.id_for_label }}" value="{{ form.station_id.value }}" style="width: 80px;" />
+            {{ form.station_id.errors }}
+
+            {{ form.rnc.label_tag }}
+            <input type="text" name="{{ form.rnc.html_name }}" id="{{ form.rnc.id_for_label }}" value="{{ form.rnc.value }}" style="width: 80px;" />
+            {{ form.rnc.errors }}
+
+            {{ form.enbi.label_tag }}
+            <input type="text" name="{{ form.enbi.html_name }}" id="{{ form.enbi.id_for_label }}" value="{{ form.enbi.value }}" style="width: 80px;" />
+            {{ form.enbi.errors }}
+        </div>
+
+        <div>
+            <label>&nbsp;</label>
+            <label class="inline">
+                {{ form.is_common_bcch }} Common BCCH
+            </label>
+            <label class="inline">
+                {{ form.is_gsm }} GSM
+            </label>
+            <label class="inline">
+                {{ form.is_umts }} UMTS
+            </label>
+            <label class="inline">
+                {{ form.is_lte }} LTE
+            </label>
+            <label class="inline">
+                {{ form.is_cdma }} CDMA
+            </label>
+        </div>
+
+        {# station_status & edit_status #}
+        <div>
+            {{ form.station_status.label_tag }}
+            {{ form.station_status }}
+            {{ form.station_status.errors }}
+
+            {{ form.edit_status.label_tag }}
+            {{ form.edit_status }}
+            {{ form.edit_status.errors }}
+        </div>
+
+        <h3>Cells</h3>
 
         {{ cell_formset.management_form }}
         {{ cell_formset.non_form_errors }}
+        <table>
+            <tr>
+                <th>Standard</th>
+                <th>Band</th>
+                <th>Confirmed?</th>
+                <th>UaFreq</th>
+                <th>LAC</th>
+                <th>CID/CLID</th>
+                <th>LongCID</th>
+                <th>E-CID</th>
+                <th>Notes</th>
+            </tr>
         {% for cell_form in cell_formset  %}
-            <div class="cell-formset-container">
-                <h3>Cell</h3>
-                {{ cell_form }}
-            </div>
+            <tr class="cell-formset-container">
+                <td>
+                   {{ cell_form.standard }}
+                </td>
+                <td>
+                   {{ cell_form.band }}
+                </td>
+                <td>
+                   {{ cell_form.is_confirmed }}
+                </td>
+                <td>
+                   {{ cell_form.ua_freq }}
+                </td>
+                <td>
+                   {{ cell_form.lac }}
+                </td>
+                <td>
+                   <input type="text" name="{{ cell_form.cid.html_name }}" id="{{ cell_form.cid.id_for_label }}" value="{{ cell_form.cid.value }}" title="{{ cell_form.cid.help_text }}" />
+                </td>
+                <td>
+                    <input type="text" name="{{ cell_form.cid_long.html_name }}" id="{{ cell_form.cid_long.id_for_label }}" value="{{ cell_form.cid_long.value }}" title="{{ cell_form.cid_long.help_text }}" style="width: 100px;"/>
+                </td>
+                <td>
+                   <input type="text" name="{{ cell_form.ecid.html_name }}" id="{{ cell_form.ecid.id_for_label }}" value="{{ cell_form.ecid.value }}" title="{{ cell_form.ecid.help_text }}" style="width: 100px;"/>
+                </td>
+                <td>
+                    <input type="text" name="{{ cell_form.notes.html_name }}" id="{{ cell_form.notes.id_for_label }}" value="{% if cell_form.notes.value %}{{ cell_form.notes.value }}{% endif %}" style="width: 150px;"/>
+                    {{ cell_form.id }}
+                    {{ cell_form.base_station }}
+                    {{ cell_form.DELETE }}
+                </td>
+            </tr>
         {% endfor %}
+        </table>
         <input type="submit" value="Zachowaj" />
     </form>
 
