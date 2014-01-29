@@ -248,6 +248,7 @@ var core = {
     displaySearchResult: function(lat, lng) {
         latlng = new google.maps.LatLng(lat, lng);
         core.map.setCenter(latlng);
+        core.map.setZoom(15);
         this.selectedMarker = core.createMarker(latlng, core.searchResultIcon);
     }
 
@@ -626,7 +627,7 @@ var ui = {
         if (!this.pushStateSupport) return;
         stateObject = {
             dataSource: filters.dataSource,
-            network: filters.network,
+            network: filters.network.join(','),
             standards: filters.standard.join(','),
             bands: filters.band.join(','),
             center: core.map.getCenter().toUrlValue(6),
@@ -639,7 +640,7 @@ var ui = {
 };
 
 var filters = {
-    network: null,
+    network: [],
     standard: [],
     band: [],
     timedelta: null,
@@ -677,7 +678,7 @@ var filters = {
 
     setNetworkFilter: function() {
         var selectedNetwork = $('#network-filter').val();
-        this.network = (selectedNetwork != '-1') ? selectedNetwork : null;
+        this.network = (selectedNetwork != '-1') ? selectedNetwork.split(',') : [];
     },
 
     setStandardFilter: function() {
@@ -706,8 +707,8 @@ var filters = {
 
     toUrlValue: function() {
         var url = '';
-        if (this.network !== null) {
-            url += '&network=' + this.network;
+        for (var n in this.network) {
+            url += '&network=' + this.network[n];
         }
 
         for (var s in this.standard) {
