@@ -248,6 +248,7 @@ var core = {
     displaySearchResult: function(lat, lng) {
         latlng = new google.maps.LatLng(lat, lng);
         core.map.setCenter(latlng);
+        core.map.setZoom(15);
         this.selectedMarker = core.createMarker(latlng, core.searchResultIcon);
     }
 
