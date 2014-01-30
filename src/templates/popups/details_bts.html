@@ -161,6 +161,9 @@
     </div>
 
     <div class="location-info-footer small pull-right">
-        Data aktualizacji: {{ base_station.date_updated|date:"d.m.Y" }} (ID {% if request.user.is_staff %}<a href="{% url 'panel:basestation-edit-view' base_station.id %}">{% endif %}{{ base_station.id }}{% if request.user.is_staff %}</a>{% endif %})
+        Data aktualizacji: {{ base_station.date_updated|date:"d.m.Y" }}
+        {% if request.user.is_staff %}
+            <br/>ID: <a href="{% url 'panel:basestation-edit-view' base_station.id %}">{{ base_station.id }}</a>
+        {% endif %}
     </div>
 </div>
