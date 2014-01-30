@@ -263,10 +263,6 @@
                     }
                 });
 
-                // $('select[name*=band]').on('change', function(e){
-                //     var std = $(this).val();
-                //     var idx = $(this).attr('name').split('-')[1];
-                // });
             };
 
             $('.cell-formset-container').formset({
@@ -284,8 +280,19 @@
                 e.preventDefault();
             });
 
-            $('input[name*=cells]').each(function(){
-
+            $("input[id^='id_cells-']").each(function(){
+                var idx = $(this).attr('name').split('-')[1];
+                var std = $('#id_cells-'+idx+'-standard').val();
+                if (std == 'GSM') {
+                    $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
+                    $('#id_cells-'+idx+'-ecid').attr('disabled', true);
+                } else if (std == 'UMTS') {
+                    $('#id_cells-'+idx+'-cid_long').attr('disabled', false);
+                    $('#id_cells-'+idx+'-ecid').attr('disabled', true);
+                } else if (std == 'LTE') {
+                    $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
+                    $('#id_cells-'+idx+'-ecid').attr('disabled', false);
+                }
             });
 
         });
