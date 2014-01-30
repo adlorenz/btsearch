@@ -32,8 +32,16 @@ class LocationView(generic.UpdateView):
     def get_context_data(self, **kwargs):
         ctx = super(LocationView, self).get_context_data(**kwargs)
         if not self.creating:
-            ctx['base_stations'] = models.BaseStation.objects.filter(location=self.object)
+            ctx['base_stations'] = self.object.get_associated_objects()
         return ctx
+
+    def form_invalid(self, form):
+        messages.warning(self.request, 'Formularz zawiera błędy')
+        return super(LocationView, self).form_invalid(form)
+
+    def get_success_url(self):
+        messages.success(self.request, 'Rekord zachowano poprawnie')
+        return reverse('panel:location-edit-view', kwargs={'pk': self.object.id})
 
 
 class BaseStationView(generic.UpdateView):
