@@ -7,7 +7,36 @@ from ..bts import models
 from . import forms
 
 
-class BaseStationPanelView(generic.UpdateView):
+class IndexView(generic.TemplateView):
+    template_name = 'panel/index.html'
+
+
+class LocationView(generic.UpdateView):
+    template_name = 'panel/location.html'
+    model = models.Location
+    form_class = forms.LocationEditForm
+    context_object_name = 'location'
+
+    def get_object(self, queryset=None):
+        """
+        When creating a new object, return None which tells generic Django
+        the view should emulate generic.CreateView.
+        Inspiration taken from:
+        https://github.com/tangentlabs/django-oscar/blob/master/oscar/apps/dashboard/catalogue/views.py#L188
+        """
+        self.creating = not 'pk' in self.kwargs
+        if self.creating:
+            return None
+        return super(LocationView, self).get_object(queryset)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(LocationView, self).get_context_data(**kwargs)
+        if not self.creating:
+            ctx['base_stations'] = models.BaseStation.objects.filter(location=self.object)
+        return ctx
+
+
+class BaseStationView(generic.UpdateView):
     template_name = 'panel/basestation.html'
     model = models.BaseStation
     form_class = forms.BaseStationEditForm
@@ -23,10 +52,10 @@ class BaseStationPanelView(generic.UpdateView):
         self.creating = not 'pk' in self.kwargs
         if self.creating:
             return None
-        return super(BaseStationPanelView, self).get_object(queryset)
+        return super(BaseStationView, self).get_object(queryset)
 
     def get_context_data(self, **kwargs):
-        ctx = super(BaseStationPanelView, self).get_context_data(**kwargs)
+        ctx = super(BaseStationView, self).get_context_data(**kwargs)
         if not self.creating:
             ctx['cell_formset'] = forms.BaseStationCellsFormSet(
                 instance=self.object,
@@ -43,11 +72,11 @@ class BaseStationPanelView(generic.UpdateView):
                 return self.form_invalid(form)
             cell_formset.save()
 
-        return super(BaseStationPanelView, self).form_valid(form)
+        return super(BaseStationView, self).form_valid(form)
 
     def form_invalid(self, form):
         messages.warning(self.request, 'Formularz zawiera błędy')
-        return super(BaseStationPanelView, self).form_invalid(form)
+        return super(BaseStationView, self).form_invalid(form)
 
     def get_success_url(self):
         messages.success(self.request, 'Rekord zachowano poprawnie')

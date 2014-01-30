@@ -3,13 +3,13 @@
 
 {% block extrahead %}
     <style type="text/css">
-        .bts-form label {
+        .edit-form label {
             width: 140px;
             text-align: right;
             padding: 0px 5px;
         }
 
-        .bts-form label.inline {
+        .edit-form label.inline {
             width: auto;
         }
 
@@ -53,7 +53,7 @@
         {% endfor %}
     {% endif %}
 
-    <form action="" method="post" id="basestation-form" class="bts-form" role="form">
+    <form action="" method="post" id="basestation-form" class="edit-form" role="form">
         {% csrf_token %}
         {{ form.non_field_errors }}
 
@@ -70,6 +70,7 @@
             {{ form.location }} {{ form.location.errors }}
         </div>
 
+        {# location selector map #}
         <div id="location-selector">
             <input type="hidden" id="coords" value="{{ base_station.location_coords }}" />
             <input type="text" id="location-search" placeholder="Szukaj lokalizacji..." />

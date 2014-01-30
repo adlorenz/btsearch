@@ -6,12 +6,17 @@ from ..bts import models
 
 
 class BaseStationEditForm(forms.ModelForm):
-
     class Meta:
         model = models.BaseStation
         widgets = {
             'location': forms.HiddenInput(),
         }
+
+
+class LocationEditForm(forms.ModelForm):
+    class Meta:
+        model = models.Location
+
 
 BaseStationCellsFormSet = inlineformset_factory(
     models.BaseStation,

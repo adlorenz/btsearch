@@ -1,0 +1,70 @@
+{% extends 'site/content.html' %}
+{% load staticfiles %}
+
+{% block extrahead %}
+    <style type="text/css">
+        .edit-form label {
+            width: 140px;
+            text-align: right;
+            padding: 0px 5px;
+        }
+
+        .edit-form label.inline {
+            width: auto;
+        }
+
+        .map {
+            width: 650px;
+            height: 400px;
+            border: 1px solid black;
+        }
+
+        #location-selector {
+            padding-left: 145px;
+            padding-bottom: 10px;
+            /*display: none;*/
+        }
+    </style>
+{% endblock extrahead %}
+
+{% block page-title %}
+    Panel edycji lokalizacji
+{% endblock page-title %}
+
+{% block content-title %}
+    {% if location %}
+        {{ location }} (ID: {{ location.id }})
+    {% else %}
+        Nowa lokalizacja
+    {% endif %}
+{% endblock content-title %}
+
+{% block main-content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form action="" method="post" id="location-form" class="edit-form" role="form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {{ form.as_p }}
+        <input type="submit" value="Zachowaj" class="btn btn-primary btn-lg pull-right" />
+    </form>
+
+    <h3>Stacje bazowe w tej lokalizacji</h3>
+    {% if base_stations %}
+        <ul>
+        {% for base_station in base_stations %}
+            <li>{{ base_station }} (ID: <a href="{% url 'panel:basestation-edit-view' base_station.pk %}" target="_blank">{{ base_station.id }}</a>)</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Brak stacji bazowych.</p>
+    {% endif %}
+
+{% endblock main-content %}
