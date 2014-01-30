@@ -336,7 +336,7 @@
             };
 
             var getLocations = function() {
-                var url = "/map/locations/?bounds=" + map.getBounds().toUrlValue();
+                var url = "/map/locations/?bounds=" + map.getBounds().toUrlValue() + '&empty';
                 $.getJSON(url, function(data){
                     clearMap();
                     data = data.objects;
