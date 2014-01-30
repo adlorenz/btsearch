@@ -45,11 +45,6 @@ class Location(models.Model):
     def __unicode__(self):
         return u"{0}, {1}, {2}".format(self.region.name, self.town, self.address)
 
-    def save(self, *args, **kwargs):
-        # TODO:
-        # - calculate / validate location_hash
-        return super(Location, self).save(*args, **kwargs)
-
     def has_location_hash(self):
         return self.location_hash != ''
 
