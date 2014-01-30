@@ -28,6 +28,7 @@ class Location(models.Model):
         db_index=True,
     )
     notes = models.CharField(
+        blank=True,
         max_length=500,
     )
     date_added = models.DateTimeField(
