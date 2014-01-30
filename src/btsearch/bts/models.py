@@ -48,7 +48,7 @@ class Location(models.Model):
     def save(self, *args, **kwargs):
         # TODO:
         # - calculate / validate location_hash
-        return super(Cell, self).save(*args, **kwargs)
+        return super(Location, self).save(*args, **kwargs)
 
     def has_location_hash(self):
         return self.location_hash != ''
