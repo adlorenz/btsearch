@@ -137,6 +137,13 @@
             {{ form.edit_status.errors }}
         </div>
 
+        {# notes #}
+        <div>
+            {{ form.notes.label_tag }}
+            <input type="text" name="{{ form.notes.html_name }}" id="{{ form.notes.id_for_label }}" value="{{ form.notes.value|default_if_none:"" }}" style="width: 500px;" /> {{ form.notes.errors }}
+        </div>
+
+        {# date_added & date_updated #}
         <div>
             <label>Aktualizacja:</label>
             {{ base_station.date_updated }}
