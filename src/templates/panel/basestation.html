@@ -66,7 +66,7 @@
         <div>
             {{ form.location.label_tag }}
             <span id="location-info">{{ base_station.location }}</span>
-            (ID: <span id="location-id">{{ form.location.value }}</span>) <button id="location-selector-toggler">Otwórz mapę</button><br/>
+            (ID: <span id="location-id">{{ form.location.value|default_if_none:"" }}</span>) <button id="location-selector-toggler">Otwórz mapę</button><br/>
             {{ form.location }} {{ form.location.errors }}
         </div>
 
@@ -79,7 +79,7 @@
         {# location_details #}
         <div>
             {{ form.location_details.label_tag }}
-            <input type="text" name="{{ form.location_details.html_name }}" id="{{ form.location_details.id_for_label }}" value="{{ form.location_details.value }}" style="width: 500px;" />
+            <input type="text" name="{{ form.location_details.html_name }}" id="{{ form.location_details.id_for_label }}" value="{{ form.location_details.value|default_if_none:"" }}" style="width: 500px;" />
             {{ form.location_details.errors }}
         </div>
 
@@ -93,15 +93,15 @@
         {# station_id & rnc & enbi #}
         <div>
             {{ form.station_id.label_tag }}
-            <input type="text" name="{{ form.station_id.html_name }}" id="{{ form.station_id.id_for_label }}" value="{{ form.station_id.value }}" style="width: 80px;" />
+            <input type="text" name="{{ form.station_id.html_name }}" id="{{ form.station_id.id_for_label }}" value="{{ form.station_id.value|default_if_none:"" }}" style="width: 80px;" />
             {{ form.station_id.errors }}
 
             {{ form.rnc.label_tag }}
-            <input type="text" name="{{ form.rnc.html_name }}" id="{{ form.rnc.id_for_label }}" value="{{ form.rnc.value }}" style="width: 80px;" />
+            <input type="text" name="{{ form.rnc.html_name }}" id="{{ form.rnc.id_for_label }}" value="{{ form.rnc.value|default_if_none:"" }}" style="width: 80px;" />
             {{ form.rnc.errors }}
 
             {{ form.enbi.label_tag }}
-            <input type="text" name="{{ form.enbi.html_name }}" id="{{ form.enbi.id_for_label }}" value="{{ form.enbi.value }}" style="width: 80px;" />
+            <input type="text" name="{{ form.enbi.html_name }}" id="{{ form.enbi.id_for_label }}" value="{{ form.enbi.value|default_if_none:"" }}" style="width: 80px;" />
             {{ form.enbi.errors }}
         </div>
 
@@ -206,9 +206,76 @@
     <script type="text/javascript" src="{% static 'libs/jquery.formset.js' %}"></script>
     <script type="text/javascript">
         $(function() {
+
+            var attachCellChangeEvent = function() {
+                $('select[name*=standard]').on('change', function(e){
+                    var std = $(this).val();
+                    var idx = $(this).attr('name').split('-')[1];
+                    if (std == 'GSM') {
+                        $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
+                        $('#id_cells-'+idx+'-ecid').attr('disabled', true);
+                    } else if (std == 'UMTS') {
+                        $('#id_cells-'+idx+'-cid_long').attr('disabled', false);
+                        $('#id_cells-'+idx+'-ecid').attr('disabled', true);
+                    } else if (std == 'LTE') {
+                        $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
+                        $('#id_cells-'+idx+'-ecid').attr('disabled', false);
+                    }
+                });
+
+                $("input[name$='-cid']").on('keyup', function(e){
+                    var idx = $(this).attr('name').split('-')[1];
+                    var std = $('#id_cells-'+idx+'-standard').val();
+                    var rnc = parseInt($('#id_rnc').val());
+                    var enbi = parseInt($('#id_enbi').val());
+                    var cid = parseInt($(this).val());
+                    if (std == 'UMTS' && rnc > 0) {
+                        longcid = rnc * 65536 + cid;
+                        $('#id_cells-'+idx+'-cid_long').val(longcid);
+                    }
+                    if (std == 'LTE' && enbi > 0) {
+                        ecid = enbi * 256 + cid;
+                        $('#id_cells-'+idx+'-ecid').val(ecid);
+                    }
+                });
+
+                $("input[name$='-cid_long']").on('keyup', function(e){
+                    var idx = $(this).attr('name').split('-')[1];
+                    var std = $('#id_cells-'+idx+'-standard').val();
+                    if (std == 'UMTS') {
+                        var longcid = parseInt($(this).val());
+                        var rnc = parseInt(longcid / 65536);
+                        var cid = longcid % 65536;
+                        $('#id_rnc').val(rnc);
+                        $('#id_cells-'+idx+'-cid').val(cid);
+                    }
+                });
+
+                $("input[name$='-ecid']").on('keyup', function(e){
+                    var idx = $(this).attr('name').split('-')[1];
+                    var std = $('#id_cells-'+idx+'-standard').val();
+                    if (std == 'LTE') {
+                        var ecid = parseInt($('#id_cells-'+idx+'-ecid').val());
+                        var enbi = parseInt(ecid / 256);
+                        var cid = ecid % 256;
+                        $('#id_enbi').val(enbi);
+                        $('#id_cells-'+idx+'-cid').val(cid);
+                    }
+                });
+
+                // $('select[name*=band]').on('change', function(e){
+                //     var std = $(this).val();
+                //     var idx = $(this).attr('name').split('-')[1];
+                // });
+            };
+
             $('.cell-formset-container').formset({
                 prefix: '{{ cell_formset.prefix }}',
                 keepFieldValues: 'input',
+                added: attachCellChangeEvent(),
+                removed: attachCellChangeEvent(),
+                addText: 'dodaj',
+                deleteText: 'usuń'
             });
 
             $('#location-selector-toggler').on('click', function(e){
@@ -216,6 +283,11 @@
                 $('#location-selector-toggler').hide();
                 e.preventDefault();
             });
+
+            $('input[name*=cells]').each(function(){
+
+            });
+
         });
     </script>
 
