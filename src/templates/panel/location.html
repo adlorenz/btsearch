@@ -125,6 +125,7 @@
     {% else %}
         <p>Brak stacji bazowych.</p>
     {% endif %}
+    <p><a href="{% url 'panel:basestation-add-view' %}?location={{ location.id }}" target="_blank">Dodaj stację bazową w tej lokalizacji</a></p>
 
 {% endblock main-content %}
 

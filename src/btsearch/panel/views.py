@@ -50,6 +50,16 @@ class BaseStationView(generic.UpdateView):
     form_class = forms.BaseStationEditForm
     context_object_name = 'base_station'
 
+    def get_form_kwargs(self):
+        kwargs = super(BaseStationView, self).get_form_kwargs()
+        if self.creating and self.request.GET.get('location'):
+            kwargs.update({
+                'initial': {
+                    'location': self.request.GET.get('location')
+                }
+            })
+        return kwargs
+
     def get_object(self, queryset=None):
         """
         When creating a new object, return None which tells generic Django
