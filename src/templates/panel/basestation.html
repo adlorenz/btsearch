@@ -68,7 +68,7 @@
             <span id="location-info">{{ base_station.location }}</span>
             (ID: <a href="{% if form.location.value %}{% url 'panel:location-edit-view' form.location.value %}{% endif %}" target="_blank" id="location-edit-url"><span id="location-id">{{ form.location.value|default_if_none:"" }}</span></a>)
 
-            <button id="location-selector-toggler">Otwórz mapę</button><br/>
+            <button id="location-selector-toggler">Wybierz z mapy</button><br/>
             {{ form.location }} {{ form.location.errors }}
         </div>
 
