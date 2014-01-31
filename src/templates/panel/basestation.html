@@ -238,11 +238,11 @@
                     var enbi = parseInt($('#id_enbi').val());
                     var cid = parseInt($(this).val());
                     if (std == 'UMTS' && rnc > 0) {
-                        longcid = rnc * 65536 + cid;
+                        var longcid = rnc * 65536 + cid;
                         $('#id_cells-'+idx+'-cid_long').val(longcid);
                     }
                     if (std == 'LTE' && enbi > 0) {
-                        ecid = enbi * 256 + cid;
+                        var ecid = enbi * 256 + cid;
                         $('#id_cells-'+idx+'-ecid').val(ecid);
                     }
                 });
@@ -269,6 +269,30 @@
                         $('#id_enbi').val(enbi);
                         $('#id_cells-'+idx+'-cid').val(cid);
                     }
+                });
+
+                $('#id_rnc').on('keyup', function(){
+                    var rnc = $(this).val();
+                    $('select[name*=standard]').each(function(){
+                        if ($(this).val() == 'UMTS') {
+                            var idx = $(this).attr('name').split('-')[1];
+                            var cid = parseInt($('#id_cells-'+idx+'-cid').val());
+                            var longcid = rnc * 65536 + cid;
+                            $('#id_cells-'+idx+'-cid_long').val(longcid);
+                        }
+                    });
+                });
+
+                $('#id_enbi').on('keyup', function(){
+                    var enbi = $(this).val();
+                    $('select[name*=standard]').each(function(){
+                        if ($(this).val() == 'LTE') {
+                            var idx = $(this).attr('name').split('-')[1];
+                            var cid = parseInt($('#id_cells-'+idx+'-cid').val());
+                            var ecid = enbi * 256 + cid;
+                            $('#id_cells-'+idx+'-ecid').val(ecid);
+                        }
+                    });
                 });
 
             };
