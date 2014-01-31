@@ -86,7 +86,13 @@
         {# lat/lng #}
         <div>
             <label>Lat/Lng</label>
-            {{ form.latitude }} / {{ form.longitude }} <button id="location-selector-toggler">Wybierz z mapy</button>
+            {{ form.latitude }} / {{ form.longitude }}
+        </div>
+
+        {# location selector map #}
+        <div id="location-selector">
+            <input type="text" id="location-search" placeholder="Szukaj lokalizacji..." />
+            <div id="location-map" class="map">Tu będzie mapa</div>
         </div>
 
         {# location_hash #}
