@@ -118,6 +118,7 @@
         <div>
             <label>&nbsp;</label>
             <input type="submit" value="Zachowaj" class="btn btn-primary btn-lg" />
+            <a href="{% url 'panel:location-add-view' %}" class="btn btn-info">Dodaj nową lokalizację</a>
         </div>
     </form>
 
@@ -131,7 +132,7 @@
     {% else %}
         <p>Brak stacji bazowych.</p>
     {% endif %}
-    <p><a href="{% url 'panel:basestation-add-view' %}?location={{ location.id }}" target="_blank">Dodaj stację bazową w tej lokalizacji</a></p>
+    <p><a href="{% url 'panel:basestation-add-view' %}?location={{ location.id }}" target="_blank" class="btn btn-info">Dodaj nową stację w tej lokalizacji</a></p>
 
 {% endblock main-content %}
 

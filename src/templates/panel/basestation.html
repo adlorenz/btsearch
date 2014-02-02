@@ -163,12 +163,11 @@
             {{ base_station.date_added }}
         </div>
 
-        {% if cell_formset %}
-            <h3>Komórki stacji bazowej</h3>
+        <h3>Komórki stacji bazowej</h3>
 
+        {% if cell_formset %}
             {{ cell_formset.management_form }}
             {{ cell_formset.non_field_errors }}
-
             <table>
                 <tr>
                     <th>Standard</th>
@@ -225,9 +224,20 @@
                 </tr>
             {% endfor %}
             </table>
+        {% else %}
+            <p>Zachowaj podstawowe dane stacji aby dodać rekordy komórek.</p>
         {% endif %}
 
-        <input type="submit" value="Zachowaj" class="btn btn-primary btn-lg pull-right" />
+        <p>&nbsp;</p>
+
+        <p>
+            <input type="submit" value="Zachowaj" class="btn btn-primary btn-lg" />
+            {% if base_station %}
+                <a href="{% url 'panel:basestation-add-view' %}" class="btn btn-info">Dodaj nową stację</a>
+                <a href="{% url 'panel:basestation-add-view' %}?location={{ base_station.location.id }}" class="btn btn-info">Dodaj nową stację w tej lokalizacji</a>
+                <a href="{% url 'panel:location-add-view' %}" class="btn btn-info">Dodaj nową lokalizację</a>
+            {% endif %}
+        </p>
     </form>
 
 {% endblock main-content %}
