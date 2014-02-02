@@ -252,25 +252,30 @@ class Cell(models.Model):
     ua_freq = models.PositiveSmallIntegerField(
         verbose_name="UaFreq",
         default=0,
+        blank=True,
         help_text=u'Częstotliwość nośnej (kanał RF)',
     )
     lac = models.PositiveSmallIntegerField(
         verbose_name="LAC",
-        default=0
+        default=0,
+        blank=True,
     )
     cid = models.PositiveSmallIntegerField(
         verbose_name="CID/CLID",
         default=0,
+        blank=True,
         help_text='CellID / Cell Local ID (uniwersalny)',
     )
     cid_long = models.PositiveIntegerField(
         verbose_name="Long CID",
         default=0,
+        blank=True,
         help_text='RNC * 65536 + CID (dla stacji UMTS)',
     )
     ecid = models.PositiveIntegerField(
         verbose_name='Enhanced CID',
         default=0,
+        blank=True,
         help_text='eNBID * 256 + CLID (dla stacji LTE)',
     )
     azimuth = models.PositiveSmallIntegerField(
@@ -300,12 +305,21 @@ class Cell(models.Model):
         return u"ID: {cell.id} / {cell.standard}{cell.band} / {cell.lac} / {cell.cid}".format(cell=self)
 
     def save(self, *args, **kwargs):
-        # TODO:
-        # - calculate / validate cid, cid_long, rnc
+        self._sanitize_blank_values()
         return super(Cell, self).save(*args, **kwargs)
 
     def network_name(self):
         return self.base_station.network
+
+    def _sanitize_blank_values(self):
+        if not self.lac:
+            self.lac = 0
+        if not self.cid:
+            self.cid = 0
+        if not self.cid_long:
+            self.cid_long = 0
+        if not self.ecid:
+            self.ecid = 0
 
     network_name.short_description = 'Network'
     network_name.admin_order_field = 'base_station__network__name'
