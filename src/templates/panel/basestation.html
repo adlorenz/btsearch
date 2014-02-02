@@ -28,6 +28,11 @@
             padding-bottom: 10px;
             /*display: none;*/
         }
+
+        .errorlist {
+            background-color: red;
+            color: white;
+        }
     </style>
 {% endblock extrahead %}
 
@@ -113,18 +118,23 @@
             <label>&nbsp;</label>
             <label class="inline">
                 {{ form.is_common_bcch }} Common BCCH
+                {{ form.is_common_bcch.errors }}
             </label>
             <label class="inline">
                 {{ form.is_gsm }} GSM
+                {{ form.is_gsm.errors }}
             </label>
             <label class="inline">
                 {{ form.is_umts }} UMTS
+                {{ form.is_umts.errors }}
             </label>
             <label class="inline">
                 {{ form.is_lte }} LTE
+                {{ form.is_lte.errors }}
             </label>
             <label class="inline">
                 {{ form.is_cdma }} CDMA
+                {{ form.is_cdma.errors }}
             </label>
         </div>
 
@@ -157,7 +167,8 @@
             <h3>Komórki stacji bazowej</h3>
 
             {{ cell_formset.management_form }}
-            {{ cell_formset.non_form_errors }}
+            {{ cell_formset.non_field_errors }}
+
             <table>
                 <tr>
                     <th>Standard</th>
@@ -174,30 +185,39 @@
                 <tr class="cell-formset-container">
                     <td>
                        {{ cell_form.standard }}
+                       {{ cell_form.standard.errors }}
                     </td>
                     <td>
                        {{ cell_form.band }}
+                       {{ cell_form.band.errors }}
                     </td>
                     <td>
                        {{ cell_form.is_confirmed }}
+                       {{ cell_form.is_confirmed.errors }}
                     </td>
                     <td>
                        {{ cell_form.ua_freq }}
+                       {{ cell_form.ua_freq.errors }}
                     </td>
                     <td>
                        {{ cell_form.lac }}
+                       {{ cell_form.lac.errors }}
                     </td>
                     <td>
                        <input type="text" name="{{ cell_form.cid.html_name }}" id="{{ cell_form.cid.id_for_label }}" value="{{ cell_form.cid.value }}" title="{{ cell_form.cid.help_text }}" />
+                       {{ cell_form.cid.errors }}
                     </td>
                     <td>
                         <input type="text" name="{{ cell_form.cid_long.html_name }}" id="{{ cell_form.cid_long.id_for_label }}" value="{{ cell_form.cid_long.value }}" title="{{ cell_form.cid_long.help_text }}" style="width: 100px;"/>
+                        {{ cell_form.cid_long.errors }}
                     </td>
                     <td>
                        <input type="text" name="{{ cell_form.ecid.html_name }}" id="{{ cell_form.ecid.id_for_label }}" value="{{ cell_form.ecid.value }}" title="{{ cell_form.ecid.help_text }}" style="width: 100px;"/>
+                       {{ cell_form.ecid.errors }}
                     </td>
                     <td>
                         <input type="text" name="{{ cell_form.notes.html_name }}" id="{{ cell_form.notes.id_for_label }}" value="{% if cell_form.notes.value %}{{ cell_form.notes.value }}{% endif %}" style="width: 150px;"/>
+                        {{ cell_form.notes.errors }}
                         {{ cell_form.id }}
                         {{ cell_form.base_station }}
                         {{ cell_form.DELETE }}
