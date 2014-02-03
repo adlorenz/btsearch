@@ -256,7 +256,7 @@
         $(function() {
 
             var attachCellChangeEvent = function() {
-                console.log('trig');
+
                 $('select[name*=standard]').on('change', function(e){
                     var std = $(this).val();
                     var idx = $(this).attr('name').split('-')[1];
@@ -336,10 +336,10 @@
                     });
                 });
 
-                $('.clone-row').on('click', function(){
+                $(document).on('click', '.clone-row', function(){
                     $('.add-row').trigger('click');
-                    console.log($(this).prev('input'));
-                    var idx = $(this).prev('input').attr('name').split('-')[1];
+                    // Traverse back to previous table cell and input field
+                    var idx = $(this).parent('td').prev('td').find('input').attr('name').split('-')[1];
                     var idx_new = $('#id_cells-TOTAL_FORMS').val() - 1;
                     $("input[name^='cells-"+idx+"'").each(function(){
                         var target = $(this).attr('name').replace(idx, idx_new);
@@ -359,8 +359,6 @@
                 });
 
             };
-
-
 
             $('.cell-formset-container').formset({
                 prefix: '{{ cell_formset.prefix }}',
