@@ -255,7 +255,23 @@
 
         $(function() {
 
-            var attachCellChangeEvent = function() {
+            var validateDuplicateCells = function() {
+                    var cids = [];
+                    $("input[name$='-cid']").each(function(){
+                        var idx = $(this).attr('name').split('-')[1];
+                        var cid = $(this).val();
+                        var std = $('#id_cells-'+idx+'-standard').val();
+                        var key = std+cid;
+                        if (cids.indexOf(key) > -1 && parseInt(cid) > 0) {
+                            $(this).css('background-color', 'rgb(255, 136, 136)');
+                        } else {
+                            $(this).css('background-color', 'white');
+                        }
+                        cids.push(std+cid);
+                    });
+                };
+
+            var cellChangeEvents = function() {
 
                 $('select[name*=standard]').on('change', function(e){
                     var std = $(this).val();
@@ -270,6 +286,7 @@
                         $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
                         $('#id_cells-'+idx+'-ecid').attr('disabled', false);
                     }
+                    validateDuplicateCells();
                 });
 
                 $("input[name$='-cid']").on('keyup', function(e){
@@ -286,6 +303,7 @@
                         var ecid = enbi * 256 + cid;
                         $('#id_cells-'+idx+'-ecid').val(ecid);
                     }
+                    validateDuplicateCells();
                 });
 
                 $("input[name$='-cid_long']").on('keyup', function(e){
@@ -298,6 +316,7 @@
                         $('#id_rnc').val(rnc);
                         $('#id_cells-'+idx+'-cid').val(cid);
                     }
+                    validateDuplicateCells();
                 });
 
                 $("input[name$='-ecid']").on('keyup', function(e){
@@ -310,6 +329,7 @@
                         $('#id_enbi').val(enbi);
                         $('#id_cells-'+idx+'-cid').val(cid);
                     }
+                    validateDuplicateCells();
                 });
 
                 $('#id_rnc').on('keyup', function(){
@@ -322,6 +342,7 @@
                             $('#id_cells-'+idx+'-cid_long').val(longcid);
                         }
                     });
+                    validateDuplicateCells();
                 });
 
                 $('#id_enbi').on('keyup', function(){
@@ -334,9 +355,10 @@
                             $('#id_cells-'+idx+'-ecid').val(ecid);
                         }
                     });
+                    validateDuplicateCells();
                 });
 
-                $(document).on('click', '.clone-row', function(){
+                $('.clone-row').on('click', function(){
                     $('.add-row').trigger('click');
                     // Traverse back to previous table cell and input field
                     var idx = $(this).parent('td').prev('td').find('input').attr('name').split('-')[1];
@@ -356,15 +378,18 @@
                         $("select[name='"+target+"']").val($(this).val());
                     });
                     $('input[name=cells-'+idx_new+'-cid').focus();
+                    validateDuplicateCells();
                 });
+
+                validateDuplicateCells();
 
             };
 
             $('.cell-formset-container').formset({
                 prefix: '{{ cell_formset.prefix }}',
                 keepFieldValues: "input",
-                added: attachCellChangeEvent(),
-                // removed: attachCellChangeEvent(),
+                added: cellChangeEvents(),
+                // removed: cellChangeEvents(),
                 addText: 'dodaj komórkę',
                 deleteText: 'usuń',
             });
