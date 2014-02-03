@@ -73,7 +73,7 @@
             <span id="location-info">{{ base_station.location }}</span>
             (ID: <a href="{% if form.location.value %}{% url 'panel:location-edit-view' form.location.value %}{% endif %}" target="_blank" id="location-edit-url"><span id="location-id">{{ form.location.value|default_if_none:"" }}</span></a>)
 
-            <button id="location-selector-toggler">Wybierz z mapy</button><br/>
+            <button id="location-selector-toggler" class="btn btn-info">Wybierz z mapy</button><br/>
             {{ form.location }} {{ form.location.errors }}
         </div>
 
@@ -168,7 +168,8 @@
         {% if cell_formset %}
             {{ cell_formset.management_form }}
             {{ cell_formset.non_field_errors }}
-            <table>
+            <table class="table table-hover table-condensed">
+            <tbody>
                 <tr>
                     <th>Standard</th>
                     <th>Pasmo</th>
@@ -179,6 +180,7 @@
                     <th>LongCID</th>
                     <th>E-CID</th>
                     <th>Notatki</th>
+                    <th>&nbsp;</th>
                 </tr>
             {% for cell_form in cell_formset  %}
                 <tr class="cell-formset-container">
@@ -219,10 +221,14 @@
                         {{ cell_form.notes.errors }}
                         {{ cell_form.id }}
                         {{ cell_form.base_station }}
+                    </td>
+                    <td>
                         {{ cell_form.DELETE }}
+                        <a class="clone-row" href="javascript:void(0)">sklonuj</a>
                     </td>
                 </tr>
             {% endfor %}
+            </tbody>
             </table>
         {% else %}
             <p>Zachowaj podstawowe dane stacji aby dodać rekordy komórek.</p>
@@ -246,9 +252,11 @@
     {# https://code.google.com/p/django-dynamic-formset/ #}
     <script type="text/javascript" src="{% static 'libs/jquery.formset.js' %}"></script>
     <script type="text/javascript">
+
         $(function() {
 
             var attachCellChangeEvent = function() {
+                console.log('trig');
                 $('select[name*=standard]').on('change', function(e){
                     var std = $(this).val();
                     var idx = $(this).attr('name').split('-')[1];
@@ -328,15 +336,39 @@
                     });
                 });
 
+                $('.clone-row').on('click', function(){
+                    $('.add-row').trigger('click');
+                    console.log($(this).prev('input'));
+                    var idx = $(this).prev('input').attr('name').split('-')[1];
+                    var idx_new = $('#id_cells-TOTAL_FORMS').val() - 1;
+                    $("input[name^='cells-"+idx+"'").each(function(){
+                        var target = $(this).attr('name').replace(idx, idx_new);
+                        $("input[name='"+target+"']").val($(this).val());
+                        if ($(this).is(':checked')) {
+                            $("input[name='"+target+"']").attr('checked', true);
+                        }
+                        if ($(this).is(':disabled')) {
+                            $("input[name='"+target+"']").attr('disabled', true);
+                        }
+                    });
+                    $("select[name^='cells-"+idx+"'").each(function(){
+                        var target = $(this).attr('name').replace(idx, idx_new);
+                        $("select[name='"+target+"']").val($(this).val());
+                    });
+                    $('input[name=cells-'+idx_new+'-cid').focus();
+                });
+
             };
+
+
 
             $('.cell-formset-container').formset({
                 prefix: '{{ cell_formset.prefix }}',
-                keepFieldValues: 'input',
+                keepFieldValues: "input",
                 added: attachCellChangeEvent(),
-                removed: attachCellChangeEvent(),
-                addText: 'dodaj',
-                deleteText: 'usuń'
+                // removed: attachCellChangeEvent(),
+                addText: 'dodaj komórkę',
+                deleteText: 'usuń',
             });
 
             $('#location-selector-toggler').on('click', function(e){
