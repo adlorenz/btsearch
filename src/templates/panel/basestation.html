@@ -179,8 +179,7 @@
                     <th>Nośna</th>
                     <th>LAC</th>
                     <th>CID/CLID</th>
-                    <th>LongCID</th>
-                    <th>E-CID</th>
+                    <th>LongCID/E-CID</th>
                     <th>Notatki</th>
                     <th>&nbsp;</th>
                 </tr>
@@ -213,10 +212,6 @@
                     <td>
                         <input type="text" name="{{ cell_form.cid_long.html_name }}" id="{{ cell_form.cid_long.id_for_label }}" value="{{ cell_form.cid_long.value }}" title="{{ cell_form.cid_long.help_text }}" style="width: 100px;" readonly />
                         {{ cell_form.cid_long.errors }}
-                    </td>
-                    <td>
-                       <input type="text" name="{{ cell_form.ecid.html_name }}" id="{{ cell_form.ecid.id_for_label }}" value="{{ cell_form.ecid.value }}" title="{{ cell_form.ecid.help_text }}" style="width: 100px;" readonly />
-                       {{ cell_form.ecid.errors }}
                     </td>
                     <td>
                         <input type="text" name="{{ cell_form.notes.html_name }}" id="{{ cell_form.notes.id_for_label }}" value="{% if cell_form.notes.value %}{{ cell_form.notes.value }}{% endif %}" style="width: 150px;"/>
@@ -259,104 +254,61 @@
         $(function() {
 
             var validateDuplicateCells = function() {
-                    var cids = [];
-                    $("input[name$='-cid']").each(function(){
-                        var idx = $(this).attr('name').split('-')[1];
-                        var cid = $(this).val();
-                        var std = $('#id_cells-'+idx+'-standard').val();
-                        var key = std+cid;
-                        if (cids.indexOf(key) > -1 && parseInt(cid) > 0) {
-                            $(this).css('background-color', 'rgb(255, 136, 136)');
-                        } else {
-                            $(this).css('background-color', 'white');
-                        }
-                        cids.push(std+cid);
-                    });
-                };
+                var cids = [];
+                $("input[name$='-cid']").each(function(){
+                    var idx = $(this).attr('name').split('-')[1];
+                    var cid = $(this).val();
+                    var std = $('#id_cells-'+idx+'-standard').val();
+                    var key = std+cid;
+                    if (cids.indexOf(key) > -1 && parseInt(cid) > 0) {
+                        $(this).css('background-color', 'rgb(255, 136, 136)');
+                    } else {
+                        $(this).css('background-color', 'white');
+                    }
+                    cids.push(std+cid);
+                });
+            };
+
+            var calculateLongCid = function(idx) {
+                var std = $('#id_cells-'+idx+'-standard').val();
+                var rnc = parseInt($('#id_rnc').val());
+                var enbi = parseInt($('#id_enbi').val());
+                var cid = parseInt($('#id_cells-'+idx+'-cid').val());
+                var longcid = 0;
+                if (std == 'UMTS' && rnc > 0) {
+                    var longcid = rnc * 65536 + cid;
+                } else if (std == 'LTE' && enbi > 0) {
+                    var longcid = enbi * 256 + cid;
+                }
+                $('#id_cells-'+idx+'-cid_long').val(longcid);
+            };
 
             var cellChangeEvents = function() {
 
                 $('select[name*=standard]').on('change', function(e){
-                    var std = $(this).val();
                     var idx = $(this).attr('name').split('-')[1];
-                    if (std == 'GSM') {
-                        // $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
-                        // $('#id_cells-'+idx+'-ecid').attr('disabled', true);
-                    } else if (std == 'UMTS') {
-                        // $('#id_cells-'+idx+'-cid_long').attr('disabled', false);
-                        // $('#id_cells-'+idx+'-ecid').attr('disabled', true);
-                    } else if (std == 'LTE') {
-                        // $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
-                        // $('#id_cells-'+idx+'-ecid').attr('disabled', false);
-                    }
+                    calculateLongCid(idx);
                     validateDuplicateCells();
                 });
 
                 $("input[name$='-cid']").on('keyup', function(e){
                     var idx = $(this).attr('name').split('-')[1];
-                    var std = $('#id_cells-'+idx+'-standard').val();
-                    var rnc = parseInt($('#id_rnc').val());
-                    var enbi = parseInt($('#id_enbi').val());
-                    var cid = parseInt($(this).val());
-                    if (std == 'UMTS' && rnc > 0) {
-                        var longcid = rnc * 65536 + cid;
-                        $('#id_cells-'+idx+'-cid_long').val(longcid);
-                    }
-                    if (std == 'LTE' && enbi > 0) {
-                        var ecid = enbi * 256 + cid;
-                        $('#id_cells-'+idx+'-ecid').val(ecid);
-                    }
+                    calculateLongCid(idx);
                     validateDuplicateCells();
                 });
 
-                // $("input[name$='-cid_long']").on('keyup', function(e){
-                //     var idx = $(this).attr('name').split('-')[1];
-                //     var std = $('#id_cells-'+idx+'-standard').val();
-                //     if (std == 'UMTS') {
-                //         var longcid = parseInt($(this).val());
-                //         var rnc = parseInt(longcid / 65536);
-                //         var cid = longcid % 65536;
-                //         $('#id_rnc').val(rnc);
-                //         $('#id_cells-'+idx+'-cid').val(cid);
-                //     }
-                //     validateDuplicateCells();
-                // });
-
-                // $("input[name$='-ecid']").on('keyup', function(e){
-                //     var idx = $(this).attr('name').split('-')[1];
-                //     var std = $('#id_cells-'+idx+'-standard').val();
-                //     if (std == 'LTE') {
-                //         var ecid = parseInt($('#id_cells-'+idx+'-ecid').val());
-                //         var enbi = parseInt(ecid / 256);
-                //         var cid = ecid % 256;
-                //         $('#id_enbi').val(enbi);
-                //         $('#id_cells-'+idx+'-cid').val(cid);
-                //     }
-                //     validateDuplicateCells();
-                // });
-
                 $('#id_rnc').on('keyup', function(){
-                    var rnc = $(this).val();
                     $('select[name*=standard]').each(function(){
-                        if ($(this).val() == 'UMTS') {
-                            var idx = $(this).attr('name').split('-')[1];
-                            var cid = parseInt($('#id_cells-'+idx+'-cid').val());
-                            var longcid = rnc * 65536 + cid;
-                            $('#id_cells-'+idx+'-cid_long').val(longcid);
-                        }
+                        var idx = $(this).attr('name').split('-')[1];
+                        calculateLongCid(idx);
                     });
                     validateDuplicateCells();
                 });
 
                 $('#id_enbi').on('keyup', function(){
-                    var enbi = $(this).val();
                     $('select[name*=standard]').each(function(){
-                        if ($(this).val() == 'LTE') {
-                            var idx = $(this).attr('name').split('-')[1];
-                            var cid = parseInt($('#id_cells-'+idx+'-cid').val());
-                            var ecid = enbi * 256 + cid;
-                            $('#id_cells-'+idx+'-ecid').val(ecid);
-                        }
+                        var idx = $(this).attr('name').split('-')[1];
+                        calculateLongCid(idx);
                     });
                     validateDuplicateCells();
                 });
@@ -371,9 +323,6 @@
                         $("input[name='"+target+"']").val($(this).val());
                         if ($(this).is(':checked')) {
                             $("input[name='"+target+"']").attr('checked', true);
-                        }
-                        if ($(this).is(':readonly')) {
-                            $("input[name='"+target+"']").attr('readonly', true);
                         }
                     });
                     $("select[name^='cells-"+idx+"']").each(function(){
@@ -402,21 +351,6 @@
                 $('#location-selector-toggler').hide();
                 e.preventDefault();
             });
-
-            // $("input[id^='id_cells-']").each(function(){
-            //     var idx = $(this).attr('name').split('-')[1];
-            //     var std = $('#id_cells-'+idx+'-standard').val();
-            //     if (std == 'GSM') {
-            //         $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
-            //         $('#id_cells-'+idx+'-ecid').attr('disabled', true);
-            //     } else if (std == 'UMTS') {
-            //         $('#id_cells-'+idx+'-cid_long').attr('disabled', false);
-            //         $('#id_cells-'+idx+'-ecid').attr('disabled', true);
-            //     } else if (std == 'LTE') {
-            //         $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
-            //         $('#id_cells-'+idx+'-ecid').attr('disabled', false);
-            //     }
-            // });
 
         });
     </script>
