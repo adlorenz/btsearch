@@ -40,6 +40,6 @@ BaseStationCellsFormSet = inlineformset_factory(
     models.Cell,
     extra=1,
     can_delete=True,
-    fields=('standard', 'band', 'ua_freq', 'lac', 'cid', 'cid_long', 'ecid',
+    fields=('standard', 'band', 'ua_freq', 'lac', 'cid', 'cid_long',
             'is_confirmed', 'notes')
 )

@@ -267,10 +267,10 @@ class Cell(models.Model):
         help_text='CellID / Cell Local ID (uniwersalny)',
     )
     cid_long = models.PositiveIntegerField(
-        verbose_name="Long CID",
+        verbose_name="Long CID/E-CID",
         default=0,
         blank=True,
-        help_text='RNC * 65536 + CID (dla stacji UMTS)',
+        help_text='UMTS: RNC*65536+CID; LTE: eNBID*256+CLID',
     )
     ecid = models.PositiveIntegerField(
         verbose_name='Enhanced CID',
@@ -318,8 +318,6 @@ class Cell(models.Model):
             self.cid = 0
         if not self.cid_long:
             self.cid_long = 0
-        if not self.ecid:
-            self.ecid = 0
 
     network_name.short_description = 'Network'
     network_name.admin_order_field = 'base_station__network__name'
