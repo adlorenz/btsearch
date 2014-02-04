@@ -78,18 +78,18 @@
             <tr>
                 <th>Pasmo</th>
                 <th><abbr title="Local Area Code">LAC</abbr></th>
-                <th><abbr title="Enhanced CID = eNBI * 256 + CLID">E-CID</abbr></th>
                 <th><abbr title="eNodeB ID">eNBID</abbr></th>
                 <th><abbr title="Cell Local ID">CLID</abbr></th>
+                <th><abbr title="Enhanced CID = eNBI * 256 + CLID">E-CID</abbr></th>
                 <th>Uwagi</th>
             </tr>
             {% for cell in standard.cells %}
             <tr {% if not cell.is_confirmed %}class="danger" title="Komórka nie potwierdzona"{% endif %}>
                 <td>{{ cell.band }}</td>
                 <td>{{ cell.lac }}</td>
-                <td>{{ cell.cid_long }}</td>
                 <td>{% if base_station.enbi == 0 %}?{% else %}{{ base_station.enbi }}{% endif %}</td>
                 <td>{{ cell.cid }}</td>
+                <td>{{ cell.cid_long }}</td>
                 <td>{% if cell.notes %}{{ cell.notes }}{% else %}--{% endif %}</td>
             </tr>
             {% endfor %}
