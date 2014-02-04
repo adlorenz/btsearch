@@ -272,12 +272,6 @@ class Cell(models.Model):
         blank=True,
         help_text='UMTS: RNC*65536+CID; LTE: eNBID*256+CLID',
     )
-    ecid = models.PositiveIntegerField(
-        verbose_name='Enhanced CID',
-        default=0,
-        blank=True,
-        help_text='eNBID * 256 + CLID (dla stacji LTE)',
-    )
     azimuth = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
