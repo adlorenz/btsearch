@@ -94,8 +94,10 @@
         {# network & is_networks #}
         <div>
             {{ form.network.label_tag }}
-            {{ form.network }} <label class="inline">{{ form.is_networks }} NetWorks!</label>
+            {{ form.network }}
             {{ form.network.errors }}
+            <label class="inline">{{ form.is_networks }} NetWorks!</label>
+            <label class="inline">{{ form.is_common_bcch }} Common BCCH</label>
         </div>
 
         {# station_id & rnc & enbi #}
@@ -113,29 +115,10 @@
             {{ form.enbi.errors }}
         </div>
 
-        {# flags #}
+        {# notes #}
         <div>
-            <label>&nbsp;</label>
-            <label class="inline">
-                {{ form.is_common_bcch }} Common BCCH
-                {{ form.is_common_bcch.errors }}
-            </label>
-            <label class="inline">
-                {{ form.is_gsm }} GSM
-                {{ form.is_gsm.errors }}
-            </label>
-            <label class="inline">
-                {{ form.is_umts }} UMTS
-                {{ form.is_umts.errors }}
-            </label>
-            <label class="inline">
-                {{ form.is_lte }} LTE
-                {{ form.is_lte.errors }}
-            </label>
-            <label class="inline">
-                {{ form.is_cdma }} CDMA
-                {{ form.is_cdma.errors }}
-            </label>
+            {{ form.notes.label_tag }}
+            <input type="text" name="{{ form.notes.html_name }}" id="{{ form.notes.id_for_label }}" value="{{ form.notes.value|default_if_none:"" }}" style="width: 500px;" /> {{ form.notes.errors }}
         </div>
 
         {# station_status & edit_status #}
@@ -149,23 +132,17 @@
             {{ form.edit_status.errors }}
         </div>
 
-        {# notes #}
-        <div>
-            {{ form.notes.label_tag }}
-            <input type="text" name="{{ form.notes.html_name }}" id="{{ form.notes.id_for_label }}" value="{{ form.notes.value|default_if_none:"" }}" style="width: 500px;" /> {{ form.notes.errors }}
-        </div>
-
         {# date_added & date_updated #}
         <div>
-            <label>Aktualizacja:</label>
+            <label>Aktualizacja</label>
             {{ base_station.date_updated }}
-            <label>Data dodania:</label>
+            <label>Data dodania</label>
             {{ base_station.date_added }}
         </div>
 
         <h3>Komórki stacji bazowej</h3>
 
-        <p><small>Pola LongCID i E-CID są generowane dynamicznie na podstawie wartości pól RNC/ENBID+CID.</small></p>
+        <p><small>Pole LongCID jest generowane dynamicznie na podstawie wartości pól RNC/ENBID+CID.</small></p>
 
         {% if cell_formset %}
             {{ cell_formset.management_form }}
@@ -179,7 +156,7 @@
                     <th>Nośna</th>
                     <th>LAC</th>
                     <th>CID/CLID</th>
-                    <th>LongCID/E-CID</th>
+                    <th>LongCID/ECID</th>
                     <th>Notatki</th>
                     <th>&nbsp;</th>
                 </tr>
