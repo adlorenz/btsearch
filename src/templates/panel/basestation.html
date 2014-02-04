@@ -165,6 +165,8 @@
 
         <h3>Komórki stacji bazowej</h3>
 
+        <p><small>Pola LongCID i E-CID są generowane dynamicznie na podstawie wartości pól RNC/ENBID+CID.</small></p>
+
         {% if cell_formset %}
             {{ cell_formset.management_form }}
             {{ cell_formset.non_field_errors }}
@@ -209,11 +211,11 @@
                        {{ cell_form.cid.errors }}
                     </td>
                     <td>
-                        <input type="text" name="{{ cell_form.cid_long.html_name }}" id="{{ cell_form.cid_long.id_for_label }}" value="{{ cell_form.cid_long.value }}" title="{{ cell_form.cid_long.help_text }}" style="width: 100px;"/>
+                        <input type="text" name="{{ cell_form.cid_long.html_name }}" id="{{ cell_form.cid_long.id_for_label }}" value="{{ cell_form.cid_long.value }}" title="{{ cell_form.cid_long.help_text }}" style="width: 100px;" readonly />
                         {{ cell_form.cid_long.errors }}
                     </td>
                     <td>
-                       <input type="text" name="{{ cell_form.ecid.html_name }}" id="{{ cell_form.ecid.id_for_label }}" value="{{ cell_form.ecid.value }}" title="{{ cell_form.ecid.help_text }}" style="width: 100px;"/>
+                       <input type="text" name="{{ cell_form.ecid.html_name }}" id="{{ cell_form.ecid.id_for_label }}" value="{{ cell_form.ecid.value }}" title="{{ cell_form.ecid.help_text }}" style="width: 100px;" readonly />
                        {{ cell_form.ecid.errors }}
                     </td>
                     <td>
@@ -278,14 +280,14 @@
                     var std = $(this).val();
                     var idx = $(this).attr('name').split('-')[1];
                     if (std == 'GSM') {
-                        $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
-                        $('#id_cells-'+idx+'-ecid').attr('disabled', true);
+                        // $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
+                        // $('#id_cells-'+idx+'-ecid').attr('disabled', true);
                     } else if (std == 'UMTS') {
-                        $('#id_cells-'+idx+'-cid_long').attr('disabled', false);
-                        $('#id_cells-'+idx+'-ecid').attr('disabled', true);
+                        // $('#id_cells-'+idx+'-cid_long').attr('disabled', false);
+                        // $('#id_cells-'+idx+'-ecid').attr('disabled', true);
                     } else if (std == 'LTE') {
-                        $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
-                        $('#id_cells-'+idx+'-ecid').attr('disabled', false);
+                        // $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
+                        // $('#id_cells-'+idx+'-ecid').attr('disabled', false);
                     }
                     validateDuplicateCells();
                 });
@@ -307,31 +309,31 @@
                     validateDuplicateCells();
                 });
 
-                $("input[name$='-cid_long']").on('keyup', function(e){
-                    var idx = $(this).attr('name').split('-')[1];
-                    var std = $('#id_cells-'+idx+'-standard').val();
-                    if (std == 'UMTS') {
-                        var longcid = parseInt($(this).val());
-                        var rnc = parseInt(longcid / 65536);
-                        var cid = longcid % 65536;
-                        $('#id_rnc').val(rnc);
-                        $('#id_cells-'+idx+'-cid').val(cid);
-                    }
-                    validateDuplicateCells();
-                });
+                // $("input[name$='-cid_long']").on('keyup', function(e){
+                //     var idx = $(this).attr('name').split('-')[1];
+                //     var std = $('#id_cells-'+idx+'-standard').val();
+                //     if (std == 'UMTS') {
+                //         var longcid = parseInt($(this).val());
+                //         var rnc = parseInt(longcid / 65536);
+                //         var cid = longcid % 65536;
+                //         $('#id_rnc').val(rnc);
+                //         $('#id_cells-'+idx+'-cid').val(cid);
+                //     }
+                //     validateDuplicateCells();
+                // });
 
-                $("input[name$='-ecid']").on('keyup', function(e){
-                    var idx = $(this).attr('name').split('-')[1];
-                    var std = $('#id_cells-'+idx+'-standard').val();
-                    if (std == 'LTE') {
-                        var ecid = parseInt($('#id_cells-'+idx+'-ecid').val());
-                        var enbi = parseInt(ecid / 256);
-                        var cid = ecid % 256;
-                        $('#id_enbi').val(enbi);
-                        $('#id_cells-'+idx+'-cid').val(cid);
-                    }
-                    validateDuplicateCells();
-                });
+                // $("input[name$='-ecid']").on('keyup', function(e){
+                //     var idx = $(this).attr('name').split('-')[1];
+                //     var std = $('#id_cells-'+idx+'-standard').val();
+                //     if (std == 'LTE') {
+                //         var ecid = parseInt($('#id_cells-'+idx+'-ecid').val());
+                //         var enbi = parseInt(ecid / 256);
+                //         var cid = ecid % 256;
+                //         $('#id_enbi').val(enbi);
+                //         $('#id_cells-'+idx+'-cid').val(cid);
+                //     }
+                //     validateDuplicateCells();
+                // });
 
                 $('#id_rnc').on('keyup', function(){
                     var rnc = $(this).val();
@@ -370,8 +372,8 @@
                         if ($(this).is(':checked')) {
                             $("input[name='"+target+"']").attr('checked', true);
                         }
-                        if ($(this).is(':disabled')) {
-                            $("input[name='"+target+"']").attr('disabled', true);
+                        if ($(this).is(':readonly')) {
+                            $("input[name='"+target+"']").attr('readonly', true);
                         }
                     });
                     $("select[name^='cells-"+idx+"']").each(function(){
@@ -401,20 +403,20 @@
                 e.preventDefault();
             });
 
-            $("input[id^='id_cells-']").each(function(){
-                var idx = $(this).attr('name').split('-')[1];
-                var std = $('#id_cells-'+idx+'-standard').val();
-                if (std == 'GSM') {
-                    $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
-                    $('#id_cells-'+idx+'-ecid').attr('disabled', true);
-                } else if (std == 'UMTS') {
-                    $('#id_cells-'+idx+'-cid_long').attr('disabled', false);
-                    $('#id_cells-'+idx+'-ecid').attr('disabled', true);
-                } else if (std == 'LTE') {
-                    $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
-                    $('#id_cells-'+idx+'-ecid').attr('disabled', false);
-                }
-            });
+            // $("input[id^='id_cells-']").each(function(){
+            //     var idx = $(this).attr('name').split('-')[1];
+            //     var std = $('#id_cells-'+idx+'-standard').val();
+            //     if (std == 'GSM') {
+            //         $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
+            //         $('#id_cells-'+idx+'-ecid').attr('disabled', true);
+            //     } else if (std == 'UMTS') {
+            //         $('#id_cells-'+idx+'-cid_long').attr('disabled', false);
+            //         $('#id_cells-'+idx+'-ecid').attr('disabled', true);
+            //     } else if (std == 'LTE') {
+            //         $('#id_cells-'+idx+'-cid_long').attr('disabled', true);
+            //         $('#id_cells-'+idx+'-ecid').attr('disabled', false);
+            //     }
+            // });
 
         });
     </script>
