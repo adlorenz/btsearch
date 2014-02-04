@@ -363,7 +363,7 @@
                     // Traverse back to previous table cell and input field
                     var idx = $(this).parent('td').prev('td').find('input').attr('name').split('-')[1];
                     var idx_new = $('#id_cells-TOTAL_FORMS').val() - 1;
-                    $("input[name^='cells-"+idx+"'").each(function(){
+                    $("input[name^='cells-"+idx+"']").each(function(){
                         var target = $(this).attr('name').replace(idx, idx_new);
                         $("input[name='"+target+"']").val($(this).val());
                         if ($(this).is(':checked')) {
@@ -373,11 +373,11 @@
                             $("input[name='"+target+"']").attr('disabled', true);
                         }
                     });
-                    $("select[name^='cells-"+idx+"'").each(function(){
+                    $("select[name^='cells-"+idx+"']").each(function(){
                         var target = $(this).attr('name').replace(idx, idx_new);
                         $("select[name='"+target+"']").val($(this).val());
                     });
-                    $('input[name=cells-'+idx_new+'-cid').focus();
+                    $('input[name=cells-'+idx_new+'-cid]').focus();
                     validateDuplicateCells();
                 });
 
