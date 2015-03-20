@@ -2,4 +2,8 @@ src/conf/local.py
 src/conf/test.py
 src/conf/stage.py
 src/conf/prod.py
+src/public/static/*
+logs/*
 *sublime*
+*nbproject*
+*.pyc
