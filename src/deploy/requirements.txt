@@ -1,7 +1,7 @@
 # Core packages
 Django==1.5
 South==0.8.2
-MySQL-python==1.2.4
+MySQL-python==1.2.5
 uwsgi==1.9.19
 Fabric==1.6.0
 
