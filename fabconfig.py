@@ -27,7 +27,7 @@ def _configure(build_name):
 
 def test():
     _configure('test')
-    env.hosts = ['78.10.48.207']
+    env.hosts = ['192.168.2.51']
 
 
 def stage():
