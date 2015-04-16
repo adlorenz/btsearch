@@ -166,6 +166,15 @@ class UkeLocationsFilterService(QuerysetFilterService):
             })
         return processed_filters
 
+    def _get_network_filter(self, networks):
+        # Special case for 26034 (NetWorks!)
+        if '26034' in networks:
+            return {
+                self.network_filter_field: ['26002', '26003', '26034'],
+                'permissions__case_number_orig__startswith': 'MNET',
+            }
+        return super(UkeLocationsFilterService, self)._get_network_filter(networks)
+
 
 class UkeLocationFilterService(QuerysetFilterService):
     network_filter_field = 'operator__network__in'
@@ -173,6 +182,15 @@ class UkeLocationFilterService(QuerysetFilterService):
     band_filter_field = 'band__in'
     timedelta_filter_field = 'date_added__gte'
     skip_bounds_filter = True
+
+    def _get_network_filter(self, networks):
+        # Special case for 26034 (NetWorks!)
+        if '26034' in networks:
+            return {
+                self.network_filter_field: ['26002', '26003', '26034'],
+                'case_number_orig__startswith': 'MNET',
+            }
+        return super(UkeLocationFilterService, self)._get_network_filter(networks)
 
 
 class MapIconService():
@@ -247,7 +265,6 @@ class MapIconService():
             # Special case for '34' (NetWorks!)
             return icon_code if int_code <= 6 or int_code == 34 else '00'
         return '00'
-
 
 class LocationHasherService():
     """
