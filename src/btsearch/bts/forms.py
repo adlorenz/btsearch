@@ -3,6 +3,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from . import models
+from . import widgets
 
 
 class ListingFilterForm(forms.Form):

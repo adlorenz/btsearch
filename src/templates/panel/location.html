@@ -1,0 +1,189 @@
+{% extends 'site/content.html' %}
+{% load staticfiles %}
+
+{% block extrahead %}
+    <style type="text/css">
+        .edit-form label {
+            width: 140px;
+            text-align: right;
+            padding: 0px 5px;
+        }
+
+        .edit-form label.inline {
+            width: auto;
+        }
+
+        .map {
+            width: 650px;
+            height: 400px;
+            border: 1px solid black;
+        }
+
+        #location-selector {
+            padding-left: 145px;
+            padding-bottom: 10px;
+            /*display: none;*/
+        }
+    </style>
+{% endblock extrahead %}
+
+{% block page-title %}
+    Panel edycji lokalizacji
+{% endblock page-title %}
+
+{% block content-title %}
+    {% if location %}
+        {{ location }} (ID: {{ location.id }})
+    {% else %}
+        Nowa lokalizacja
+    {% endif %}
+{% endblock content-title %}
+
+{% block main-content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form action="" method="post" id="location-form" class="edit-form" role="form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div>
+            <label>ID</label>
+            {{ location.id }}
+        </div>
+
+        {# region #}
+        <div>
+            {{ form.region.label_tag }}
+            {{ form.region }}
+        </div>
+
+        {# town #}
+        <div>
+            {{ form.town.label_tag }}
+            <input type="text" name="{{ form.town.html_name }}" id="{{ form.town.id_for_label }}" value="{{ form.town.value|default_if_none:"" }}" style="width: 500px;" /> {{ form.town.errors }}
+        </div>
+
+        {# address #}
+        <div>
+            {{ form.address.label_tag }}
+            <input type="text" name="{{ form.address.html_name }}" id="{{ form.address.id_for_label }}" value="{{ form.address.value|default_if_none:"" }}" style="width: 500px;" /> {{ form.address.errors }}
+        </div>
+
+        {# lat/lng uke #}
+        <div>
+            <label>Lat/Lng UKE</label>
+            <input type="text" id="latitude_uke" /> / <input type="text" id="longitude_uke" /> (np. 52N2610 / 20E3736)
+
+        </div>
+
+        {# lat/lng #}
+        <div>
+            <label>Lat/Lng</label>
+            {{ form.latitude }} / {{ form.longitude }}
+        </div>
+
+        {# location selector map #}
+        <div id="location-selector">
+            <input type="text" id="location-search" placeholder="Szukaj lokalizacji..." />
+            <div id="location-map" class="map">Tu będzie mapa</div>
+        </div>
+
+        {# location_hash #}
+        <div>
+            {{ form.location_hash.label_tag }}
+            {{ form.location_hash }} <span id="location-hash-value">{{ form.location_hash.value }}</span> {{ form.location_hash.errors }}
+        </div>
+
+        {# notes #}
+        <div>
+            {{ form.notes.label_tag }}
+            <input type="text" name="{{ form.notes.html_name }}" id="{{ form.notes.id_for_label }}" value="{{ form.notes.value|default_if_none:"" }}" style="width: 500px;" /> {{ form.notes.errors }}
+        </div>
+
+        {# date_added & date_updated #}
+        <div>
+            <label>Aktualizacja:</label>
+            {{ location.date_updated }}
+            <label>Data dodania:</label>
+            {{ location.date_added }}
+        </div>
+
+        <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Zachowaj" class="btn btn-primary btn-lg" />
+            <a href="{% url 'panel:location-add-view' %}" class="btn btn-info">Dodaj nową lokalizację</a>
+        </div>
+    </form>
+
+    <h3>Stacje bazowe w tej lokalizacji</h3>
+    {% if base_stations %}
+        <ul>
+        {% for base_station in base_stations %}
+            <li>{{ base_station }} (ID: <a href="{% url 'panel:basestation-edit-view' base_station.pk %}" target="_blank">{{ base_station.id }}</a>)</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Brak stacji bazowych.</p>
+    {% endif %}
+    <p><a href="{% url 'panel:basestation-add-view' %}?location={{ location.id }}" target="_blank" class="btn btn-info">Dodaj nową stację w tej lokalizacji</a></p>
+
+{% endblock main-content %}
+
+{% block extrascripts %}
+    <script type="text/javascript" src="{% static "libs/webtoolkit.md5.js" %}"></script>
+    <script type="text/javascript">
+        $(function(){
+
+            var convertCoord = function(inputCoord) {
+                var degrees = parseInt(inputCoord.substring(0,2));
+                var minutes = parseInt(inputCoord.substring(3,5));
+                var seconds = parseInt(inputCoord.substring(5,7));
+                return (degrees + (minutes + seconds / 60) / 60).toFixed(6);
+            };
+
+            var updateLocationHash = function(lat, lng) {
+                var hash = MD5(lat + lng);
+                $('#id_location_hash').val(hash);
+                $('#location-hash-value').html(hash);
+            };
+
+            $('#latitude_uke').on('keyup', function(){
+                var inputCoord = $(this).val();
+                var coord = convertCoord(inputCoord);
+                if (coord != 'NaN') {
+                    $('#id_latitude').val(coord);
+                    $('#id_latitude').trigger('change');
+                }
+            });
+
+            $('#longitude_uke').on('keyup', function(){
+                var inputCoord = $(this).val();
+                var coord = convertCoord(inputCoord);
+                if (coord != 'NaN') {
+                    $('#id_longitude').val(coord);
+                    $('#id_longitude').trigger('change');
+                }
+            });
+
+            $('#id_latitude').on('change keyup', function(){
+                var lat = $(this).val();
+                var lng = $('#id_longitude').val();
+                updateLocationHash(lat, lng);
+
+            });
+
+            $('#id_longitude').on('change keyup', function(){
+                var lat = $('#id_latitude').val();
+                var lng = $(this).val();
+                updateLocationHash(lat, lng);
+            });
+        });
+    </script>
+{% endblock extrascripts %}

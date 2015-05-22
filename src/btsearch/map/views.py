@@ -17,11 +17,15 @@ class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListV
     model = bts_models.Location
     queryset = bts_models.Location.objects.distinct()
     filter_class = services.BtsLocationsFilterService
+    return_empty_locations = False
 
     def get(self, request, *args, **kwargs):
         # 'bounds' is a required GET parameter for LocationsView
         if not self.request.GET.get('bounds'):
             raise Http404()
+
+        # Allow returning locations that don't have any base stations assigned
+        self.return_empty_locations = 'empty' in request.GET.copy()
 
         return self.render_json_response({
             'objects': self._get_locations_list()
@@ -47,7 +51,7 @@ class LocationsView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.ListV
                 filter_class(),
                 raw_filters
             )
-            if location_icon:
+            if self.return_empty_locations or location_icon:
                 locations_list.append({
                     'id': location.id,
                     'latitude': location.latitude,

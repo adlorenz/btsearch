@@ -529,7 +529,7 @@ var ui = {
             position: google.maps.ControlPosition.RIGHT_BOTTOM,
             map: core.map,
             visible: true,
-            publisherId: 'pub-0983719504949481'
+            publisherId: 'ca-pub-0983719504949481'
         };
         new google.maps.adsense.AdUnit(adUnitDiv, adUnitOptions);
     },

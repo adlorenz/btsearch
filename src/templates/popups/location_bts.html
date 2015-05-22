@@ -41,6 +41,9 @@
     </div>
 
     <div class="location-info-footer">
-        <small>GPS: {{ location.latitude }},{{ location.longitude }}</small>
+        <small>GPS: {{ location.latitude }},{{ location.longitude }})</small>
+        {% if request.user.is_staff %}
+        <br/><small>ID: <a href="{% url 'panel:location-edit-view' location.id %}">{{ location.id }}</a></small>
+        {% endif %}
     </div>
 </div>

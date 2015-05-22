@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, url
+from django.contrib.admin.views.decorators import staff_member_required
 from . import views
 
 urlpatterns = patterns(
@@ -19,7 +20,7 @@ urlpatterns = patterns(
         views.ExportFilterView.as_view(),
         name='export-filter-view'),
 
-    url(r'',
+    url(r'^$',
         views.BtsListingView.as_view(),
         name='listing')
 )

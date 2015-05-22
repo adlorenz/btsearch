@@ -78,18 +78,18 @@
             <tr>
                 <th>Pasmo</th>
                 <th><abbr title="Local Area Code">LAC</abbr></th>
-                <th><abbr title="Enhanced CID = eNBI * 256 + CLID">E-CID</abbr></th>
                 <th><abbr title="eNodeB ID">eNBID</abbr></th>
                 <th><abbr title="Cell Local ID">CLID</abbr></th>
+                <th><abbr title="Enhanced CID = eNBI * 256 + CLID">E-CID</abbr></th>
                 <th>Uwagi</th>
             </tr>
             {% for cell in standard.cells %}
             <tr {% if not cell.is_confirmed %}class="danger" title="Komórka nie potwierdzona"{% endif %}>
                 <td>{{ cell.band }}</td>
                 <td>{{ cell.lac }}</td>
-                <td>{{ cell.ecid }}</td>
                 <td>{% if base_station.enbi == 0 %}?{% else %}{{ base_station.enbi }}{% endif %}</td>
                 <td>{{ cell.cid }}</td>
+                <td>{{ cell.cid_long }}</td>
                 <td>{% if cell.notes %}{{ cell.notes }}{% else %}--{% endif %}</td>
             </tr>
             {% endfor %}
@@ -98,40 +98,7 @@
     {% endfor %}
     </div>
 
-{% comment %}
-    <div>
-        <table class="table table-bordered table-condensed table-responsive location-info">
-            <tr>
-                <th>Standard</th>
-                <th>Pasmo</th>
-                <th>LAC</th>
-                <th>CID</th>
-                <th>RNC</th>
-                <th>CID 16b</th>
-                <th>Nośna</th>
-                <th>Uwagi</th>
-            </tr>
-    {% for cell in base_station.get_cells %}
-            <tr {% if not cell.is_confirmed %}class="danger" title="Komórka nie potwierdzona"{% endif %}>
-                <td>{{cell.standard}}</td>
-                <td>{{cell.band}}</td>
-                <td>{{cell.lac}}</td>
-                <td>{{cell.cid}}</td>
-                {% if cell.standard == 'UMTS' %}
-                <td>{% if base_station.rnc == 0 %} ? {% else %} {{base_station.rnc}} {% endif %}</td>
-                <td>{{cell.cid_long}}</td>
-                <td>{% if cell.ua_freq == 0 %} ? {% else %} {{cell.ua_freq}} {% endif %}</td>
-                {% endif %}
-                {% if cell.standard != 'UMTS' %}
-                <td colspan="3" style="text-align: center;">--</td>
-                {% endif %}
-                <td>{% if cell.notes %}{{ cell.notes }}{% else %}--{% endif %}</td>
-            </tr>
-    {% endfor %}
-        </table>
-{% endcomment %}
-
-        {% with base_station.permissions.all as permissions %}
+    {% with base_station.permissions.all as permissions %}
         {% if permissions %}
             <table class="table table-condensed table-responsive location-info">
                 <tr>
@@ -157,10 +124,13 @@
             {% endfor %}
             </table>
         {% endif %}
-        {% endwith %}
+    {% endwith %}
     </div>
 
     <div class="location-info-footer small pull-right">
-        Data aktualizacji: {{ base_station.date_updated|date:"d.m.Y" }} (ID {{ base_station.id }})
+        Data aktualizacji: {{ base_station.date_updated|date:"d.m.Y" }}
+        {% if request.user.is_staff %}
+            <br/>ID: <a href="{% url 'panel:basestation-edit-view' base_station.id %}">{{ base_station.id }}</a>
+        {% endif %}
     </div>
 </div>

@@ -28,6 +28,7 @@ class Location(models.Model):
         db_index=True,
     )
     notes = models.CharField(
+        blank=True,
         max_length=500,
     )
     date_added = models.DateTimeField(
@@ -43,11 +44,6 @@ class Location(models.Model):
 
     def __unicode__(self):
         return u"{0}, {1}, {2}".format(self.region.name, self.town, self.address)
-
-    def save(self, *args, **kwargs):
-        # TODO:
-        # - calculate / validate location_hash
-        return super(Cell, self).save(*args, **kwargs)
 
     def has_location_hash(self):
         return self.location_hash != ''
@@ -101,6 +97,7 @@ class BaseStation(models.Model):
     )
     location_details = models.CharField(
         max_length=255,
+        blank=True
     )
     station_id = models.CharField(
         verbose_name="StationId",
@@ -231,6 +228,7 @@ class Cell(models.Model):
     BANDS = (
         ('420', '420'),
         ('450', '450'),
+        ('800', '800'),
         ('850', '850'),
         ('900', '900'),
         ('1800', '1800'),
@@ -255,26 +253,25 @@ class Cell(models.Model):
     ua_freq = models.PositiveSmallIntegerField(
         verbose_name="UaFreq",
         default=0,
+        blank=True,
         help_text=u'Częstotliwość nośnej (kanał RF)',
     )
     lac = models.PositiveSmallIntegerField(
         verbose_name="LAC",
-        default=0
+        default=0,
+        blank=True,
     )
     cid = models.PositiveSmallIntegerField(
         verbose_name="CID/CLID",
         default=0,
+        blank=True,
         help_text='CellID / Cell Local ID (uniwersalny)',
     )
     cid_long = models.PositiveIntegerField(
-        verbose_name="Long CID",
+        verbose_name="Long CID/E-CID",
         default=0,
-        help_text='RNC * 65536 + CID (dla stacji UMTS)',
-    )
-    ecid = models.PositiveIntegerField(
-        verbose_name='Enhanced CID',
-        default=0,
-        help_text='eNBID * 256 + CLID (dla stacji LTE)',
+        blank=True,
+        help_text='UMTS: RNC*65536+CID; LTE: eNBID*256+CLID',
     )
     azimuth = models.PositiveSmallIntegerField(
         blank=True,
@@ -303,12 +300,19 @@ class Cell(models.Model):
         return u"ID: {cell.id} / {cell.standard}{cell.band} / {cell.lac} / {cell.cid}".format(cell=self)
 
     def save(self, *args, **kwargs):
-        # TODO:
-        # - calculate / validate cid, cid_long, rnc
+        self._sanitize_blank_values()
         return super(Cell, self).save(*args, **kwargs)
 
     def network_name(self):
         return self.base_station.network
+
+    def _sanitize_blank_values(self):
+        if not self.lac:
+            self.lac = 0
+        if not self.cid:
+            self.cid = 0
+        if not self.cid_long:
+            self.cid_long = 0
 
     network_name.short_description = 'Network'
     network_name.admin_order_field = 'base_station__network__name'

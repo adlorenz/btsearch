@@ -47,6 +47,9 @@
                     <th>Technologie</th>
                     <th><abbr title="Wewnętrzny identyfikator operatora">ID stacji</abbr></th>
                     <th>Ostatnia aktualizacja</th>
+                    {% if request.user.is_staff %}
+                    <th>Edycja</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -63,6 +66,12 @@
                     </td>
                     <td>{{ base_station.station_id }}</td>
                     <td>{{ base_station.date_updated|timesince }}</td>
+                    {% if request.user.is_staff %}
+                    <td>
+                        <a href="{% url 'panel:basestation-edit-view' base_station.pk %}"><small>BTS</small></a><br/>
+                        <a href="{% url 'panel:location-edit-view' base_station.location.pk %}"><small>Lokalizacja</small></a>
+                    </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
