@@ -17,7 +17,8 @@ var core = {
         scaleControl: true,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControlOptions: {
-            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+            position: google.maps.ControlPosition.TOP_RIGHT
         },
         panControlOptions: {
             position: google.maps.ControlPosition.RIGHT_TOP
