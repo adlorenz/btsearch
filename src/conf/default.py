@@ -122,7 +122,6 @@ INSTALLED_APPS = [
     'south',  # Do not change the position of south in this list unless
               # specifically instructed to by installation instructions
     'django_extensions',
-    'cookielaw',
     'debug_toolbar',
     # 'debug_panel',
 

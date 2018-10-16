@@ -1,5 +1,4 @@
 {% load staticfiles %}
-{% load cookielaw_tags %}
 {% load flatpages %}
 {% get_flatpages as flatpages %}
 <!DOCTYPE html>
@@ -14,7 +13,6 @@
     <title>BTSearch :: {% block page-title %}{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static "libs/fancybox/jquery.fancybox.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "libs/bootstrap3/css/bootstrap.css" %}" />
-    <link rel="stylesheet" type="text/css" href="{% static "cookielaw/css/cookielaw.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "css/btsearch.css" %}?v={{ version }}" />
     {% block extrahead %}{% endblock extrahead %}
 </head>
@@ -73,13 +71,11 @@
           </div>
         </div>
     {% endblock footer %}
-    {% cookielaw_banner %}
 
     {# Core JavaScript libs #}
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="{% static "libs/fancybox/jquery.fancybox.pack.js" %}"></script>
     <script type="text/javascript" src="{% static "libs/bootstrap3/js/bootstrap.js" %}"></script>
-    <script type="text/javascript" src="{% static "cookielaw/js/cookielaw.js" %}"></script>
 
     {% include "partials/google_analytics.html" %}
 
