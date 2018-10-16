@@ -8,5 +8,6 @@ def metadata(request):
     """
     return {
         'google_analytics_id': getattr(settings, 'GOOGLE_ANALYTICS_ID', None),
-        'version': getattr(settings, 'VERSION', None)
+        'version': getattr(settings, 'VERSION', None),
+        'googlemaps_apikey': getattr(settings, 'GOOGLEMAPS_APIKEY', None)
     }
