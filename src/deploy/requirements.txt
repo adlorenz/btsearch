@@ -13,9 +13,3 @@ arrow==0.4.2
 # Debugging
 django-debug-panel==0.7.2
 django-debug-toolbar==1.0
-
-
-# Weird issue with PyPi, package not complete when pulled from there, wtf?!
-# Pulling directly from github instead for time being
-#django-cookie-law==1.0.0
--e git://github.com/TyMaszWeb/django-cookie-law.git#egg=django-cookie-law
