@@ -1,0 +1,25 @@
+* pakiety
+pip
+virtualenv
+mysql-server
+python
+
+* klonowanie repo
+git clone git@github.com:adlorenz/btsearch.git
+
+* tworzenie virtualenv
+mkvirtualenv btsearch
+
+* aktywacja virtualenv:
+. ~/.virtualenvs/btsearch/bin/activate
+
+* deaktywacja virtualenv
+deactivate
+
+* instalacja zależności projektu (w tym django) wewnątrz virtualenv
+pip install -r src/deploy/requirements.txt
+
+
+Building wheels for collected packages: uwsgi
+  Building wheel for uwsgi (setup.py) ... error
+
