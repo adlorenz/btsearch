@@ -1,8 +1,6 @@
 BTSearch v2
 ===========
 
-Kompletny kod źródłowy serwisu btsearch.pl_, napisany w języku Python z wykorzystaniem frameworku webowego Django.
-
-Więcej szczegółów wkrótce...
-
-.. _btsearch.pl: http://beta.btsearch.pl
+Branch :code:`resurrection` to testowy playground, którego używam do odtworzenia
+lokalnego środowiska developerskiego projektu, bez ingerowania w główny branch
+rozwojowy :code:`develop`.
