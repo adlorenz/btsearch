@@ -1,8 +1,16 @@
+Startujemy od zera
+
+Instalacja czystego Ubuntu 20.04 LTS w Win19 z Microsoft Store
+
+
+-- notes-to-self --
+
 * pakiety
 pip
 virtualenv
 mysql-server
 python
+...
 
 * klonowanie repo
 git clone git@github.com:adlorenz/btsearch.git
