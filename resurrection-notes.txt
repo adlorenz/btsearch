@@ -1,33 +1,112 @@
-Startujemy od zera
+* aktywacja WSL Windows Subsystem for Linux w Windows
+wykonujemy instrukcje zawarte tutaj:
+https://docs.microsoft.com/en-us/windows/wsl/install-win10
+--> uwaga! aktywujemy WSL 2!
 
-Instalacja czystego Ubuntu 20.04 LTS w Win19 z Microsoft Store
+* instalujemy Ubuntu-18.04 LTS z Microsoft Store
+
+* aktualizacja repozytoriów, instalacja python i python-pip
+sudo apt-get update
+sudo apt-get install python
+sudo apt-get install python-pip
+
+* instalacja virtualenvwrapper za pomocą pip
+$ pip install virtualenv
+
+* tworzenie virtualenv o nazwie 'venv-btsearch' --> virtualenv to zamknięte środowisko, w którym zainstalowane zostaną pakiety niezbędne do wystartowania projektu - pakiety te będą zainstalowane tylko lokalnie wewnątrz virtualenv, nie będą dostępne dla reszty systemu
+$ virtualenv venv-btsearch
+
+* tworzenie folderu projektowego w folderze domowym /home/USERNAME
+$ cd ~
+$ mkdir dev
+$ cd dev
+
+* klonowanie repo z guthub
+$ git clone git@github.com:adlorenz/btsearch.git
+
+* wejście do sklonowanego z repozytorium folderu projektowego
+$ cd btsearch
+--> aktualna ścieżka to /home/USERNAME/dev/btsearch/
+
+* aktywacja virtualenv
+$ . ~/venv-btsearch/bin/activate
+
+--> w linii poleceń znajdzie się przedrostek wskazujący na aktywowany virtualenv
+(venv-btsearch) 00:08 evad@LATITUDE7380 btsearch (develop) $
+
+* tymczasowo modyfikujemy plik src/deploy/requirements.txt - zakomentowujemy niektóre linie:
+
+--- src/deploy/requirements.txt ---
+# Core packages
+Django==1.5
+South==0.8.2
+MySQL-python==1.2.5
+#uwsgi==1.9.19
+Fabric==1.6.0
+
+# Extensions
+django-braces==1.2.2
+django-extensions==1.2.5
+arrow==0.4.2
+
+# Debugging
+django-debug-panel==0.7.2
+django-debug-toolbar==1.0
+--- src/deploy/requirements.txt ---
 
 
--- notes-to-self --
+* instalacja pakietów projektowych
+$ pip install -r src/deploy/requirements.txt
 
-* pakiety
-pip
-virtualenv
-mysql-server
-python
-...
+* tworzymy lokalny plik konfiguracyjny
+$ nano src/conf/local.py
 
-* klonowanie repo
-git clone git@github.com:adlorenz/btsearch.git
+--- src/conf/local.py ---
+from conf.default import *
 
-* tworzenie virtualenv
-mkvirtualenv btsearch
+DEBUG = TEMPLATE_DEBUG = True
 
-* aktywacja virtualenv:
-. ~/.virtualenvs/btsearch/bin/activate
+# Output emails to STDOUT
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-* deaktywacja virtualenv
-deactivate
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': 'root',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'NAME': 'Btsearch2',
+    }
+}
 
-* instalacja zależności projektu (w tym django) wewnątrz virtualenv
-pip install -r src/deploy/requirements.txt
+# Don't use cached templates in development
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
+ALLOWED_HOSTS = ['localhost:8899']
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '^9g46ea%%%r)b8%^7a#wrsw^s@rh)v^u9u1g5o!26$#!h$hfz8'
+
+GOOGLEMAPS_APIKEY = ''
+--- src/conf/local.py ---
+
+* sprawdzamy czy konsola django się odpala
+$ cd src
+$ ./manage.py
 
 
-Building wheels for collected packages: uwsgi
-  Building wheel for uwsgi (setup.py) ... error
+____
+sudo apt-get install mysql-server
+sudo apt-get install libmysqlclient-dev
 
+* w requirements.txt zostawiamy komentarz tylko przy uwsgi
+$ pip install -r src/deploy/requirements.txt
+
+____
+* przygotowanie serwera mysql
+- utworzenie user/pass do mysql
+- utworzenie bazy danych
+- uzupełnienie local.py
