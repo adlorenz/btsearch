@@ -7,10 +7,12 @@ Uruchomienie projektu w lokalnym środowisku pozwoli na bezpośrednie grzebanie 
 Lokalne środowisko osobiście odpalam w Linuxie (Ubuntu-18.04), zainstalowanym ze sklepu Microsoft Store wewnątrz Windowsa 10. To z kolei wymaga aktywacji WSL (Windows Subsystem for Linux) w Windows 10. Jeśli działasz natywnie w Linuxie, oczywiście pomijasz etap związany z uruchomieniem Linuxa w Windowsie.
 
 **TL;DR dla tych bardziej w temacie**
+
 Projekt btsearch wymaga zainstalowania `python` (2.x), menedżera pakietów pythonowych `pip`, serwera `mysql-server` oraz `virtualenv`. Kod źródłowy klonujemy z własnego forka GitHub. Następnie wewnątrz utworzonego i aktywowanego virtualenv instalujemy projektowe *dependencies* (django, south, mysql-python itp.). Następnie za pośrednictwem konsoli Django `manage.py` tworzymy strukturę bazy i odpalamy webserver na porcie 8000.
 
 ### Aktywacja WSL oraz instalacja Ubuntu-18.04 wewnątrz Windows 10
 Wykonujemy krok po kroku instrukcje z tego przewodnika:
+
 https://docs.microsoft.com/en-us/windows/wsl/install-win10
 
 Ja u siebie działam na nowszym subsystemie WSL v2. Polecam także aplikację [Windows Terminal](https://www.microsoft.com/pl-pl/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab) z Microsoft Store. Umożliwia wygodniejszą pracę w porównaniu do domyślnej powłoki linuxowej w Windowsie.
@@ -120,6 +122,7 @@ Voila!
 ## Pro-tipy
 
 **Jak się dostać do linuxowego systemu plików w Windowsie?**
+
 Podając taką ścieżkę, np. w Eksploratorze Windows: `\\wsl$\DISTRONAME\`, czyli np. `\\wsl$\Ubuntu-18.04\`
 
 ## Co dalej?
