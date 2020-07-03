@@ -1,0 +1,32 @@
+#############################################################
+# local.py config file - overrides settings from default.py #
+#############################################################
+
+from conf.default import *
+
+DEBUG = TEMPLATE_DEBUG = True
+
+# Output emails to STDOUT
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': '__user__',
+        'PASSWORD': '__password__',
+        'HOST': 'localhost',
+        'NAME': '__dbname__',
+    }
+}
+
+# Don't use cached templates in development
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
+#ALLOWED_HOSTS = ['localhost:8899']
+
+SECRET_KEY = '1234567890'
+
+GOOGLEMAPS_APIKEY = ''
