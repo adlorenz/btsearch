@@ -37,7 +37,7 @@ Instalacja serwera mysql:
 $ sudo apt-get install mysql-server
 $ sudo apt-get install libmysqlclient-dev
 ```
-    Tutaj istotna uwaga - szczególnie jeśli uruchamiasz projekt w WSL/Windows. W trakcie instalacji mysql-server _teoretycznie_ powinna nastąpić wstępna konfiguracja serwera, z podaniem nazwy użytkownika i hasła administratora serwera. U mnie nie wiedzieć czemu to nie nastąpiło. Guglałem za rozwiązaniem problemu, ale poszedłem na skróty i posiłkowałem się hasłem dla systemowego usera `debian-sys-maint`, które podane jest czystym tekstem w pliku `/etc/mysql/debian.cnf`. Z tą kombinacją user/pass zalogowałem się do serwera (klient dowolny - z linii poleceń `mysql`, phpmyadmin, MySQL Workbench - co kto woli) i utworzyłem osobną kombinację user/pass oraz pustą bazę do projektu btsearch.
+Tutaj istotna uwaga - szczególnie jeśli uruchamiasz projekt w WSL/Windows. W trakcie instalacji mysql-server _teoretycznie_ powinna nastąpić wstępna konfiguracja serwera, z podaniem nazwy użytkownika i hasła administratora serwera. U mnie nie wiedzieć czemu to nie nastąpiło. Guglałem za rozwiązaniem problemu, ale poszedłem na skróty i posiłkowałem się hasłem dla systemowego usera `debian-sys-maint`, które podane jest czystym tekstem w pliku `/etc/mysql/debian.cnf`. Z tą kombinacją user/pass zalogowałem się do serwera (klient dowolny - z linii poleceń `mysql`, phpmyadmin, MySQL Workbench - co kto woli) i utworzyłem osobną kombinację user/pass oraz pustą bazę do projektu btsearch.
 
 ### Klonowanie kodu źródłowego btsearch z GitHub'a
 Następnie tworzymy katalog `/home/USERNAME/dev/` (lub inny wg uznania), do którego sklonujemy repozytorium z kodem źródłowym projektu btsearch. **Uwaga!** Najpierw w GitHub zrób fork repozytorium na swoje konto GH. Wówczas  w miejsce `XYZ` wpisz swój username z GH. Dzięki temu klonujesz swój fork repozytorium z Twojego własnego konta GH.
@@ -53,7 +53,7 @@ Po wykonaniu w/w kroków, bieżącą ścieżką powinno być `/home/USERNAME/dev
 ### Utworzenie i aktywacja virtualenv
 Pakiety pythonowe niezbędne do uruchomienia projektu btsearch instalujemy wewnątrz virtualenv'a - czyli wirtualnego środowiska pythonowego, niezależnego od pakietów globalnych (widocznych dla całego systemu). Zamykając niezbędne dla projektu pakiety wewnątrz virtualenv nie zaśmiecamy systemu - i potencjalnie innych, sąsiadujących projektów pythonowych - pakietami, które poza uruchomieniem tego konkretnego projektu nie są do niczego potrzebne.
 
-Instalacja i utworzenie virtualenv o nazwie `venv-btsearch` w folderze domowym `/home/USERNAME/venv-btsearch/`:
+Instalacja i utworzenie virtualenv o nazwie `venv-btsearch` w katalogu `/home/USERNAME/venv-btsearch/`:
 ```sh
 $ pip install virtualenv
 $ cd ~
@@ -125,12 +125,21 @@ Voila!
 
 Podając taką ścieżkę, np. w Eksploratorze Windows: `\\wsl$\DISTRONAME\`, czyli np. `\\wsl$\Ubuntu-18.04\`
 
+**Po restarcie Ubuntu projekt się nie odpala!**
+
+Tak, bo każdorazowo należy ponownie aktywować virtualenv poleceniem:
+```sh
+. ~/venv-btsearch/bin/activate
+```
+Pamiętaj, że virtualenv zawiera pakiety niezbędne do wystartowania projektu i konsoli Django.
+
 ## Co dalej?
 Na tym etapie mamy w pełni skonfigurowany i odpalony lokalnie projekt btsearch, który ładnie ładuje się w przeglądarce - aczkolwiek baza danych jest pusta, więc na mapce nie wyświetlają się żadne dane. W planach na uporządkowanie kodu źródłowego w bliżej nieokreślonej przyszłości mam m.in.:
 
 - Przygotowanie testowych danych do bazy danych dla środowiska lokalnego.
 - Rozwiązanie problemu z instalacją uwsgi.
 - Uaktualnienie zależności projektowych (`requirements.txt`) - obecne są bardzo przestarzałe i już od dawna nie wspierane, np. Django 1.5 - przydałaby się aktualizacja do 2.x.
+- Rozkmina potencjału wykorzystania dockera do uruchomienia lokalnego środowiska.
 - Migracja do Python 3.x.
 
 ## Kolaboracja i kontakt
