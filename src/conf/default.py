@@ -92,7 +92,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
     # 'debug_panel.middleware.DebugPanelMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -122,8 +122,8 @@ INSTALLED_APPS = [
     'south',  # Do not change the position of south in this list unless
               # specifically instructed to by installation instructions
     'django_extensions',
-    'debug_toolbar',
-    # 'debug_panel',
+    #'debug_toolbar',
+    #'debug_panel',
 
     'btsearch.bts',
     'btsearch.uke',
