@@ -142,9 +142,11 @@ Pamiętaj, że virtualenv zawiera pakiety niezbędne do wystartowania projektu i
 ## Co dalej?
 Na tym etapie mamy w pełni skonfigurowany i odpalony lokalnie projekt btsearch, który ładnie ładuje się w przeglądarce - aczkolwiek baza danych jest pusta, więc na mapce nie wyświetlają się żadne dane. W planach na uporządkowanie kodu źródłowego w bliżej nieokreślonej przyszłości mam m.in.:
 
+- Rozwiązanie problemu z dostępem do lokalnego panelu administracyjnego Django (`TemplateDoesNotExist at /btsadmin/`).
 - Przygotowanie testowych danych do bazy danych dla środowiska lokalnego.
 - Rozwiązanie problemu z instalacją uwsgi.
 - Uaktualnienie zależności projektowych (`requirements.txt`) - obecne są bardzo przestarzałe i już od dawna nie wspierane, np. Django 1.5.
+- Opis struktury projektu, zastosowanych rozwiązań, modeli i logiki do README lub artykułu/-ów wiki.
 - Rozkmina potencjału wykorzystania dockera do uruchomienia lokalnego środowiska.
 - Migracja do Python 3.x.
 
