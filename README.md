@@ -142,9 +142,18 @@ Na tym etapie mamy w pełni skonfigurowany i odpalony lokalnie projekt btsearch,
 
 - Przygotowanie testowych danych do bazy danych dla środowiska lokalnego.
 - Rozwiązanie problemu z instalacją uwsgi.
-- Uaktualnienie zależności projektowych (`requirements.txt`) - obecne są bardzo przestarzałe i już od dawna nie wspierane, np. Django 1.5 - przydałaby się aktualizacja do 2.x.
+- Uaktualnienie zależności projektowych (`requirements.txt`) - obecne są bardzo przestarzałe i już od dawna nie wspierane, np. Django 1.5.
 - Rozkmina potencjału wykorzystania dockera do uruchomienia lokalnego środowiska.
 - Migracja do Python 3.x.
+
+## Rozwój merytoryczny btsearch
+Powyższe modernizacje mają charakter stricte techniczny / developerski i są "niewidzialne" dla zwykłego usera korzystającego z serwisu. Pod kątem merytorycznym, najbardziej palące aktualnie (wg stanu na lipiec-sierpień 2020) problemy do rozwiązania, to:
+
+- Korekta wyświetlania reklam Adsense na mapie (aktualnie zasłaniają one istotne elementy UI).
+- Wdrożenie wyświetlania pozwoleń UKE dotyczących stacji bazowych 5G.
+- Rozważenie alternatyw dla Google Maps jako podstawowego engine'u renderowania mapy.
+
+Dalsza perspektywa rozwojowa projektu zakłada koncepcję rozdzielenia warstwy danych od UI/UX poprzez API. W dużym uproszczeniu odrębna, relatywnie prosta i lekka aplikacja - nazwijmy ją roboczo `btsearch-core` - odpowiadałaby jedynie za dostarczanie danych poprzez interfejs REST API. Dane te konsumowałaby dowolna aplikacja zewnętrzna - np. `btsearch-map` - i następnie na swój indywidualny sposób je prezentowała. Czy to w formie mapki, czy to tabelarycznie, czy też renderowała do jakiejś aplikacji w smartfonie.
 
 ## Kolaboracja i kontakt
 Jeśli dobrnąłeś/-aś z sukcesem do tego momentu i masz projekt btsearch lokalnie odpalony w przeglądarce pod adresem `http://127.0.0.1:8000`, to znaczy, że jesteś gotowy/-a do samodzielnego wdrażania poprawek, usprawnień i zmian w kodzie źródłowym.
