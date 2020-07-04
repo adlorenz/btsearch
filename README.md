@@ -145,6 +145,7 @@ Na tym etapie mamy w pełni skonfigurowany i odpalony lokalnie projekt btsearch,
 - Rozwiązanie problemu z dostępem do lokalnego panelu administracyjnego Django (`TemplateDoesNotExist at /btsadmin/`).
 - Przygotowanie testowych danych do bazy danych dla środowiska lokalnego.
 - Rozwiązanie problemu z instalacją uwsgi.
+- Usunięcie hard-kodowanego odwołania do `models.Region.objects.all()` w pliku `src/bts/btsearch/forms.py`, co blokuje uruchomienie projektu.
 - Uaktualnienie zależności projektowych (`requirements.txt`) - obecne są bardzo przestarzałe i już od dawna nie wspierane, np. Django 1.5.
 - Opis struktury projektu, zastosowanych rozwiązań, modeli i logiki do README lub artykułu/-ów wiki.
 - Rozkmina potencjału wykorzystania dockera do uruchomienia lokalnego środowiska.
