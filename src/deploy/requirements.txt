@@ -2,7 +2,7 @@
 Django==1.5
 South==0.8.2
 MySQL-python==1.2.5
-uwsgi==1.9.19
+#uwsgi==1.9.19
 Fabric==1.6.0
 
 # Extensions
@@ -11,5 +11,5 @@ django-extensions==1.2.5
 arrow==0.4.2
 
 # Debugging
-django-debug-panel==0.7.2
-django-debug-toolbar==1.0
+#django-debug-panel==0.7.2
+#django-debug-toolbar==1.0

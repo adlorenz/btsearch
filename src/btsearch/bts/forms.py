@@ -54,11 +54,11 @@ class ExportFilterForm(forms.Form):
     #     choices=((network.code, network) for network in models.Network.objects.all()),
     #     widget=forms.CheckboxSelectMultiple(),
     # )
-    region = forms.MultipleChoiceField(
-        required=True,
-        choices=((region.id, region.name) for region in models.Region.objects.all()),
-        widget=forms.CheckboxSelectMultiple(),
-    )
+    #region = forms.MultipleChoiceField(
+    #    required=True,
+    #    choices=((region.id, region.name) for region in models.Region.objects.all()),
+    #    widget=forms.CheckboxSelectMultiple(),
+    #)
     standard = forms.MultipleChoiceField(
         required=False,
         choices=models.Cell.STANDARDS,

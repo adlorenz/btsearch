@@ -4,6 +4,7 @@ src/conf/stage.py
 src/conf/prod.py
 src/public/static/*
 logs/*
+src/logs/*
 *sublime*
 *nbproject*
 *.pyc
