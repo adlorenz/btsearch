@@ -77,7 +77,7 @@ $ pip install -r src/deploy/requirements.txt
 I odpalamy proces instalacji poleceniem `pip install -r src/deploy/requirements.txt` jeszcze raz.
 
 ### Kofiguracja dostępu do bazy danych dla projektu
-W pliku `src/conf/local.py` uzupełniamy user/pass/dbname do lokalnej bazy danych mysql, którą konfigurowaliśmy kilka kroków wyżej.
+W pliku `src/conf/local.py.sample` uzupełniamy user/pass/dbname do lokalnej bazy danych mysql, którą konfigurowaliśmy kilka kroków wyżej.
 ```sh
 DATABASES = {
     'default': {
@@ -88,6 +88,10 @@ DATABASES = {
         'NAME': '__dbname__',
     }
 }
+```
+A następnie zapisujemy plik konfiguracyjny pod nazwą `local.py`:
+```sh
+$ cp src/conf/local.py.sample src/conf/local.py
 ```
 
 ### Uruchomienie konsoli Django
@@ -129,7 +133,7 @@ Podając taką ścieżkę, np. w Eksploratorze Windows: `\\wsl$\DISTRONAME\`, cz
 
 Tak, bo każdorazowo należy ponownie aktywować virtualenv poleceniem:
 ```sh
-. ~/venv-btsearch/bin/activate
+$ . ~/venv-btsearch/bin/activate
 ```
 Pamiętaj, że virtualenv zawiera pakiety niezbędne do wystartowania projektu i konsoli Django.
 

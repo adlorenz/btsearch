@@ -25,8 +25,6 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 )
 
-#ALLOWED_HOSTS = ['localhost:8899']
-
 SECRET_KEY = '1234567890'
 
 GOOGLEMAPS_APIKEY = ''
