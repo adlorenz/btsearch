@@ -222,8 +222,10 @@ class Cell(models.Model):
         ('GSM', 'GSM'),
         ('UMTS', 'UMTS'),
         ('CDMA', 'CDMA'),
-        ('LTE', 'LTE')
-    )
+        ('LTE', 'LTE'),
+        ('5G', '5G'),
+        ('IOT', 'IOT')
+        )
 
     BANDS = (
         ('420', '420'),
