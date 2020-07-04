@@ -129,6 +129,8 @@ Voila!
 
 Podając taką ścieżkę, np. w Eksploratorze Windows: `\\wsl$\DISTRONAME\`, czyli np. `\\wsl$\Ubuntu-18.04\`
 
+Więcej na ten temat przeczytasz tutaj: https://devblogs.microsoft.com/commandline/whats-new-for-wsl-in-windows-10-version-1903/
+
 **Po restarcie Ubuntu projekt się nie odpala!**
 
 Tak, bo każdorazowo należy ponownie aktywować virtualenv poleceniem:
