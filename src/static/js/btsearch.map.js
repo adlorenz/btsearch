@@ -888,6 +888,21 @@ $(document).bind('keypress', 'l', function(){
     ui.resetMap();
 });
 
+$(document).bind('keypress', 'c', function(){
+    $('#standard-filter-cdma').prop('checked', !$('#standard-filter-cdma').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', '5', function(){
+    $('#standard-filter-5g').prop('checked', !$('#standard-filter-5g').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', 'i', function(){
+    $('#standard-filter-iot').prop('checked', !$('#standard-filter-iot').prop('checked'));
+    ui.resetMap();
+});
+
 $(document).bind('keypress', '9', function(){
     $('#band-filter-900').prop('checked', !$('#band-filter-900').prop('checked'));
     ui.resetMap();
@@ -900,5 +915,10 @@ $(document).bind('keypress', '1', function(){
 
 $(document).bind('keypress', '2', function(){
     $('#band-filter-2100').prop('checked', !$('#band-filter-2100').prop('checked'));
+    ui.resetMap();
+});
+
+$(document).bind('keypress', '8', function(){
+    $('#band-filter-800').prop('checked', !$('#band-filter-800').prop('checked'));
     ui.resetMap();
 });
