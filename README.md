@@ -106,7 +106,7 @@ $ ./manage.py --version
 Ostatnim krokiem jest utworzenie struktury bazy danych projektu btsearch. Odpalamy dwie komendy - `syncdb` tworzy domyślną strukturę i tabele wspólne dla Django, natomiast `migrate` tworzy i migruje strukturę modeli aplikacji btsearch (tabele mysql, w których trzymane są dane BTS, UKE itp.).
 ```sh
 $ ./manage.py syncdb
-$ ./manage.pu migrate
+$ ./manage.py migrate
 ```
 Na koniec pozostaje uruchomienie wewnętrznego webservera Django:
 ```sh
