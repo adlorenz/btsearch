@@ -22,7 +22,7 @@
 
     <div>
     {% for standard in base_station.get_cells_by_standard %}
-        {% if standard.standard == 'GSM' or standard.standard = 'E-GSM' %}
+        {% if standard.standard == 'GSM' or standard.standard == 'E-GSM' %}
         <table class="table table-condensed table-responsive location-info">
             <tr>
                 <th colspan="4" style="border-top: none;">{{ standard.standard }}</th>

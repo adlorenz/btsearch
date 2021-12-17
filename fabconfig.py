@@ -1,3 +1,6 @@
+# WARNING
+# THIS MODULE SHOULD ONLY BE RUN USING PYTHON 2.7
+
 from fabric.api import env
 
 # Many things are configured using the client and project code

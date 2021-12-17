@@ -81,7 +81,7 @@ class LocationDetailView(mixins.QuerysetFilterMixin, JSONResponseMixin, generic.
             'id': location.id,
             'latitude': location.latitude,
             'longitude': location.longitude,
-            'summary': unicode(location),
+            'summary': str(location),
             'info': response.render().rendered_content,
             'icon': services.MapIconService().get_icon_by_location(location),
         }

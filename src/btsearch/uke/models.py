@@ -40,15 +40,18 @@ class Permission(models.Model):
     location = models.ForeignKey(
         'Location',
         related_name='permissions',
+        on_delete=models.CASCADE
     )
     operator = models.ForeignKey(
         'Operator',
         related_name='permissions',
+        on_delete=models.CASCADE
     )
     network = models.ForeignKey(
         'bts.Network',
         related_name='permissions',
         null=True,
+        on_delete=models.CASCADE
     )  # Field 'network' is added to Permission model to improve database performance
     station_id = models.CharField(
         max_length=16,
@@ -87,10 +90,9 @@ class Permission(models.Model):
     )
     date_updated = models.DateTimeField(
         auto_now=True,
-        auto_now_add=True,
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0}, {1}'.format(self.network.code, self.case_number)
 
     def case_number_display(self):
@@ -110,9 +112,10 @@ class Operator(models.Model):
     network = models.ForeignKey(
         'bts.Network',
         related_name='uke_operators',
+        on_delete=models.CASCADE
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return u'{0} ({1})'.format(self.operator_name, self.network.name)
 
 
@@ -149,5 +152,5 @@ class RawRecord(models.Model):
         max_length=8,
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.case_number
