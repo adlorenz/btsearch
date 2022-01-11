@@ -3,11 +3,10 @@ FROM ubuntu
 ENV DEBIAN_FRONTEND=noninteractive \
      CONTAINER_USER=python
 
-RUN apt update && apt install -yqq python2-minimal wget
+RUN apt-get update && apt-get install -yqq python2-minimal wget python2-dev libmysqlclient-dev mariadb-client gcc
 RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
 RUN python2.7 get-pip.py
-RUN apt install -yqq libmysqlclient-dev
-RUN apt install -yqq mariadb-client mysql-server gcc
+RUN wget https://raw.githubusercontent.com/paulfitz/mysql-connector-c/master/include/my_config.h -O /usr/include/mysql/my_config.h
 RUN sed '/st_mysql_options options;/a unsigned int reconnect;' /usr/include/mysql/mysql.h -i.bkp
 RUN pip install --upgrade pip
 RUN mkdir /var/app
