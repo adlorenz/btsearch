@@ -14,4 +14,6 @@ COPY src/conf/local.py.sample src/conf/local.py
 RUN pip install MySQL-python
 RUN pip install -r src/deploy/requirements.txt
 COPY . .
+CMD ["python", "src/manage.py", "syncdb"]
+CMD ["python", "src/manage.py", "migrate"]
 CMD ["python", "src/manage.py", "runserver", "0.0.0.0:8000"]
