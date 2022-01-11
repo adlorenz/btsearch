@@ -1,0 +1,9 @@
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': 'btsearch_user',
+        'PASSWORD': 'secret',
+        'HOST': 'localhost',
+        'NAME': 'btsearch',
+    }
+}
