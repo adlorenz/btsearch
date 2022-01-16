@@ -2,6 +2,7 @@ version: "3"
 
 services:
   btsearch:
+    restart: unless-stopped
     ports:
       - 8000:8000
     build:
@@ -11,17 +12,21 @@ services:
       - mysql
     networks:
       - btsearch
-#    volumes:
-#      - .:/var/app
+    volumes:
+      - .:/var/app
   mysql:
     restart: always
-    image: mysql/mysql-server:8.0
+    image: mysql/mysql-server:5.7
     networks:
       btsearch:
         aliases: ["mysql.local"]
+    ports:
+      - '3306:3306'
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: yes
-      MYSQL_DATABASE: btsearch
+       MYSQL_ROOT_PASSWORD: 'pass'
+       MYSQL_DATABASE: 'btsearch'
+       MYSQL_USER: 'user'
+       MYSQL_PASSWORD: 'pass'
     volumes:
       - mysql:/var/lib/mysql
     command: ["mysqld", "--sql_mode=NO_ENGINE_SUBSTITUTION"]
