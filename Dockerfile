@@ -13,4 +13,4 @@ COPY src/deploy/requirements.txt src/deploy/requirements.txt
 RUN pip install MySQL-python
 RUN pip install -r src/deploy/requirements.txt
 COPY . .
-CMD ["docker-entrypoint.sh"]
+CMD ["./docker-entrypoint.sh"]
