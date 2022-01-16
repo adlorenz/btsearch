@@ -1,3 +1,4 @@
+import os
 from .default import *
 
 DEBUG = True
@@ -5,10 +6,10 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'USER': 'user',
-        'PASSWORD': 'pass',
-        'HOST': 'mysql.local',
-        'NAME': 'btsearch',
+        'USER': os.environ.get('MYSQL_USER'),
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD'),
+        'HOST': os.environ.get('MYSQL_HOST'),
+        'NAME': os.environ.get('MYSQL_DATABASE'),
         'charset': 'utf8mb4', 
         'SECRET_KEY': 'klucz'
     }

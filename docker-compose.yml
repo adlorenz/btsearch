@@ -10,6 +10,11 @@ services:
       dockerfile: Dockerfile
     links:
       - mysql
+    environment:
+       MYSQL_DATABASE: 'btsearch'
+       MYSQL_USER: 'user'
+       MYSQL_PASSWORD: 'pass'
+       MYSQL_HOST: 'mysql.local'
     networks:
       - btsearch
     volumes:
