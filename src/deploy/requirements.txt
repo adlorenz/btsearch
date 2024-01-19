@@ -1,5 +1,5 @@
 # Core packages
-Django==1.5
+Django==2.2.24
 South==0.8.2
 MySQL-python==1.2.5
 #uwsgi==1.9.19
