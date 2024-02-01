@@ -15,7 +15,7 @@ var core = {
         center: new google.maps.LatLng(52.069245, 19.480193),
         streetViewControl: false,
         scaleControl: true,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeId: 'OSM',
         mapTypeControlOptions: {
             style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
             position: google.maps.ControlPosition.TOP_RIGHT
@@ -38,6 +38,7 @@ var core = {
 
     init: function(mapCanvas, initParams) {
         this.map = new google.maps.Map(mapCanvas, this.mapParams);
+	this.map.mapTypes.set("OSM", new google.maps.ImageMapType({ getTileUrl: function(coord, zoom) { var tilesPerGlobe = 1 << zoom; var x = coord.x % tilesPerGlobe; if (x < 0) { x = tilesPerGlobe+x; } return "https://tile.openstreetmap.org/" + zoom + "/" + x + "/" + coord.y + ".png"; }, tileSize: new google.maps.Size(256, 256), name: "OpenStreetMap", maxZoom: 18 }))
         this.geocoder = new google.maps.Geocoder();
         this.markers = [];
         this.initParams = initParams;
