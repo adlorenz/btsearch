@@ -1,6 +1,22 @@
 # BTSearch v2
 Repozytorium zawierające kompletny kod źródłowy serwisu [beta.btsearch.pl](http://beta.btsearch.pl), napisany w języku Python z wykorzystaniem frameworku webowego Django.
 
+## UWAGA! Projekt nie jest aktywnie rozwijany i wspierany
+
+Projekt w obecnej w tym repozytorium postaci nie będzie już rozwijany, z uwagi na przestarzałe i nie wspierane już zależności w kodzie źrodłowym.
+
+Koncepcja rozwojowa zakłada napisanie nowej, relatywnie prostej i rzecz jasna zdockeryzowanej aplikacji `btsearch-core`, której zasadniczym zadaniem będzie przechowywanie i udostępnianie surowych danych o stacjach bazowych. Struktura danych aplikacji będzie w dużej mierze dziedziczyć po obecnej strukturze relacyjnej modeli Locations > Stations > Cells.
+
+Dane te aplikacja `btsearch-core` będzie z kolei udostępniała poprzez API, co otworzy drogę dla wszystkich chętnych developerów do tworzenia własnych aplikacji opartych o dane btsearch (w tym np. nowej wersji mapy lub apki na smartfony).
+
+Surowe dane na początek mogłyby być ręcznie konwertowane i przerzucane z obecnej bazy mysql btsearch.pl do nowej struktury `btsearch-core` (notabene tak to się obecnie dzieje z aktualizacjami danych na mapie). Docelowo jednak potrzebne będzie napisanie UI do kompleksowego zarządzania danymi wewnątrz `btsearch-core`, żeby definitywnie odciąć legacy btsearch.pl, którego początki sięgają roku 2000 (ok boomer!).
+
+Zatem taki jest ogólny koncept. Palec do budki każdego, kto chętny do wsparcia przy jego rozwijaniu. :) 
+
+_Dawid Lorenz (2.02.2024)_
+
+___
+
 ## Lokalne środowisko developerskie
 Uruchomienie projektu w lokalnym środowisku pozwoli na bezpośrednie grzebanie w kodzie, wdrażanie poprawek, usprawnień czy nowych funkcji. Poniżej zapis kroków, które sam wykonałem, aby projekt lokalnie uruchomić.
 
