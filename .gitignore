@@ -1,4 +1,3 @@
-src/conf/local.py
 src/conf/test.py
 src/conf/stage.py
 src/conf/prod.py
@@ -9,3 +8,4 @@ src/logs/*
 *nbproject*
 *.pyc
 notes
+.idea/

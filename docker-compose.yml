@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  btsearch:
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    build:
+      context: .
+      dockerfile: Dockerfile
+    links:
+      - mysql
+    environment:
+       MYSQL_DATABASE: 'btsearch'
+       MYSQL_USER: 'user'
+       MYSQL_PASSWORD: 'pass'
+       MYSQL_HOST: 'mysql.local'
+    networks:
+      - btsearch
+    volumes:
+      - .:/var/app
+  mysql:
+    restart: always
+    image: mysql/mysql-server:5.7
+    networks:
+      btsearch:
+        aliases: ["mysql.local"]
+    ports:
+      - '3306:3306'
+    environment:
+       MYSQL_ROOT_PASSWORD: 'pass'
+       MYSQL_DATABASE: 'btsearch'
+       MYSQL_USER: 'user'
+       MYSQL_PASSWORD: 'pass'
+    volumes:
+      - mysql:/var/lib/mysql
+    command: ["mysqld", "--sql_mode=NO_ENGINE_SUBSTITUTION"]
+
+networks:
+  btsearch: {}
+
+volumes: 
+  mysql:
+
