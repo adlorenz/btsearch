@@ -12,6 +12,7 @@ class BaseStationEditForm(forms.ModelForm):
         widgets = {
             'location': forms.HiddenInput(),
         }
+        fields = '__all__'
 
 
 class LocationEditForm(forms.ModelForm):
@@ -20,6 +21,7 @@ class LocationEditForm(forms.ModelForm):
         widgets = {
             'location_hash': forms.HiddenInput(),
         }
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super(LocationEditForm, self).__init__(*args, **kwargs)

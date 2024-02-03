@@ -1,15 +1,19 @@
-from django.conf.urls import patterns, include, url
+from django.urls import include, path
 from django.contrib import admin
+from django.conf import settings
 
 from . import views
 
-admin.autodiscover()
+urlpatterns = [
+    path('', views.IndexView.as_view(), name='home'),
+    path('btsadmin/', admin.site.urls),
+    path('bts/', include('btsearch.bts.urls')),
+    path('map/', include('btsearch.map.urls')),
+    path('panel/', include('btsearch.panel.urls')),
+]
 
-urlpatterns = patterns(
-    '',
-    url(r'^btsadmin/', include(admin.site.urls)),
-    url(r'^bts/', include('btsearch.bts.urls', namespace='bts')),
-    url(r'^map/', include('btsearch.map.urls', namespace='map')),
-    url(r'^panel/', include('btsearch.panel.urls', namespace='panel')),
-    url(r'^$', views.IndexView.as_view(), name='home'),
-)
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

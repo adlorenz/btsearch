@@ -12,7 +12,6 @@ remove_db:
 	python www/manage.py reset_db --router=default --noinput
 
 create_db:
-	python www/manage.py syncdb --noinput
 	python www/manage.py migrate
 
 load_fixtures:

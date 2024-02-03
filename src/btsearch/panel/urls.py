@@ -1,28 +1,28 @@
-from django.conf.urls import patterns, url
+from django.urls import path
 from django.contrib.admin.views.decorators import staff_member_required
 
 from . import views
 
+app_name = 'panel'
 
-urlpatterns = patterns(
-    '',
-    url(r'^basestation/(?P<pk>\d+)$',
+urlpatterns = [
+    path('basestation/<int:pk>/',
         staff_member_required(views.BaseStationView.as_view()),
         name='basestation-edit-view'),
 
-    url(r'^basestation$',
+    path('basestation/',
         staff_member_required(views.BaseStationView.as_view()),
         name='basestation-add-view'),
 
-    url(r'^location/(?P<pk>\d+)$',
+    path('location/<int:pk>/',
         staff_member_required(views.LocationView.as_view()),
         name='location-edit-view'),
 
-    url(r'^location$',
+    path('location/',
         staff_member_required(views.LocationView.as_view()),
         name='location-add-view'),
 
-    url(r'^$',
+    path('',
         staff_member_required(views.IndexView.as_view()),
         name='index-view'),
-)
+]

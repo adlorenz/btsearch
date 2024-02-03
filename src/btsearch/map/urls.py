@@ -1,33 +1,34 @@
-from django.conf.urls import patterns, url
+from django.urls import path
 from . import views
 
-urlpatterns = patterns(
-    '',
-    url(r'^ukelocations/(?P<pk>\d+)/$',
+app_name = 'map'
+
+urlpatterns = [
+    path('ukelocations/<int:pk>/',
         views.UkeLocationDetailView.as_view(),
         name='locations'),
 
-    url(r'^ukelocations/$',
+    path('ukelocations/',
         views.UkeLocationsView.as_view(),
         name='locations'),
 
-    url(r'^locations/(?P<pk>\d+)/$',
+    path('locations/<int:pk>/',
         views.LocationDetailView.as_view(),
         name='locations'),
 
-    url(r'^locations/$',
+    path('locations/',
         views.LocationsView.as_view(),
         name='locations'),
 
-    url(r'^ui/control_panel/$',
+    path('ui/control_panel/',
         views.ControlPanelView.as_view(),
         name='control-panel-view'),
 
-    url(r'^ui/status_panel/$',
+    path('ui/status_panel/',
         views.StatusPanelView.as_view(),
         name='status-panel-view'),
 
-    url(r'^ui/ad_panel/$',
+    path('ui/ad_panel/',
         views.AdPanelView.as_view(),
         name='ad-panel-view'),
-)
+]

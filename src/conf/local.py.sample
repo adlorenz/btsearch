@@ -9,6 +9,17 @@ DEBUG = TEMPLATE_DEBUG = True
 # Output emails to STDOUT
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+if DEBUG:
+    INSTALLED_APPS = [
+        'debug_toolbar',
+    ] + INSTALLED_APPS
+
+    MIDDLEWARE = [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+        # 'btsearch.middleware.CProfileMiddleware',
+    ] + MIDDLEWARE
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',

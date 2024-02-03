@@ -6,6 +6,7 @@ class Location(models.Model):
     region = models.ForeignKey(
         'Region',
         related_name='locations',
+        on_delete=models.CASCADE
     )
     town = models.CharField(
         max_length=128,
@@ -36,13 +37,12 @@ class Location(models.Model):
     )
     date_updated = models.DateTimeField(
         auto_now=True,
-        auto_now_add=True,
     )
 
     class Meta:
         ordering = ['town']
 
-    def __unicode__(self):
+    def __str__(self):
         return u"{0}, {1}, {2}".format(self.region.name, self.town, self.address)
 
     def has_location_hash(self):
@@ -90,10 +90,12 @@ class BaseStation(models.Model):
     network = models.ForeignKey(
         'Network',
         related_name='base_stations',
+        on_delete=models.CASCADE
     )
     location = models.ForeignKey(
         'Location',
         related_name='base_stations',
+        on_delete=models.CASCADE
     )
     location_details = models.CharField(
         max_length=255,
@@ -153,10 +155,9 @@ class BaseStation(models.Model):
     )
     date_updated = models.DateTimeField(
         auto_now=True,
-        auto_now_add=True,
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return u"{0} / {1} / {2}, {3}".format(
             self.network.name,
             self.location.region.name,
@@ -241,7 +242,8 @@ class Cell(models.Model):
 
     base_station = models.ForeignKey(
         'BaseStation',
-        related_name='cells'
+        related_name='cells',
+        on_delete=models.CASCADE
     )
     standard = models.CharField(
         max_length=8,
@@ -292,14 +294,13 @@ class Cell(models.Model):
     )
     date_updated = models.DateTimeField(
         auto_now=True,
-        auto_now_add=True,
     )
     date_ping = models.DateTimeField(
         blank=True,
         null=True,
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return u"ID: {cell.id} / {cell.standard}{cell.band} / {cell.lac} / {cell.cid}".format(cell=self)
 
     def save(self, *args, **kwargs):
@@ -339,7 +340,7 @@ class Network(models.Model):
     class Meta:
         ordering = ['code']
 
-    def __unicode__(self):
+    def __str__(self):
         return u'{network.name} ({network.code})'.format(network=self)
 
 
@@ -354,7 +355,7 @@ class Region(models.Model):
         max_length=2,
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -363,11 +364,13 @@ class BaseStationPermission(models.Model):
         'BaseStation',
         verbose_name=u'Base station',
         related_name='permissions',
+        on_delete=models.CASCADE
     )
     permission = models.ForeignKey(
         'uke.Permission',
         verbose_name=u'UKE Permission',
         related_name='base_stations',
+        on_delete=models.CASCADE
     )
     station_id = models.CharField(
         max_length=16,
@@ -377,69 +380,3 @@ class BaseStationPermission(models.Model):
 
     class Meta:
         unique_together = ['base_station', 'permission', 'station_id']
-
-
-'''
---- LEGACY MODELS
---- VERY SOON TO BECOME OBSOLETE AND DEAD
-'''
-
-
-# class LegacyBaseStation(models.Model):
-
-#     class Meta:
-#         db_table = 'BtsOld__All'
-
-#     id = models.AutoField(primary_key=True)
-#     network = models.ForeignKey('LegacyNetwork', db_column='siec_id')
-#     region = models.ForeignKey('LegacyRegion', db_column='wojewodztwo_id')
-#     town = models.CharField(max_length=255, db_column='miejscowosc')
-#     location = models.CharField(max_length=255, db_column='lokalizacja')
-#     standard = models.CharField(max_length=5)
-#     band = models.CharField(max_length=8, db_column='pasmo')
-#     lac = models.CharField(max_length=6)
-#     btsid = models.DecimalField(max_digits=10, decimal_places=0)
-#     cid1 = models.CharField(max_length=1)
-#     cid2 = models.CharField(max_length=1)
-#     cid3 = models.CharField(max_length=1)
-#     cid4 = models.CharField(max_length=1)
-#     cid5 = models.CharField(max_length=1)
-#     cid6 = models.CharField(max_length=1)
-#     cid7 = models.CharField(max_length=1)
-#     cid8 = models.CharField(max_length=1)
-#     cid9 = models.CharField(max_length=1)
-#     cid0 = models.CharField(max_length=1)
-#     notes = models.CharField(max_length=255, db_column='uwagi')
-#     date_updated = models.DateField(db_column='aktualizacja')
-#     station_id = models.CharField(max_length=20, db_column='StationId')
-#     rnc = models.CharField(max_length=5, db_column='RNC')
-#     carrier = models.CharField(max_length=6)
-#     longitude_uke = models.CharField(max_length=10, db_column='LONGuke')
-#     latitude_uke = models.CharField(max_length=10, db_column='LATIuke')
-#     longitude = models.CharField(max_length=10, db_column='LONGp')
-#     latitude = models.CharField(max_length=10, db_column='LATIp')
-
-
-# class LegacyNetwork(models.Model):
-
-#     class Meta:
-#         db_table = 'BtsOld__Networks'
-
-#     id = models.AutoField(primary_key=True)
-#     network_name = models.CharField(max_length=16, db_column='nazwa')
-
-#     def __unicode__(self):
-#         return self.network_name
-
-
-# class LegacyRegion(models.Model):
-
-#     class Meta:
-#         db_table = 'BtsOld__Regions'
-
-#     id = models.AutoField(primary_key=True)
-#     region_name = models.CharField(max_length=128, db_column='nazwa')
-#     region_code = models.CharField(max_length=3, db_column='nazwa_short')
-
-#     def __unicode__(self):
-#         return self.region_name

@@ -1,3 +1,6 @@
+# WARNING
+# THIS MODULE SHOULD ONLY BE RUN USING PYTHON 2.7
+
 import datetime
 import os
 

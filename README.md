@@ -24,9 +24,9 @@ Lokalne środowisko osobiście odpalam w Linuxie (Ubuntu-18.04), zainstalowanym 
 
 **TL;DR dla tych bardziej w temacie**
 
-Projekt btsearch wymaga zainstalowania `python` (2.x), menedżera pakietów pythonowych `pip`, serwera `mysql-server` oraz `virtualenv`. Kod źródłowy klonujemy z własnego forka GitHub. Następnie wewnątrz utworzonego i aktywowanego virtualenv instalujemy projektowe *dependencies* (django, south, mysql-python itp.). Następnie za pośrednictwem konsoli Django `manage.py` tworzymy strukturę bazy i odpalamy webserver na porcie 8000.
+Projekt btsearch wymaga zainstalowania `python` (3.7+), menedżera pakietów pythonowych `pip`, serwera `mysql-server` oraz `virtualenv`. Kod źródłowy klonujemy z własnego forka GitHub. Następnie wewnątrz utworzonego i aktywowanego virtualenv instalujemy projektowe *dependencies*. Następnie za pośrednictwem konsoli Django `manage.py` tworzymy strukturę bazy i odpalamy webserver na porcie 8000.
 
-### Aktywacja WSL oraz instalacja Ubuntu-18.04 wewnątrz Windows 10
+### Aktywacja WSL oraz instalacja Ubuntu-20.04 wewnątrz Windows 10
 Wykonujemy krok po kroku instrukcje z tego przewodnika:
 
 https://docs.microsoft.com/en-us/windows/wsl/install-win10
@@ -34,24 +34,29 @@ https://docs.microsoft.com/en-us/windows/wsl/install-win10
 Ja u siebie działam na nowszym subsystemie WSL v2. Polecam także aplikację [Windows Terminal](https://www.microsoft.com/pl-pl/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab) z Microsoft Store. Umożliwia wygodniejszą pracę w porównaniu do domyślnej powłoki linuxowej w Windowsie.
 
 ### Instalacja niezbędnych pakietów w Ubuntu
-Po zainstalowaniu i uruchomieniu Ubuntu-18.04 w Windows 10 instalujemy niezbędne do dalszej pracy pakiety za pomocą `apt-get`.
+Po zainstalowaniu i uruchomieniu Ubuntu-20.04 w Windows 10 instalujemy niezbędne do dalszej pracy pakiety za pomocą `apt-get`.
 
 Aktualizacja repozytoriów z pakietami:
 ```sh
 $ sudo apt-get update
 ```
-Instalacja Pythona 2.x (na nim _jeszcze_ jest oparty projekt):
+Instalacja Pythona 3.x (na nim _jeszcze_ jest oparty projekt):
 ```sh
-$ sudo apt-get install python
+$ sudo apt-get install python3
 ```
 Instalacja menedżera pakietów pythonowych `pip`:
 ```sh
-$ sudo apt-get install python-pip
+$ sudo apt-get install python3-pip
 ```
+
+Instalacja wymaganych paczek deweloperskich python3 i mysqlclient
+```sh
+$ sudo apt-get install python3-dev default-libmysqlclient-dev build-essential
+```
+
 Instalacja serwera mysql:
 ```sh
 $ sudo apt-get install mysql-server
-$ sudo apt-get install libmysqlclient-dev
 ```
 Tutaj istotna uwaga - szczególnie jeśli uruchamiasz projekt w WSL/Windows. W trakcie instalacji mysql-server _teoretycznie_ powinna nastąpić wstępna konfiguracja serwera, z podaniem nazwy użytkownika i hasła administratora serwera. U mnie nie wiedzieć czemu to nie nastąpiło. Guglałem za rozwiązaniem problemu, ale poszedłem na skróty i posiłkowałem się hasłem dla systemowego usera `debian-sys-maint`, które podane jest czystym tekstem w pliku `/etc/mysql/debian.cnf`. Z tą kombinacją user/pass zalogowałem się do serwera (klient dowolny - z linii poleceń `mysql`, phpmyadmin, MySQL Workbench - co kto woli) i utworzyłem osobną kombinację user/pass oraz pustą bazę do projektu btsearch.
 
@@ -85,12 +90,8 @@ Po utworzeniu i aktywacji virtualenv'a wg wskazówek powyżej, w przedrostku lin
 Po aktywacji virtualenv'a można przystąpić do zainstalowania pakietów pythonowych, niezbędnych do uruchomienia projektu btsearch. Zakładając, że bieżącą ścieżką jest `/home/USERNAME/dev/btsearch/`, odpalamy instalację zależności z pliku `requirements.txt`:
 ```sh
 $ pip install -r src/deploy/requirements.txt
+$ pip install -r src/deploy/requirements-dev.txt
 ```
-**Uwaga!** Istnieje prawdopodobieństwo, że w instalacja wywali się na etapie pobierania i kompilowania pakietu `uwsgi`. Na moment pisania tego przewodnika jeszcze nie znalazłem rozwiązania tego problemu, dlatego na wypadek wystąpienia tej usterki, w pliku `src/deploy/requirements.txt` chwilowo zakomentowujemy linię:
-```sh
-#uwsgi==1.9.19
-```
-I odpalamy proces instalacji poleceniem `pip install -r src/deploy/requirements.txt` jeszcze raz.
 
 ### Kofiguracja dostępu do bazy danych dla projektu
 W pliku `src/conf/local.py.sample` uzupełniamy user/pass/dbname do lokalnej bazy danych mysql, którą konfigurowaliśmy kilka kroków wyżej.
@@ -115,23 +116,31 @@ $ cp src/conf/local.py.sample src/conf/local.py
 ```sh
 $ cd src
 $ ./manage.py --version
-1.5
+3.2.10
 ```
 
 ### Utworzenie struktury bazy danych i uruchomienie webserwera projektowego
-Ostatnim krokiem jest utworzenie struktury bazy danych projektu btsearch. Odpalamy dwie komendy - `syncdb` tworzy domyślną strukturę i tabele wspólne dla Django, natomiast `migrate` tworzy i migruje strukturę modeli aplikacji btsearch (tabele mysql, w których trzymane są dane BTS, UKE itp.).
+Ostatnim krokiem jest utworzenie struktury bazy danych projektu btsearch. Odpalamy komendę `migrate`, która tworzy i migruje strukturę modeli aplikacji btsearch (tabele mysql, w których trzymane są dane BTS, UKE itp.).
+W przypadku świeżego projektu
 ```sh
-$ ./manage.py syncdb
-$ ./manage.pu migrate
+$ ./manage.py migrate
 ```
+
+W przypadku posiadania istniejącej bazy danych z wersji `btsearch` opartej na python 2.x i Django 1.5 należy
+```sh
+$ ./manage.py migrate --fake-initial
+$ ./manage.py migrate --fake bts uke
+$ ./manage.py migrate
+```
+
 Na koniec pozostaje uruchomienie wewnętrznego webservera Django:
 ```sh
 $ ./manage.py runserver
 Validating models...
 
 0 errors found
-July 04, 2020 - 01:06:06
-Django version 1.5, using settings 'src.settings'
+December 19, 2021 - 01:17:20
+Django version 3.2.10, using settings 'settings'
 Development server is running at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 ```
@@ -160,12 +169,9 @@ Na tym etapie mamy w pełni skonfigurowany i odpalony lokalnie projekt btsearch,
 
 - Rozwiązanie problemu z dostępem do lokalnego panelu administracyjnego Django (`TemplateDoesNotExist at /btsadmin/`).
 - Przygotowanie testowych danych do bazy danych dla środowiska lokalnego.
-- Rozwiązanie problemu z instalacją uwsgi.
-- Usunięcie hard-kodowanego odwołania do `models.Region.objects.all()` w pliku `src/bts/btsearch/forms.py`, co blokuje uruchomienie projektu.
-- Uaktualnienie zależności projektowych (`requirements.txt`) - obecne są bardzo przestarzałe i już od dawna nie wspierane, np. Django 1.5.
+- Usunięcie hard-kodowanego odwołania do `models.Region.objects.all()` w pliku `src/bts/btsearch/forms.py`, co blokuje uruchomienie projektu. (?)
 - Opis struktury projektu, zastosowanych rozwiązań, modeli i logiki do README lub artykułu/-ów wiki.
 - Rozkmina potencjału wykorzystania dockera do uruchomienia lokalnego środowiska.
-- Migracja do Python 3.x.
 
 ## Rozwój merytoryczny btsearch
 Powyższe modernizacje mają charakter stricte techniczny / developerski i są "niewidzialne" dla zwykłego usera korzystającego z serwisu. Pod kątem merytorycznym, najbardziej palące aktualnie (wg stanu na lipiec-sierpień 2020) problemy do rozwiązania, to:

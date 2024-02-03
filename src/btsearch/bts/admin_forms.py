@@ -11,6 +11,7 @@ class LocationAdminForm(forms.ModelForm):
         widgets = {
             'town': widgets.LocationPickerWidget()
         }
+        fields = '__all__'
 
 
 class BaseStationAdminForm(forms.ModelForm):
@@ -20,6 +21,7 @@ class BaseStationAdminForm(forms.ModelForm):
         widgets = {
             'location': widgets.LocationSelectorWidget()
         }
+        fields = '__all__'
 
     location_info = forms.CharField(max_length=255, required=False)
     location_coords = forms.CharField(max_length=255, required=False)
